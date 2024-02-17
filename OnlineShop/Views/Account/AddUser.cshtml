@@ -1,0 +1,50 @@
+﻿
+@model OnlineShop.Models.User
+@{
+    //Layout = "_Layout";
+    
+
+}
+<div class="form-container">
+    <div style="width: 50%;">
+        <form asp-action="AddUser">
+            <h2>Add User:</h2>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" type="text" class="form-control">
+                <span class="text-danger" asp-validation-for="Name"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Id" class="form-label">Id</label>
+                <input asp-for="Id" type="text" class="form-control">
+                <span class="text-danger" asp-validation-for="Id"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control">
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control">
+                <span class="text-danger" asp-validation-for="Password"></span>
+
+            </div>
+
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <div>
+                    @if(TempData["msg"]!= null)
+                    {
+                        @TempData["msg"]
+                    }
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div>
+                    <a href="DisplayUsers" class="btn btn-primary">All Person</a>
+                </div>
+            </div>
+        </form>
+    </div>

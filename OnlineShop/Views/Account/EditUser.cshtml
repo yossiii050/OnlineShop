@@ -1,0 +1,45 @@
+﻿@model OnlineShop.Models.User
+@{
+            //Layout = "_Layout";
+
+
+}
+<div class="form-container">
+    <div style="width: 50%;">
+        <form asp-action="EditUser">
+            <h2>Edit User:</h2>
+            <input asp-for="Id" type="hidden" class="form-control" >
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" type="text" class="form-control">
+                <span class="text-danger" asp-validation-for="Name"></span>
+            </div>
+
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control">
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control">
+                <span class="text-danger" asp-validation-for="Password"></span>
+
+            </div>
+
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <div>
+                    @if (TempData["msg"]!= null)
+                    {
+                        @TempData["msg"]
+                    }
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+                <div>
+                    <a href="DisplayUsers" class="btn btn-primary">Back</a>
+                </div>
+            </div>
+        </form>
+    </div>

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<OnlineShop.Models.User>
+@{
+}
+<div class="form-container">
+    <div style="width: 50%;">
+    <div class="row">
+        <h2>Users</h2>
+        
+              
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                     <th>ID</th>
+                     <th>Email</th>
+                     <th>Password</th>
+                </tr>
+
+                @foreach(var user in Model)
+                    {
+                        <tr>
+                            <td>@user.Name</td>
+                            <td>@user.Id</td>
+                            <td>@user.Email</td>
+                            <td>@user.Password</td>
+                            <td>
+                                <a class="btn btn-success" href="/Account/EditUser?id=@user.Id">Edit</a>
+                                <a class="btn btn-danger" href="/Account/DeleteUser?id=@user.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </thead>
+        </table>
+    </div>
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+
+        <a href="AddUser" class="btn btn-primary">Add Person</a>
+        </div>
+    </div>
+</div>

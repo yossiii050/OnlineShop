@@ -6,4 +6,45 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\images\about-vid.mp4" />
+    <None Include="wwwroot\images\contact-img.svg" />
+    <None Include="wwwroot\images\desktop.ini" />
+    <None Include="wwwroot\images\home-bg.jpg" />
+    <None Include="wwwroot\images\icon-1.png" />
+    <None Include="wwwroot\images\icon-2.png" />
+    <None Include="wwwroot\images\icon-3.png" />
+    <None Include="wwwroot\images\icon-4.png" />
+    <None Include="wwwroot\images\img-1.jpg" />
+    <None Include="wwwroot\images\img-2.jpg" />
+    <None Include="wwwroot\images\img-3.jpg" />
+    <None Include="wwwroot\images\img-4.jpg" />
+    <None Include="wwwroot\images\img-5.jpg" />
+    <None Include="wwwroot\images\img-6.jpg" />
+    <None Include="wwwroot\images\img-7.jpg" />
+    <None Include="wwwroot\images\img-8.jpg" />
+    <None Include="wwwroot\images\img-9.jpg" />
+    <None Include="wwwroot\images\payment.png" />
+    <None Include="wwwroot\images\pic-1.png" />
+    <None Include="wwwroot\images\pic-2.png" />
+    <None Include="wwwroot\images\pic-3.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Oracle.DataAccess.x86.4" Version="4.112.3" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.21.121" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="21.13.0" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.130" />
+    <PackageReference Include="Oracle.ManagedDataAccess.EntityFramework" Version="21.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
