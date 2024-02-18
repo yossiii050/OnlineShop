@@ -49,6 +49,17 @@ namespace OnlineShop.Controllers
             return View(users);
         }
 
+        public IActionResult EditUser(string id)
+        {
+            User user = _users.User.Find(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
         public IActionResult EditUser(User user)
         {
             if (!ModelState.IsValid)

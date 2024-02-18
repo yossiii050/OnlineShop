@@ -55,12 +55,16 @@
                     <td>@category.Name</td>
                     <td>@category.Items</td>
                 <td>
-                        <a class="btn btn-success" href="#">Edit</a>
-                        <a class="btn btn-danger" href="#">Delete</a>
+                        <a class="btn btn-success" href="/Products/EditCategory?id=@category.Id">Edit</a>
+
+                        <a class="btn btn-danger" href="/Products/DeleteCategory?id=@category.Id">Delete</a>
                 </td>
             </tr>
          }
         </thead>
     </table>
-    <div style="margin-top:8px">Made with <a href="https://www.htmltables.io/" target="_blank">HTML Tables</a></div>
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+
+        <a href="/Products/AddCategory" class="btn btn-primary">Add Category</a>
+    </div>
 </div>

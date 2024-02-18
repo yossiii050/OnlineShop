@@ -1,0 +1,29 @@
+﻿@model OnlineShop.Models.Category
+@{
+}
+<div class="form-container">
+    <div style="width: 50%;">
+        <form asp-action="AddCategory">
+            <h2>Add Category:</h2>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" type="text" class="form-control">
+                <span class="text-danger" asp-validation-for="Name"></span>
+            </div>
+
+            
+
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <div>
+                    @if (TempData["msg"]!= null)
+                    {
+                        @TempData["msg"]
+                    }
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div>
+                    <a href="/Products/DisplayCategory" class="btn btn-primary">All Person</a>
+                </div>
+            </div>
+        </form>
+    </div>
