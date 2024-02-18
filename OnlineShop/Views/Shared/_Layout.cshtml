@@ -174,7 +174,16 @@
             <a href="/home/index">home</a>
             <a href="#about">about</a>
             <a href="products">products</a>
-            <a href="#review">review</a>
+            <div class="dropdown" id="adminDropdown">
+                <a class="dropdown-toggle" href="#" role="button" id="adminDropdownToggle" aria-haspopup="true" aria-expanded="false">
+                    Admin Management
+                </a>
+                <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
+                    <a class="dropdown-item" href="/Account/DisplayUsers">User Manage</a>
+                    <a class="dropdown-item" href="#">Products Manage</a>
+                    <a class="dropdown-item" href="#">Orders</a>
+                </div>
+            </div>
             <a href="#contact">contact</a>
         </nav>
 
@@ -186,12 +195,12 @@
 
     </header>
     <div class="container">
-        
-            <!-- Adjust the padding-bottom value to match the height of your footer -->
-            @RenderBody()
-        
+
+        <!-- Adjust the padding-bottom value to match the height of your footer -->
+        @RenderBody()
+
     </div>
-    
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - OnlineShop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -201,6 +210,20 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            $('#adminDropdown').hover(function () {
+                $(this).addClass('show');
+                $(this).find('.dropdown-menu').addClass('show');
+            }, function () {
+                $(this).removeClass('show');
+                $(this).find('.dropdown-menu').removeClass('show');
+            });
+        });
+    </script>
 </body>
+
+
 </html>
 

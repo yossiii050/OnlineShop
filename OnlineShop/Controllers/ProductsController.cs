@@ -9,7 +9,7 @@ namespace OnlineShop.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly IConfiguration _configuration;
+        
 
         public ProductsController(IConfiguration configuration)
         {
@@ -18,24 +18,14 @@ namespace OnlineShop.Controllers
 
         public IActionResult Index()
         {
-            List<User> products = GetProductsFromDatabase();
-            return View(products);
-        }
-
-        private string GetConnectionString()
-        {
-            return _configuration.GetConnectionString("localhost");
-        }
-
-        private List<User> GetProductsFromDatabase()
-        {
-            List<User> products = new List<User>();
-           
-
-
             
-
-            return products;
+            return View();
         }
+        public IActionResult DisplayProducts()
+        {
+			var users = _users.User.ToList();
+			return View(users);
+		}
+   
     }
 }
