@@ -16,6 +16,8 @@
 3. in DBUsers context add public DbSet<_name_> _name_ { get; set; }
 
 ## Migrate and update dB
+Delete all files in Migrations folder
+
 In file appsettings.json, edit the name of ConnectionStrings
 ```
     "ConnectionStrings": { "conn": "data source=*****Your name*****;initial catalog=FloweSHopDB;integrated security=true;TrustServerCertificate=True" }
