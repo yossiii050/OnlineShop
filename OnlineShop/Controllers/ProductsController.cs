@@ -9,11 +9,11 @@ namespace OnlineShop.Controllers
 {
     public class ProductsController : Controller
     {
-        
+        private readonly DBUsers _Category;
 
-        public ProductsController(IConfiguration configuration)
+		public ProductsController(DBUsers Category)
         {
-            _configuration = configuration;
+			_Category = Category;
         }
 
         public IActionResult Index()
@@ -21,10 +21,10 @@ namespace OnlineShop.Controllers
             
             return View();
         }
-        public IActionResult DisplayProducts()
+        public IActionResult DisplayCategory()
         {
-			var users = _users.User.ToList();
-			return View(users);
+			var categorys = _Category.Category.ToList();
+			return View(categorys);
 		}
    
     }
