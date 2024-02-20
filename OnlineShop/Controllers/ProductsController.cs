@@ -26,6 +26,12 @@ namespace OnlineShop.Controllers
 			var categorys = _Category.Category.ToList();
 			return View(categorys);
 		}
+
+        public IActionResult AddCategory()
+        {
+            return View("AddCategory");
+        }
+
         [HttpPost]
         public IActionResult AddCategory(Category category) 
         {
