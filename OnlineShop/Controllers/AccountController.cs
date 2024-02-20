@@ -5,8 +5,8 @@ namespace OnlineShop.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly DBUsers _users;
-        public AccountController(DBUsers users)
+        private readonly DBProjectContext _users;
+        public AccountController(DBProjectContext users)
         {
             _users=users;
         }

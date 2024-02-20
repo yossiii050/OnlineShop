@@ -9,9 +9,9 @@ namespace OnlineShop.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly DBUsers _Category;
+        private readonly DBProjectContext _Category;
 
-		public ProductsController(DBUsers Category)
+		public ProductsController(DBProjectContext Category)
         {
 			_Category = Category;
         }
