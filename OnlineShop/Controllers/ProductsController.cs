@@ -9,9 +9,9 @@ namespace OnlineShop.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly DBUsers _Category;
+        private readonly DBProjectContext _Category;
 
-		public ProductsController(DBUsers Category)
+		public ProductsController(DBProjectContext Category)
         {
 			_Category = Category;
         }
@@ -26,6 +26,12 @@ namespace OnlineShop.Controllers
 			var categorys = _Category.Category.ToList();
 			return View(categorys);
 		}
+
+        public IActionResult AddCategory()
+        {
+            return View("AddCategory");
+        }
+
         [HttpPost]
         public IActionResult AddCategory(Category category) 
         {
