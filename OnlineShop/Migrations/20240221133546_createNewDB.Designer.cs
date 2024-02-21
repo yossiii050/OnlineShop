@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240220161407_change_DBProjectContext_name")]
-    partial class change_DBProjectContext_name
+    [Migration("20240221133546_createNewDB")]
+    partial class createNewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
