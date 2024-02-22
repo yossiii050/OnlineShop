@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Models;
 
@@ -9,6 +11,9 @@ builder.Services.AddControllersWithViews();
 //here we add all services
 builder.Services.AddDbContext<DBProjectContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<DBProjectContext>();
+
 
 var app = builder.Build();
 
@@ -30,5 +35,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapRazorPages();
 app.Run();
