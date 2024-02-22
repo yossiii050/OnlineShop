@@ -4,6 +4,7 @@ using System.Data.OracleClient; // Add the necessary using directive
 using System.Configuration;
 using OnlineShop.Models; // Add the necessary using directive
 using Oracle.ManagedDataAccess.Client;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineShop.Controllers
 {
@@ -15,12 +16,13 @@ namespace OnlineShop.Controllers
         {
 			_Category = Category;
         }
-
+        
         public IActionResult Index()
         {
             
             return View();
         }
+        [Authorize]
         public IActionResult DisplayCategory()
         {
 			var categorys = _Category.Category.ToList();
