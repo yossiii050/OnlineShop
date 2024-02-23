@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using OnlineShop.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +13,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DBProjectContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<DBProjectContext>();
-
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<DBProjectContext>();
+    
 
 var app = builder.Build();
 
@@ -36,4 +39,37 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+using(var scope=app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "Admin", "Regular", "Advanced" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var usersManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+//    string email = "admin@admin.com";
+//    string password = "Admin123!!!";
+
+//    if(await usersManager.FindByEmailAsync(email)==null)
+//    {
+//        var user=new IdentityUser();
+//        user.UserName = email;
+//        user.Email = email;
+
+//        await usersManager.CreateAsync(user, password);
+
+//        await usersManager.AddToRoleAsync(user, "Admin");
+//    }
+//}
 app.Run();
+

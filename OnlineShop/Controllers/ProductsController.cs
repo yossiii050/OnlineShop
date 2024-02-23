@@ -22,7 +22,7 @@ namespace OnlineShop.Controllers
             
             return View();
         }
-        [Authorize]
+        
         public IActionResult DisplayCategory()
         {
 			var categorys = _Category.Category.ToList();
