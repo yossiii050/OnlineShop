@@ -7,6 +7,7 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+
     User applicationUser = (User)await UserManager.GetUserAsync(User);
     var firstName = applicationUser.FirstName;
     <li class="nav-item">
