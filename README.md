@@ -2,6 +2,10 @@
 ```
     Microsoft.EntityFrameworkCore.SqlServer
     Microsoft.EntityFrameworkCore.Tools
+
+    Microsoft.VisualStudio.Web.CodeGeneration.Design
+    Microsoft.AspNetCore.Identity.EntityFrameworkCore
+    Microsoft.AspNetCore.Identity.UI
 ```
 
 ## Config SQL DB
