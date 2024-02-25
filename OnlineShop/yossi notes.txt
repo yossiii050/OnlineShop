@@ -1,0 +1,3 @@
+﻿in Program.cs:
+options => options.SignIn.RequireConfirmedAccount = true/false
+(change option to confirmed account with email)

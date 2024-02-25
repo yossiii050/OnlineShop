@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -169,11 +170,12 @@
 
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineShop</a>
 
-
+        <partial name="_LoginPartial" />
         <nav class="navbar">
             <a href="/">home</a>
             <a href="#about">about</a>
             <a href="/Products/DisplayCategory">products</a>
+            
             <div class="dropdown" id="adminDropdown">
                 <a class="dropdown-toggle" role="button" id="adminDropdownToggle" aria-haspopup="true" aria-expanded="false">
                     Admin Management
@@ -185,14 +187,16 @@
                 </div>
             </div>
             <a href="#contact">contact</a>
+            
         </nav>
 
         <div class="icons">
             <a href="#" class="fas fa-heart"></a>
             <a href="#" class="fas fa-shopping-cart"></a>
             <a href="/Account/DisplayUsers" class="fas fa-user"></a>
+            
         </div>
-
+        
     </header>
     <div class="container">
 
