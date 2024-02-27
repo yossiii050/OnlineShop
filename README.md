@@ -6,6 +6,8 @@
     Microsoft.VisualStudio.Web.CodeGeneration.Design
     Microsoft.AspNetCore.Identity.EntityFrameworkCore
     Microsoft.AspNetCore.Identity.UI
+
+    Stripe.Net
 ```
 
 ## Config SQL DB
