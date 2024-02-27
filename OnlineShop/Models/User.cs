@@ -27,6 +27,8 @@ namespace OnlineShop.Models
         [NotMapped]
         public Address Address { get; set; }
 
+        //public string StripeCustomerId { get; set; }
+
     }
     public class Address
     {

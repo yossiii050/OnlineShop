@@ -102,6 +102,8 @@ public class IndexModel : PageModel
             ZipCode = Input.ZipCode
         };
 
+
+
         await _userManager.UpdateAsync(user);
 
         await _signInManager.RefreshSignInAsync(user);

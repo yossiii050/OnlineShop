@@ -114,10 +114,12 @@ namespace  OnlineShop.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         /// 
-        public static string UpdateCreditCardAndAddress => "UpdateCreditCardAndAddress";
+        public static string UpdateAddress => "UpdateAddress";
 
-        public static string UpdateCreditCardAndAddressNavClass(ViewContext viewContext) => PageNavClass(viewContext, UpdateCreditCardAndAddress);
-
+        public static string UpdateAddressNavClass(ViewContext viewContext) => PageNavClass(viewContext, UpdateAddress);
+        
+        public static string UpdateCreditCard => "UpdateCreditCard";
+        public static string UpdateCreditCardNavClass(ViewContext viewContext) => PageNavClass(viewContext, UpdateCreditCard);
 
         public static string PageNavClass(ViewContext viewContext, string page)
         {

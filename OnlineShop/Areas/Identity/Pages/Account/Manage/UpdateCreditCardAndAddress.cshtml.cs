@@ -29,9 +29,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
 
         public class UpdateCreditCardAndAddressInputModel
         {
-            [Required]
-            [Display(Name = "New Credit Card Number")]
-            public string NewCreditCardNumber { get; set; }
+
 
             [Required]
             [Display(Name = "Street")]
@@ -63,7 +61,6 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            user.CreditCardNumber = Input.NewCreditCardNumber;
             user.Address = new Address
             {
                 Street = Input.Street,
@@ -83,7 +80,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            TempData["UpdateSuccessMessage"] = "Your credit card and address information has been updated.";
+            TempData["UpdateSuccessMessage"] = "Your address information has been updated.";
             return RedirectToPage();
         }
     }
