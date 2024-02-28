@@ -12,13 +12,22 @@ namespace OnlineShop.Models
             
         }
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new ApplicationUserEntityConfiguration());
-        }
 
+            builder.Entity<User>()
+                .OwnsOne(u => u.Address, a =>
+                {
+                    a.Property(a => a.Street).HasColumnName("Street");
+                    a.Property(a => a.City).HasColumnName("City");
+                    a.Property(a => a.Country).HasColumnName("Country");
+                    a.Property(a => a.ZipCode).HasColumnName("ZipCode");
+                });
+        }
         //Users
         public DbSet<Admin> admins { get; set; }
         public DbSet<User> User { get; set; }
