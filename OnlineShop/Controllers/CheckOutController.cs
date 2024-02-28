@@ -34,7 +34,32 @@ namespace OnlineShop.Controllers
             };
             return View(itemList);
         }
+        public IActionResult OrderConfirmation()
+        {
+            var service = new SessionService();
+            Session session = service.Get(TempData["Session"].ToString());
+            if (session.PaymentStatus=="paid")
+            {
+                var transaction=session.PaymentIntentId.ToString();
+                return View("Success");
+            }
+            return View("Cancel");
+            
+            
+        }
+        public IActionResult Success()
+        {
 
+            return View();
+
+        }
+
+        public IActionResult Cancel()
+        {
+
+            return View();
+
+        }
         public IActionResult CheckOut() 
         {
             List<Item> itemList = new List<Item>();
@@ -67,7 +92,7 @@ namespace OnlineShop.Controllers
             var options = new Stripe.Checkout.SessionCreateOptions
             {
                 SuccessUrl=domain+$"CheckOut/OrderConfirmation",
-                CancelUrl=domain+"CheckOut/Login",
+                CancelUrl=domain+"CheckOut/Cancel",
                 LineItems = new List<Stripe.Checkout.SessionLineItemOptions>(),
                 Mode="payment"
             };
@@ -93,6 +118,8 @@ namespace OnlineShop.Controllers
 
             var service = new Stripe.Checkout.SessionService();
             Session session=service.Create(options);
+
+            TempData["Session"]=session.Id;
 
             Response.Headers.Add("Location", session.Url);
 
