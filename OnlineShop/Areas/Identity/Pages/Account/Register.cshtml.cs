@@ -126,6 +126,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account
                 var user = CreateUser();
                 user.FirstName=Input.FirstName;
                 user.LastName=Input.LastName;
+                user.CreditCardNumber="";
                 await _userManager.AddToRoleAsync(user, "Regular");
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

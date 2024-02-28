@@ -1,0 +1,42 @@
+﻿@page
+@model OnlineShop.Areas.Identity.Pages.Account.Manage.UpdateCreditCardAndAddressModel
+@{
+    ViewData["Title"] = "Update Credit Card and Address";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["UpdateSuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["UpdateSuccessMessage"]
+    </div>
+}
+
+<form method="post">
+
+
+    <h4>Address Information</h4>
+    <div class="form-group">
+        <label asp-for="Input.Street"></label>
+        <input asp-for="Input.Street" class="form-control" />
+        <span asp-validation-for="Input.Street" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.City"></label>
+        <input asp-for="Input.City" class="form-control" />
+        <span asp-validation-for="Input.City" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.Country"></label>
+        <input asp-for="Input.Country" class="form-control" />
+        <span asp-validation-for="Input.Country" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.ZipCode"></label>
+        <input asp-for="Input.ZipCode" class="form-control" />
+        <span asp-validation-for="Input.ZipCode" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
