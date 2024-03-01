@@ -8,6 +8,8 @@ using Oracle.ManagedDataAccess.Client;
 using Microsoft.AspNetCore.Authorization;
 
 using System.Diagnostics;
+using Stripe;
+using Product = OnlineShop.Models.Product;
 
 
 namespace OnlineShop.Controllers
@@ -41,6 +43,25 @@ namespace OnlineShop.Controllers
         {
             if (ModelState.IsValid)
             {
+                var options = new ProductCreateOptions { 
+                    Name = product.Name,
+                    Description = product.Description,
+                    Id=product.Name,
+
+                };
+                var service = new ProductService();
+                service.Create(options);
+                var priceOptions = new PriceCreateOptions
+                {
+                    
+                    Product = product.Name,
+                    UnitAmount = (long?)product.Price, // The price in cents (e.g., $10.00 is 1000 cents)
+                    Currency = "usd",
+                };
+
+                var priceService = new PriceService();
+                Price price = priceService.Create(priceOptions);
+
                 for (int i = 0; i < product.Quantity; i++)
                 {
                     var newProduct = new Product
@@ -53,6 +74,7 @@ namespace OnlineShop.Controllers
                     };
 
                     _Category.Product.Add(newProduct);
+                    
                 }
 
                 _Category.SaveChanges();
