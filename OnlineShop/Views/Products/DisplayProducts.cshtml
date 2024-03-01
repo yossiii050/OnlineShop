@@ -1,0 +1,21 @@
+﻿@model IEnumerable<OnlineShop.Models.Product>
+
+<div class="product-grid">
+    @foreach (var product in Model)
+    {
+        <div>
+            <img src="@product.Image" alt="@product.Name" style="width: 100px; height: 100px;">
+            <h3>@product.Name</h3>
+            <p>@product.Description</p>
+            <p>Price: @product.Price₪</p>
+            <p>Stock: @product.Quantity</p>
+
+            <form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@product.Id">
+                <input type="number" name="quantity" value="1" min="1" />
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
+
+            <a href="@Url.Action("DeleteProduct", "Products", new { id = product.Id })" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+        </div>
+    }
+</div>
