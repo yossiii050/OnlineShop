@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace OnlineShop.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    
     public class ProductsController : Controller
     {
         private readonly DBProjectContext _Category;
