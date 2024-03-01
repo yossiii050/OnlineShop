@@ -1,0 +1,39 @@
+﻿@model IEnumerable<OnlineShop.Models.Item>
+
+<br/>
+
+<table class="table table-responsive table-light table-bordered" style="width:100%">
+    <tr>
+        <th>Item Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>ImagePath</th>
+        <th>Total</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.Price</td>
+            <td>@item.Quantity</td>
+            <td><img src="@item.ImagePath" style="width:130px;height:150px;" /></td>
+            <td>@(item.Price*item.Quantity)</td>
+        </tr>
+    }
+</table>
+
+<br />
+
+<p>
+    <a asp-action="CheckOut" asp-controller="CheckOut">CheckOut</a>
+</p>
+
+<script async
+        src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button buy-button-id="buy_btn_1OpWIGDsGN87ngbiCR24chJb"
+                   publishable-key="pk_test_51OoVvpDsGN87ngbih6BhSCQYDj6IyzdAOFSMzPTHDhONBjQJkVd6DDmw88vToDIbA5lBpbe9gds7DLhtIQlejzya00pqCSvVkP">
+</stripe-buy-button>

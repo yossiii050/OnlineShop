@@ -1,21 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+
+
 
 namespace OnlineShop.Models
 {
-    public class User
+    
+    public class User : IdentityUser
     {
         
-        public string Id { get; set; }
-        [Required]
-        public string Name { get; set; }
+        //public string Id { get; set; }
         
-        [EmailAddress]
-        public string Email { get; set; }
-        //need add hash passwords
-        [Required]
-        public string Password { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        
+        //public string Email { get; set; }
+        
+        //public string Password { get; set; }
 
 		public ICollection<Order>? Orders { get; set; }
+        public string CreditCardNumber { get; set; }
 
-	}
+        [NotMapped]
+        public Address Address { get; set; }
+
+        //public string StripeCustomerId { get; set; }
+
+    }
+    public class Address
+    {
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string ZipCode { get; set; }
+    }
 }

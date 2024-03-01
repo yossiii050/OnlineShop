@@ -1,0 +1,26 @@
+﻿@page
+@model UpdateCreditCardModel
+@{
+    ViewData["Title"] = "Update Credit Card";
+    ViewData["ActivePage"] = ManageNavPages.UpdateCreditCard;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+@if (ViewData.ContainsKey("CardBrand") && ViewData.ContainsKey("CardLast4"))
+{
+    <h4>Current Card Information:</h4>
+    <p>Card Brand: @ViewData["CardBrand"]</p>
+    <p>Last 4 Digits: @ViewData["CardLast4"]</p>
+}
+
+<form id="credit-card-form" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="form-floating mb-3">
+        <input asp-for="Input.NewCreditCardNumber" class="form-control" placeholder="Enter your new credit card number" />
+        <label asp-for="Input.NewCreditCardNumber" class="form-label"></label>
+        <span asp-validation-for="Input.NewCreditCardNumber" class="text-danger"></span>
+    </div>
+    <button id="update-credit-card-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+</form>
