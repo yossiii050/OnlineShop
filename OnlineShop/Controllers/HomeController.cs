@@ -24,8 +24,8 @@ namespace OnlineShop.Controllers
             var items=_db.Item.ToList();
             HomeVM homeVM = new HomeVM()
             {
-                Products = _db.Item,
-                //Products = _db.Item.Include(u => u.).Include(u => u.ApplicationType),
+                Products = _db.Product,
+                //Products = _db.Product.Include(u => u.Name),
                 Categories = _db.Category
             };
             return View(homeVM);
