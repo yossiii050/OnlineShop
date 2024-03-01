@@ -6,16 +6,17 @@ namespace OnlineShop.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly DBProjectContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(DBProjectContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var products = _context.Product.ToList();
+            return View(products);
         }
 
         public IActionResult Privacy()
