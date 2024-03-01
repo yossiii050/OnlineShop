@@ -216,10 +216,14 @@ namespace OnlineShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -407,17 +411,13 @@ namespace OnlineShop.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.Item", b =>
                 {
-                    b.HasOne("OnlineShop.Models.Category", "Category")
+                    b.HasOne("OnlineShop.Models.Category", null)
                         .WithMany("Items")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("OnlineShop.Models.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId");
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Order", b =>

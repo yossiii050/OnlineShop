@@ -90,7 +90,11 @@ public class UpdateCreditCardModel : PageModel
         // Create a new customer in Stripe
         var customerOptions = new CustomerCreateOptions
         {
-            Email = user.Email, // User's email address
+            Email = user.Email, // User's email address,
+            Name=user.FirstName+user.LastName,
+            Phone=user.PhoneNumber,
+            
+
         };
 
         var customer = customerService.Create(customerOptions);

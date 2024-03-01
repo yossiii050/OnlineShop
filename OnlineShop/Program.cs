@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-
+using Stripe;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using OnlineShop.Models;
@@ -32,7 +32,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+StripeConfiguration.ApiKey=builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseAuthorization();
 
 app.MapControllerRoute(
