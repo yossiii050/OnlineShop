@@ -8,16 +8,19 @@ namespace OnlineShop.Controllers
 {
     public class HomeController : Controller
     {
+
         private readonly ILogger<HomeController> _logger;
         private readonly DBProjectContext _db;
         public HomeController(ILogger<HomeController> logger, DBProjectContext db)
         {
             _logger = logger;
             _db=db;
+
         }
 
         public IActionResult Index()
         {
+
             var items=_db.Item.ToList();
             HomeVM homeVM = new HomeVM()
             {
@@ -27,6 +30,8 @@ namespace OnlineShop.Controllers
             };
             return View(homeVM);
             //return View(items);
+
+
         }
 
         public IActionResult Privacy()
