@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
-//using Stripe.BillingPortal;
 using Stripe.Checkout;
 namespace OnlineShop.Controllers
 {
+    [Authorize]
     public class CheckOutController : Controller
     {
         public IActionResult Index()
@@ -94,7 +95,11 @@ namespace OnlineShop.Controllers
                 SuccessUrl=domain+$"CheckOut/OrderConfirmation",
                 CancelUrl=domain+"CheckOut/Cancel",
                 LineItems = new List<Stripe.Checkout.SessionLineItemOptions>(),
-                Mode="payment"
+                Mode="payment",
+                InvoiceCreation = new Stripe.Checkout.SessionInvoiceCreationOptions
+                {
+                    Enabled = true,
+                },
             };
 
             foreach (var item in itemList)

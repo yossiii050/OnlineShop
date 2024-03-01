@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
+using OnlineShop.Models.ViewModels;
+using System.Data.Entity;
 using System.Diagnostics;
 
 namespace OnlineShop.Controllers
@@ -7,15 +9,24 @@ namespace OnlineShop.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly DBProjectContext _db;
+        public HomeController(ILogger<HomeController> logger, DBProjectContext db)
         {
             _logger = logger;
+            _db=db;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var items=_db.Item.ToList();
+            HomeVM homeVM = new HomeVM()
+            {
+                Products = _db.Item,
+                //Products = _db.Item.Include(u => u.).Include(u => u.ApplicationType),
+                Categories = _db.Category
+            };
+            return View(homeVM);
+            //return View(items);
         }
 
         public IActionResult Privacy()
