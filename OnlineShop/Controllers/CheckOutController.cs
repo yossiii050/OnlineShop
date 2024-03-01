@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
+using Stripe;
 using Stripe.Checkout;
 namespace OnlineShop.Controllers
 {
@@ -51,6 +52,25 @@ namespace OnlineShop.Controllers
         public IActionResult Success()
         {
 
+            var options = new InvoiceCreateOptions {
+                Customer = "cus_PeryQsudAqkUJq",
+                CollectionMethod = "send_invoice",
+                DaysUntilDue = 30,
+            };
+            var invoiceService = new InvoiceService();
+            var invoice = invoiceService.Create(options);
+
+            var invoiceItemOptions = new InvoiceItemCreateOptions
+            {
+                Customer = "cus_PeryQsudAqkUJq",
+                Price = "price_1Opa7pDsGN87ngbigfpffDFh",
+                Invoice = invoice.Id
+            };
+            var invoiceItemService = new InvoiceItemService();
+            invoiceItemService.Create(invoiceItemOptions);
+
+            // Send the Invoice
+            invoiceService.SendInvoice(invoice.Id);
             return View();
 
         }
@@ -96,10 +116,7 @@ namespace OnlineShop.Controllers
                 CancelUrl=domain+"CheckOut/Cancel",
                 LineItems = new List<Stripe.Checkout.SessionLineItemOptions>(),
                 Mode="payment",
-                InvoiceCreation = new Stripe.Checkout.SessionInvoiceCreationOptions
-                {
-                    Enabled = true,
-                },
+
             };
 
             foreach (var item in itemList)
