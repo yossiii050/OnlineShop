@@ -4,11 +4,17 @@ using System.Data.OracleClient; // Add the necessary using directive
 using System.Configuration;
 using OnlineShop.Models; // Add the necessary using directive
 using Oracle.ManagedDataAccess.Client;
+
 using Microsoft.AspNetCore.Authorization;
+
+using System.Diagnostics;
+using Stripe;
+using Product = OnlineShop.Models.Product;
+
 
 namespace OnlineShop.Controllers
 {
-    [Authorize(Roles ="Regular")]
+    
     public class ProductsController : Controller
     {
         private readonly DBProjectContext _Category;
@@ -20,10 +26,100 @@ namespace OnlineShop.Controllers
         
         public IActionResult Index()
         {
-            
+            IEnumerable<Product> objlist = _Category.Product;
+
+            return View(objlist);
+        }
+
+        public IActionResult AddProduct()
+        {
+            ViewBag.Categories = _Category.Category.ToList();
             return View();
         }
-        
+
+
+        [HttpPost]
+        public IActionResult AddProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                var options = new ProductCreateOptions { 
+                    Name = product.Name,
+                    Description = product.Description,
+                    Id=product.Name,
+
+                };
+                var service = new ProductService();
+                service.Create(options);
+                var priceOptions = new PriceCreateOptions
+                {
+                    
+                    Product = product.Name,
+                    UnitAmount = (long?)product.Price, // The price in cents (e.g., $10.00 is 1000 cents)
+                    Currency = "usd",
+                };
+
+                var priceService = new PriceService();
+                Price price = priceService.Create(priceOptions);
+
+                for (int i = 0; i < product.Quantity; i++)
+                {
+                    var newProduct = new Product
+                    {
+                        Name = product.Name,
+                        Description = product.Description,
+                        Price = product.Price,
+                        Image = product.Image,
+                        CategoryId = product.CategoryId
+                    };
+
+                    _Category.Product.Add(newProduct);
+                    
+                }
+
+                _Category.SaveChanges();
+                return RedirectToAction("DisplayProducts");
+            }
+
+            ViewBag.Categories = _Category.Category.ToList(); // Repopulate categories
+            return View(product);
+        }
+
+
+        public IActionResult DisplayProducts()
+        {
+            var products = _Category.Product
+        .GroupBy(p => new { p.Name, p.Description, p.Price, p.Image })
+        .Select(g => new Product
+        {
+            Id = g.FirstOrDefault().Id,
+            Name = g.Key.Name,
+            Description = g.Key.Description,
+            Price = g.Key.Price,
+            Image = g.Key.Image,
+            Quantity = g.Sum(p => p.Quantity)
+        })
+        .ToList();
+
+            return View(products);
+        }
+
+        [HttpGet]
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = _Category.Product.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            _Category.Product.Remove(product);
+            _Category.SaveChanges();
+
+            return RedirectToAction("DisplayProducts");
+        }
+
+
         public IActionResult DisplayCategory()
         {
 			var categorys = _Category.Category.ToList();
@@ -105,4 +201,5 @@ namespace OnlineShop.Controllers
             return RedirectToAction("DisplayCategory");
         }
     }
+
 }

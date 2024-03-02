@@ -36,6 +36,7 @@ namespace OnlineShop.Models
         //Products
         public DbSet<Category> Category { get; set; }
         public DbSet<Item> Item { get; set; }
+        public DbSet<Product> Product { get; set; }
 
 
 
