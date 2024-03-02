@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineShop.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Regular")]
     public class ProductsController : Controller
     {
         private readonly DBProjectContext _Category;
