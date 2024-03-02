@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-
+using Stripe;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using OnlineShop.Models;
@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(); // Add this line
+
 
 //here we add all services
 builder.Services.AddDbContext<DBProjectContext>(options =>
@@ -28,11 +30,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+StripeConfiguration.ApiKey=builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseAuthorization();
 
 app.MapControllerRoute(

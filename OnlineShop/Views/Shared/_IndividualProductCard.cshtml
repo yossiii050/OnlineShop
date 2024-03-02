@@ -1,0 +1,26 @@
+﻿@model OnlineShop.Models.Product
+
+<div class="col-lg-4 col-md-6 pb-4">
+    <!-- Card-->
+    <div class="card bg-white rounded shadow-sm" style="border:1px solid #222">
+        <div class="card-body px-3 pt-3 pb-1 row">
+            <div class="col-7"><label class="float-left">@Model.Name</label></div>
+            <div class="col-5"><label class="float-right"><span class="text-info h5">@Model.Price</span> / ILS</label> </div>
+        </div>
+        <img class="card-img-top img-fluid d-block mx-auto mb-3" src="https://icon-library.com/images/small-rose-icon/small-rose-icon-7.jpg" style="width:130px;height:150px;" alt="Card image cap">
+        <div class="card-body p-1 px-3 row">
+            <div class="col-6">
+                <span class="badge p-2 border w-100" style="background-color:lavenderblush">Category.Name</span>
+            </div>
+            <div class="col-6 border-0">
+                <span class="badge p-2 border w-100" style="background-color:aliceblue">ApplicationType.Name</span>
+            </div>
+            <div class="col-12 pt-2" style="font-size:13px; text-align:justify">
+                
+            </div>
+            <div class="col-12 p-1">
+                <a class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
+            </div>
+        </div>
+    </div>
+</div>
