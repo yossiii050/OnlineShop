@@ -34,6 +34,14 @@ namespace OnlineShop.Controllers
 
         }
 
+        public IActionResult About()
+        {
+
+            return View();
+           
+
+
+        }
         public IActionResult Privacy()
         {
             return View();
