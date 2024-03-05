@@ -2,10 +2,9 @@
 @using System.Data.SqlClient
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
-
-
-
 @model OnlineShop.Areas.Identity.Pages.Admin.DashboardModel
+
+
 @{
     ViewData["Title"] = "Dashboard";
     //Layout = "~/Identity/Admin/Layout.cshtml";
@@ -49,14 +48,15 @@
             color: #333; /* Dark text on hover */
         }
 </style>
-
+ 
+<!--  
 <div class="statistics-details d-flex align-items-center justify-content-between">
     <div>
         <p class="statistics-title">Total Users</p>
         <h3 class="rate-percentage">@totalUsers</h3>
     </div>
     <!-- other statistics details -->
-</div>
+
 
 
 
@@ -128,6 +128,78 @@
                                 </div>
                             </div>
                         </div>
+
+                        
+                        <div class="row">
+                        <div class="col-lg-8 d-flex flex-column">
+                            <div class="row flex-grow">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card card-rounded">
+                                        <div class="card-body">
+                                            <div class="d-sm-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h4 class="card-title card-title-dash"></h4>
+
+                                                        <h3>Users Summary</h3>
+                                                        <table style="width: 100%; border-collapse: collapse;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">User Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Phone Number</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">User Name</th>
+
+                                                                    <!-- Add more headers as needed -->
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var user in Model.Users)
+                                                                {
+                                                                    <tr>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.UserName</td>
+                                                                        
+                                                                        <td style="border: 1px solid #333; padding: 8px;">-</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">-</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">-</td>
+
+
+
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row flex-grow">
+                                    <div class="col-md-6 col-lg-6 grid-margin stretch-card">
+                                        <div class="card card-rounded">
+                                            <div class="card-body card-rounded">
+
+
+                     <div class="row">
+                        <div class="col-lg-8 d-flex flex-column">
+                            <div class="row flex-grow">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card card-rounded">
+                                        <div class="card-body">
+                                            <div class="d-sm-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h4 class="card-title card-title-dash"></h4>
+
+
                         <div class="row">
                             <div class="col-lg-8 d-flex flex-column">
                                 <div class="row flex-grow">
@@ -135,13 +207,7 @@
                                         <div class="card card-rounded">
                                             <div class="card-body">
                                                 <div class="d-sm-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <h4 class="card-title card-title-dash">Market Overview</h4>
-                                                        <p class="card-subtitle card-subtitle-dash">
-                                                            Lorem ipsum dolor sit amet consectetur
-                                                            adipisicing elit
-                                                        </p>
-                                                    </div>
+                                                   
                                                     <div>
                                                         <div class="dropdown">
                                                             <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0"
