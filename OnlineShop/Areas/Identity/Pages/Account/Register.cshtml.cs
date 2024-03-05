@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using OnlineShop.Models;
-using System.Data.SqlClient
+using System.Data.SqlClient;
 
 
 namespace OnlineShop.Areas.Identity.Pages.Account
@@ -121,7 +121,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+      /*  public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -207,10 +207,10 @@ namespace OnlineShop.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
-        }
+        }*/
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -262,7 +262,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
-        } */
+        } 
 
         private User CreateUser()
         {
