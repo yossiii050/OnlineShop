@@ -3,6 +3,8 @@
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @model OnlineShop.Areas.Identity.Pages.Admin.DashboardModel
+@using OnlineShop.Models 
+@inject DBProjectContext dbContext 
 
 
 @{
@@ -17,23 +19,71 @@
     var totalUsers = 0;
     var totalAdmins = 0;
     var totalAdvanced = 0;
+    var advancedUsers = new List<dynamic>();
+    var usersWithRoles = new List<dynamic>();
 
-    var connectionString = Configuration.GetConnectionString("conn");
-    using (var connection = new SqlConnection(connectionString))
+    var connectionString1 = Configuration.GetConnectionString("conn");
+    using (var connection1 = new SqlConnection(connectionString1))
     {
-        connection.Open();
-        var command1 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers", connection);
+        connection1.Open();
+        var command1 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers", connection1);
         totalUsers = (int)command1.ExecuteScalar();
         
-        var command2 = new SqlCommand("SELECT COUNT(*) FROM Admins", connection);
+        var command2 = new SqlCommand("SELECT COUNT(*) FROM Admins", connection1);
         totalAdmins = (int)command2.ExecuteScalar();
 
-        var command3 = new SqlCommand("SELECT COUNT(*) FROM Admins", connection);
+        var command3 = new SqlCommand("SELECT COUNT(*) FROM Admins", connection1);
         totalAdvanced = (int)command3.ExecuteScalar();
+        
+       // var command4 = new SqlCommand("SELECT * FROM AspNetUserRoles WHERE (SELECT id FROM AspNetRoles WHERE Name = "Admin")", connection);
+        var command4 = new System.Data.SqlClient.SqlCommand(@"
+            SELECT u.FirstName, u.LastName, u.Email
+            FROM AspNetUsers AS u
+            INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId
+            INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id
+            WHERE r.Name = 'Advanced'
+        ", connection1);
 
+        using (var reader = command4.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                advancedUsers.Add(new
+                {
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString(),
+                    Email = reader["Email"].ToString()
+                });
+            }
+        }
+        
+
+        var commandUsersWithRoles = new SqlCommand(@"
+            SELECT u.FirstName, u.LastName, u.Email, u.City, u.ZipCode, r.Name as RoleName
+            FROM AspNetUsers AS u
+            LEFT JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId
+            LEFT JOIN AspNetRoles AS r ON ur.RoleId = r.Id
+        ", connection1);
+
+        using (var reader = commandUsersWithRoles.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                usersWithRoles.Add(new
+                {
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString(),
+                    Email = reader["Email"].ToString(),
+                    City = reader["City"].ToString(), // Added
+                    ZipCode = reader["ZipCode"].ToString(), // Added
+                    RoleName = reader["RoleName"].ToString()
+                });
+            }
+        }
 
     }
 }
+
 
 <style>
     .btn-outline-dark {
@@ -56,6 +106,24 @@
         <h3 class="rate-percentage">@totalUsers</h3>
     </div>
     <!-- other statistics details -->
+
+
+<script>
+    function filterByRole() {
+        var selectedRole = document.getElementById('roleSelect').value;
+        var table = document.getElementById('usersTable');
+        var tr = table.getElementsByTagName('tr');
+
+        for (var i = 1; i < tr.length; i++) { // Start from 1 to skip table header
+            var role = tr[i].getAttribute('data-role');
+            if (selectedRole == 'All' || role == selectedRole) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+</script>
 
 
 
@@ -146,10 +214,9 @@
                                                                 <tr>
                                                                     <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
                                                                     <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">User Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Email</th>
                                                                     <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Phone Number</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">User Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Zip Code</th>
 
                                                                     <!-- Add more headers as needed -->
                                                                 </tr>
@@ -161,10 +228,8 @@
                                                                         <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
                                                                         <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
                                                                         <td style="border: 1px solid #333; padding: 8px;">@user.UserName</td>
-                                                                        
-                                                                        <td style="border: 1px solid #333; padding: 8px;">-</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">-</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">-</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Address.City</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Address.ZipCode</td>
 
 
 
@@ -181,23 +246,111 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row flex-grow">
-                                    <div class="col-md-6 col-lg-6 grid-margin stretch-card">
+                        <div class="row">
+                            <div class="col-lg-8 d-flex flex-column">
+                                <div class="row flex-grow">
+                                    <div class="col-12 grid-margin stretch-card">
                                         <div class="card card-rounded">
-                                            <div class="card-body card-rounded">
+                                            <div class="card-body">
+                                                <div class="d-sm-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h4 class="card-title card-title-dash"></h4>
+
+                                                        <h3> Advanced Users Summary</h3>
+                                                        <table style="width: 100%; border-collapse: collapse;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Email</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Zip Code</th>
+
+                                                                    <!-- Add more headers as needed -->
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var user in advancedUsers)
+                                                                {
+                                                                    <tr>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Email</td>
 
 
-                     <div class="row">
-                        <div class="col-lg-8 d-flex flex-column">
-                            <div class="row flex-grow">
-                                <div class="col-12 grid-margin stretch-card">
-                                    <div class="card card-rounded">
-                                        <div class="card-body">
-                                            <div class="d-sm-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <h4 class="card-title card-title-dash"></h4>
+
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-8 d-flex flex-column">
+                                <div class="row flex-grow">
+                                    <div class="col-12 grid-margin stretch-card">
+                                        <div class="card card-rounded">
+                                            <div class="card-body">
+                                                <div class="d-sm-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h4 class="card-title card-title-dash"></h4>
+
+                                                        <h3> Advanced Users Summary</h3>
+                                                        <table style="width: 100%; border-collapse: collapse;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Email</th>
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th> <!-- Added City header -->
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Zip Code</th> <!-- Added Zip Code header -->
+                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Role</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var user in usersWithRoles) // Ensure this matches your user list variable
+                                                                {
+                                                                    var roleColor = "#FFFFFF"; // Default color
+                                                                    if (user.RoleName == "Regular") roleColor = "green";
+                                                                    else if (user.RoleName == "Advanced") roleColor = "pink";
+                                                                    else if (user.RoleName == "Admin") roleColor = "blue";
+
+                                                                    <tr>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Email</td>
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.City</td> <!-- Display City -->
+                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.ZipCode</td> <!-- Display Zip Code -->
+                                                                        <td style="border: 1px solid #333; padding: 8px;">
+                                                                            <span style="color: @roleColor;">@user.RoleName</span> <!-- Color-coded role name -->
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
 
                         <div class="row">
@@ -207,608 +360,72 @@
                                         <div class="card card-rounded">
                                             <div class="card-body">
                                                 <div class="d-sm-flex justify-content-between align-items-start">
-                                                   
                                                     <div>
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0"
-                                                                    type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
-                                                                    aria-haspopup="true" aria-expanded="false">
-                                                                This month
-                                                            </button>
-                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                                <h6 class="dropdown-header">Settings</h6>
-                                                                <a class="dropdown-item" href="#">Action</a>
-                                                                <a class="dropdown-item" href="#">Another action</a>
-                                                                <a class="dropdown-item" href="#">Something else here</a>
-                                                                <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" href="#">Separated link</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
-                                                    <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                                        <h2 class="me-2 fw-bold">$36,2531.00</h2>
-                                                        <h4 class="me-2">USD</h4>
-                                                        <h4 class="text-success">(+1.37%)</h4>
-                                                    </div>
-                                                    <div class="me-3">
-                                                        <div id="marketingOverview-legend"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="chartjs-bar-wrapper mt-3">
-                                                    <canvas id="marketingOverview"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="d-sm-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <h4 class="card-title card-title-dash">Pending Requests</h4>
-                                                        <p class="card-subtitle card-subtitle-dash">You have 50+ new requests</p>
-                                                    </div>
-                                                    <div>
-                                                        <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button">
-                                                            <i class="mdi mdi-account-plus"></i>Add new member
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="table-responsive  mt-1">
-                                                    <table class="table select-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>
-                                                                    <div class="form-check form-check-flat mt-0">
-                                                                        <label class="form-check-label">
-                                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                                        </label>
-                                                                    </div>
-                                                                </th>
-                                                                <th>Customer</th>
-                                                                <th>Company</th>
-                                                                <th>Progress</th>
-                                                                <th>Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="form-check form-check-flat mt-0">
-                                                                        <label class="form-check-label">
-                                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex ">
-                                                                        <img src="assets/images/faces/face1.jpg" alt="">
-                                                                        <div>
-                                                                            <h6>Brandon Washington</h6>
-                                                                            <p>Head admin</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>Company name 1</h6>
-                                                                    <p>company type</p>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <div class="d-flex justify-content-between align-items-center mb-1 max-width-progress-wrap">
-                                                                            <p class="text-success">79%</p>
-                                                                            <p>85/162</p>
-                                                                        </div>
-                                                                        <div class="progress progress-md">
-                                                                            <div class="progress-bar bg-success" role="progressbar" style="width: 85%"
-                                                                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="badge badge-opacity-warning">In progress</div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="form-check form-check-flat mt-0">
-                                                                        <label class="form-check-label">
-                                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex">
-                                                                        <img src="assets/images/faces/face2.jpg" alt="">
-                                                                        <div>
-                                                                            <h6>Laura Brooks</h6>
-                                                                            <p>Head admin</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>Company name 1</h6>
-                                                                    <p>company type</p>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <div class="d-flex justify-content-between align-items-center mb-1 max-width-progress-wrap">
-                                                                            <p class="text-success">65%</p>
-                                                                            <p>85/162</p>
-                                                                        </div>
-                                                                        <div class="progress progress-md">
-                                                                            <div class="progress-bar bg-success" role="progressbar" style="width: 65%"
-                                                                                 aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="badge badge-opacity-warning">In progress</div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="form-check form-check-flat mt-0">
-                                                                        <label class="form-check-label">
-                                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex">
-                                                                        <img src="assets/images/faces/face3.jpg" alt="">
-                                                                        <div>
-                                                                            <h6>Wayne Murphy</h6>
-                                                                            <p>Head admin</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>Company name 1</h6>
-                                                                    <p>company type</p>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <div class="d-flex justify-content-between align-items-center mb-1 max-width-progress-wrap">
-                                                                            <p class="text-success">65%</p>
-                                                                            <p>85/162</p>
-                                                                        </div>
-                                                                        <div class="progress progress-md">
-                                                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 38%"
-                                                                                 aria-valuenow="38" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="badge badge-opacity-warning">In progress</div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="form-check form-check-flat mt-0">
-                                                                        <label class="form-check-label">
-                                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex">
-                                                                        <img src="assets/images/faces/face4.jpg" alt="">
-                                                                        <div>
-                                                                            <h6>Matthew Bailey</h6>
-                                                                            <p>Head admin</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>Company name 1</h6>
-                                                                    <p>company type</p>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <div class="d-flex justify-content-between align-items-center mb-1 max-width-progress-wrap">
-                                                                            <p class="text-success">65%</p>
-                                                                            <p>85/162</p>
-                                                                        </div>
-                                                                        <div class="progress progress-md">
-                                                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 15%"
-                                                                                 aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="badge badge-opacity-danger">Pending</div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="form-check form-check-flat mt-0">
-                                                                        <label class="form-check-label">
-                                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex">
-                                                                        <img src="assets/images/faces/face5.jpg" alt="">
-                                                                        <div>
-                                                                            <h6>Katherine Butler</h6>
-                                                                            <p>Head admin</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <h6>Company name 1</h6>
-                                                                    <p>company type</p>
-                                                                </td>
-                                                                <td>
-                                                                    <div>
-                                                                        <div class="d-flex justify-content-between align-items-center mb-1 max-width-progress-wrap">
-                                                                            <p class="text-success">65%</p>
-                                                                            <p>85/162</p>
-                                                                        </div>
-                                                                        <div class="progress progress-md">
-                                                                            <div class="progress-bar bg-success" role="progressbar" style="width: 65%"
-                                                                                 aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="badge badge-opacity-success">Completed</div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row flex-grow">
-                                    <div class="col-md-6 col-lg-6 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body card-rounded">
-                                                <h4 class="card-title  card-title-dash">Recent Events</h4>
-                                                <div class="list align-items-center border-bottom py-2">
-                                                    <div class="wrapper w-100">
-                                                        <p class="mb-2 font-weight-medium">
-                                                            Change in Directors
-                                                        </p>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="d-flex align-items-center">
-                                                                <i class="mdi mdi-calendar text-muted me-1"></i>
-                                                                <p class="mb-0 text-small text-muted">Mar 14, 2019</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="list align-items-center border-bottom py-2">
-                                                    <div class="wrapper w-100">
-                                                        <p class="mb-2 font-weight-medium">
-                                                            Other Events
-                                                        </p>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="d-flex align-items-center">
-                                                                <i class="mdi mdi-calendar text-muted me-1"></i>
-                                                                <p class="mb-0 text-small text-muted">Mar 14, 2019</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="list align-items-center border-bottom py-2">
-                                                    <div class="wrapper w-100">
-                                                        <p class="mb-2 font-weight-medium">
-                                                            Quarterly Report
-                                                        </p>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="d-flex align-items-center">
-                                                                <i class="mdi mdi-calendar text-muted me-1"></i>
-                                                                <p class="mb-0 text-small text-muted">Mar 14, 2019</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="list align-items-center border-bottom py-2">
-                                                    <div class="wrapper w-100">
-                                                        <p class="mb-2 font-weight-medium">
-                                                            Change in Directors
-                                                        </p>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="d-flex align-items-center">
-                                                                <i class="mdi mdi-calendar text-muted me-1"></i>
-                                                                <p class="mb-0 text-small text-muted">Mar 14, 2019</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                        <h4 class="card-title card-title-dash"></h4>
 
-                                                <div class="list align-items-center pt-3">
-                                                    <div class="wrapper w-100">
-                                                        <p class="mb-0">
-                                                            <a href="#" class="fw-bold text-primary">
-                                                                Show all <i class="mdi mdi-arrow-right ms-2"></i>
-                                                            </a>
-                                                        </p>
+                                                        <h3> Role Table View</h3>
+
+
+
+                                                        <div style="text-align: right; margin-bottom: 20px;">
+                                                            <select id="roleSelect" onchange="filterByRole()" style="padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; outline: none; cursor: pointer;">
+                                                                <option value="All">All Users</option> <!-- "All Users" option -->
+                                                                <option value="Admin">Admin</option>
+                                                                <option value="Advanced">Advanced</option>
+                                                                <option value="Regular">Regular</option>
+                                                            </select>
+                                                        </div>
+
+
+
+                                                        <table id="usersTable" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">First Name</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Last Name</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Email</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">City</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Zip Code</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Role</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Actions</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var user in usersWithRoles) 
+                                                                {
+                                                                    var roleColor = "#FFFFFF"; // Default color
+                                                                    if (user.RoleName == "Regular") roleColor = "green";
+                                                                    else if (user.RoleName == "Advanced") roleColor = "pink";
+                                                                    else if (user.RoleName == "Admin") roleColor = "blue";
+
+                                                                    <tr data-role="@user.RoleName">
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.FirstName</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.LastName</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.Email</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.City</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.ZipCode</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">
+                                                                            <span style="color: @roleColor;">@user.RoleName</span></td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">
+                                                                            @if (user.RoleName == "Advanced") // Only show upgrade button for Advanced users
+                                                                            {
+                                                                                <button>Upgrade to Admin</button>
+                                                                            }
+                                                                            @if (user.RoleName == "Regular") // Only show upgrade button for Regular users
+                                                                            {
+                                                                                <button>Upgrade to Advanced</button>
+                                                                            }
+                                                                        </td>
+                                                                     </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+                                                        
+
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-6 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <h4 class="card-title card-title-dash">Activities</h4>
-                                                    <p class="mb-0">20 finished, 5 remaining</p>
-                                                </div>
-                                                <ul class="bullet-line-list">
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Ben Tossell</span> assign you a task</div>
-                                                            <p>Just now</p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Oliver Noah</span> assign you a task</div>
-                                                            <p>1h</p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Jack William</span> assign you a task</div>
-                                                            <p>1h</p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Leo Lucas</span> assign you a task</div>
-                                                            <p>1h</p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Thomas Henry</span> assign you a task</div>
-                                                            <p>1h</p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Ben Tossell</span> assign you a task</div>
-                                                            <p>1h</p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div><span class="text-light-green">Ben Tossell</span> assign you a task</div>
-                                                            <p>1h</p>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="list align-items-center pt-3">
-                                                    <div class="wrapper w-100">
-                                                        <p class="mb-0">
-                                                            <a href="#" class="fw-bold text-primary">
-                                                                Show all <i class="mdi mdi-arrow-right ms-2"></i>
-                                                            </a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 d-flex flex-column">
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h4 class="card-title card-title-dash">Todo list</h4>
-                                                            <div class="add-items d-flex mb-0">
-                                                                <!-- <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?"> -->
-                                                                <button class="add btn btn-icons btn-rounded btn-primary todo-list-add-btn text-white me-0 pl-12p">
-                                                                    <i class="mdi mdi-plus"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="list-wrapper">
-                                                            <ul class="todo-list todo-list-rounded">
-                                                                <li class="d-block">
-                                                                    <div class="form-check w-100">
-                                                                        <label class="form-check-label">
-                                                                            <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                                                            of the printing <i class="input-helper rounded"></i>
-                                                                        </label>
-                                                                        <div class="d-flex mt-2">
-                                                                            <div class="ps-4 text-small me-3">24 June 2020</div>
-                                                                            <div class="badge badge-opacity-warning me-3">Due tomorrow</div>
-                                                                            <i class="mdi mdi-flag ms-2 flag-color"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                                <li class="d-block">
-                                                                    <div class="form-check w-100">
-                                                                        <label class="form-check-label">
-                                                                            <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                                                            of the printing <i class="input-helper rounded"></i>
-                                                                        </label>
-                                                                        <div class="d-flex mt-2">
-                                                                            <div class="ps-4 text-small me-3">23 June 2020</div>
-                                                                            <div class="badge badge-opacity-success me-3">Done</div>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <div class="form-check w-100">
-                                                                        <label class="form-check-label">
-                                                                            <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                                                            of the printing <i class="input-helper rounded"></i>
-                                                                        </label>
-                                                                        <div class="d-flex mt-2">
-                                                                            <div class="ps-4 text-small me-3">24 June 2020</div>
-                                                                            <div class="badge badge-opacity-success me-3">Done</div>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                                <li class="border-bottom-0">
-                                                                    <div class="form-check w-100">
-                                                                        <label class="form-check-label">
-                                                                            <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                                                            of the printing <i class="input-helper rounded"></i>
-                                                                        </label>
-                                                                        <div class="d-flex mt-2">
-                                                                            <div class="ps-4 text-small me-3">24 June 2020</div>
-                                                                            <div class="badge badge-opacity-danger me-3">Expired</div>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <h4 class="card-title card-title-dash">Type By Amount</h4>
-                                                        </div>
-                                                        <div>
-                                                            <canvas class="my-auto" id="doughnutChart"></canvas>
-                                                        </div>
-                                                        <div id="doughnutChart-legend" class="mt-5 text-center"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <div>
-                                                                <h4 class="card-title card-title-dash">Leave Report</h4>
-                                                            </div>
-                                                            <div>
-                                                                <div class="dropdown">
-                                                                    <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0"
-                                                                            type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown"
-                                                                            aria-haspopup="true" aria-expanded="false">
-                                                                        Month Wise
-                                                                    </button>
-                                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                                                        <h6 class="dropdown-header">week Wise</h6>
-                                                                        <a class="dropdown-item" href="#">Year Wise</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-3">
-                                                            <canvas id="leaveReport"></canvas>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <div>
-                                                                <h4 class="card-title card-title-dash">Top Performer</h4>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-3">
-                                                            <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
-                                                                <div class="d-flex">
-                                                                    <img class="img-sm rounded-10" src="assets/images/faces/face1.jpg"
-                                                                         alt="profile">
-                                                                    <div class="wrapper ms-3">
-                                                                        <p class="ms-1 mb-1 fw-bold">Brandon Washington</p>
-                                                                        <small class="text-muted mb-0">162543</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="text-muted text-small">
-                                                                    1h ago
-                                                                </div>
-                                                            </div>
-                                                            <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
-                                                                <div class="d-flex">
-                                                                    <img class="img-sm rounded-10" src="assets/images/faces/face2.jpg"
-                                                                         alt="profile">
-                                                                    <div class="wrapper ms-3">
-                                                                        <p class="ms-1 mb-1 fw-bold">Wayne Murphy</p>
-                                                                        <small class="text-muted mb-0">162543</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="text-muted text-small">
-                                                                    1h ago
-                                                                </div>
-                                                            </div>
-                                                            <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
-                                                                <div class="d-flex">
-                                                                    <img class="img-sm rounded-10" src="assets/images/faces/face3.jpg"
-                                                                         alt="profile">
-                                                                    <div class="wrapper ms-3">
-                                                                        <p class="ms-1 mb-1 fw-bold">Katherine Butler</p>
-                                                                        <small class="text-muted mb-0">162543</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="text-muted text-small">
-                                                                    1h ago
-                                                                </div>
-                                                            </div>
-                                                            <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
-                                                                <div class="d-flex">
-                                                                    <img class="img-sm rounded-10" src="assets/images/faces/face4.jpg"
-                                                                         alt="profile">
-                                                                    <div class="wrapper ms-3">
-                                                                        <p class="ms-1 mb-1 fw-bold">Matthew Bailey</p>
-                                                                        <small class="text-muted mb-0">162543</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="text-muted text-small">
-                                                                    1h ago
-                                                                </div>
-                                                            </div>
-                                                            <div class="wrapper d-flex align-items-center justify-content-between pt-2">
-                                                                <div class="d-flex">
-                                                                    <img class="img-sm rounded-10" src="assets/images/faces/face5.jpg"
-                                                                         alt="profile">
-                                                                    <div class="wrapper ms-3">
-                                                                        <p class="ms-1 mb-1 fw-bold">Rafell John</p>
-                                                                        <small class="text-muted mb-0">Alaska, USA</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="text-muted text-small">
-                                                                    1h ago
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -816,9 +433,3 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
