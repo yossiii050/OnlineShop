@@ -1,0 +1,7 @@
+﻿@model OnlineShop.Models.Product
+
+<form asp-action="Delete" method="post">
+    <p>Are you sure you want to delete @Model.Name?</p>
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Delete</button>
+</form>

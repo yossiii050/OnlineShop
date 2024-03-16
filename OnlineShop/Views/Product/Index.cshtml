@@ -1,0 +1,60 @@
+﻿@model IEnumerable<OnlineShop.Models.Product>
+
+<style>
+    .product-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .product-table th, .product-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .product-table th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .product-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .product-table tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<table class="product-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td>@product.Description</td>
+                <td>@product.Amount</td>
+                <td>@product.Category.Name</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Product", new { id = product.Id })" class="btn btn-success">Edit</a>
+                    <a href="@Url.Action("Delete", "Product", new { id = product.Id })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("AddProduct", "Product")" class="btn btn-primary">Add Product</a>
+
+
+
