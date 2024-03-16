@@ -30,7 +30,7 @@ namespace OnlineShop.Controllers
             }
             try
             {
-                _users.User.Add(user);
+                _users.Users.Add(user);
                 _users.SaveChanges();
                 TempData["msg"]="Added successfully";
                 return RedirectToAction("AddUser");
@@ -45,13 +45,13 @@ namespace OnlineShop.Controllers
 
         public IActionResult DisplayUsers()
         {
-            var users=_users.User.ToList();
+            var users=_users.Users.ToList();
             return View(users);
         }
 
         public IActionResult EditUser(string id)
         {
-            User user = _users.User.Find(id);
+            User user = _users.Users.Find(id);
             if (user == null)
             {
                 return NotFound();
@@ -68,7 +68,7 @@ namespace OnlineShop.Controllers
             }
             try
             {
-                _users.User.Update(user);
+                _users.Users.Update(user);
                 _users.SaveChanges();             
                 return RedirectToAction("DisplayUsers");
             }
@@ -85,10 +85,10 @@ namespace OnlineShop.Controllers
         {
             try
             {
-                var user_dl = _users.User.Find(id);
+                var user_dl = _users.Users.Find(id);
                 if (user_dl!=null)
                 {
-                    _users.User.Remove(user_dl);
+                    _users.Users.Remove(user_dl);
                     _users.SaveChanges();
                 }
             }

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 </head>
 <style>
     :root {
@@ -166,7 +167,15 @@
         display: flex;
         justify-content: center;
         margin-top: 8rem; /* Adjust margin-top as needed */
+
+        .products-grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
 </style>
+
+
 <body>
     <header>
 
@@ -176,7 +185,7 @@
         <nav class="navbar">
             <a href="/">home</a>
             <a href="#about">about</a>
-            <a href="/Products/DisplayCategory">products</a>
+            
             
             <div class="dropdown" id="adminDropdown">
                 <a class="dropdown-toggle" role="button" id="adminDropdownToggle" aria-haspopup="true" aria-expanded="false">
@@ -184,10 +193,13 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
                     <a class="dropdown-item" href="/Account/DisplayUsers">User Manage</a>
-                    <a class="dropdown-item" href="/Products/DisplayCategory">Products Manage</a>
+                    <a class="dropdown-item" href="/Category">Categories Manage</a>
+                    <a class="dropdown-item" href="/Product">Products Manage</a>
                     <a class="dropdown-item" href="#">Orders</a>
                 </div>
             </div>
+            
+
             <a href="#contact">contact</a>
             
         </nav>

@@ -5,26 +5,28 @@ namespace OnlineShop.Models
 {
     public class Product
     {
-        [Key]
-        public int Id { get; set; }
+		public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        public string Description { get; set; }
         [Required]
-        [Range(1,int.MaxValue)]
-        public double Price { get; set; }
-
+        public decimal Price { get; set; }
+  
+        public string Description { get; set; }
+        
         public string Image { get; set; }
 
-        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Amount must be a at least 1.")]
+        public int Amount { get; set; }
+
+        
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1")]
-        public int Quantity { get; set; } = 1; // Default to 1
 
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
 
     }
 }

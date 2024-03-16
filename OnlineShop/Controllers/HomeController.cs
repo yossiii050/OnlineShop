@@ -20,18 +20,12 @@ namespace OnlineShop.Controllers
 
         public IActionResult Index()
         {
-
-            var items=_db.Item.ToList();
             HomeVM homeVM = new HomeVM()
             {
-                Products = _db.Product,
-                //Products = _db.Product.Include(u => u.Name),
-                Categories = _db.Category
+                Products = _db.Products.Include(p => p.Category),
+                Categories = _db.Categories
             };
             return View(homeVM);
-            //return View(items);
-
-
         }
 
 
