@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.Models;
 
@@ -11,9 +12,11 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    partial class DBProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20240315143805_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,7 +191,7 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Admins");
+                    b.ToTable("admins");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
@@ -205,7 +208,48 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("OnlineShop.Models.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Item");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
@@ -235,7 +279,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
@@ -256,10 +300,6 @@ namespace OnlineShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -271,7 +311,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
@@ -404,6 +444,17 @@ namespace OnlineShop.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OnlineShop.Models.Item", b =>
+                {
+                    b.HasOne("OnlineShop.Models.Category", null)
+                        .WithMany("Items")
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("OnlineShop.Models.Order", null)
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
                 {
                     b.HasOne("OnlineShop.Models.User", "User")
@@ -416,7 +467,7 @@ namespace OnlineShop.Migrations
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.HasOne("OnlineShop.Models.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -465,7 +516,12 @@ namespace OnlineShop.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("OnlineShop.Models.Order", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>

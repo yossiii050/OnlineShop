@@ -27,21 +27,26 @@ namespace OnlineShop.Models
                     a.Property(a => a.Country).HasColumnName("Country");
                     a.Property(a => a.ZipCode).HasColumnName("ZipCode");
                 });
-        }
+
+			// Configure the relationship between Product and Category
+			builder.Entity<Product>()
+				.HasOne(p => p.Category)
+				.WithMany(c => c.Products)
+				.HasForeignKey(p => p.CategoryId);
+		}
         //Users
-        public DbSet<Admin> admins { get; set; }
-        public DbSet<User> User { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         //Products
-        public DbSet<Category> Category { get; set; }
-        public DbSet<Item> Item { get; set; }
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
 
 
 
         //Orders
-        public DbSet<Order> Order { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         
     }
