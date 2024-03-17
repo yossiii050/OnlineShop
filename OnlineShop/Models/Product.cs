@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineShop.Models.Cart;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineShop.Models
@@ -27,6 +28,9 @@ namespace OnlineShop.Models
 
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
+
+        public ICollection<CartItem> CartItems { get; set; }
+
 
     }
 }

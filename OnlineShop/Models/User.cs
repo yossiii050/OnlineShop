@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using OnlineShop.Models.Cart;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -28,6 +29,9 @@ namespace OnlineShop.Models
         public Address Address { get; set; }
 
         //public string StripeCustomerId { get; set; }
+
+
+        public ICollection<CartItem> CartItems { get; set; }
 
     }
     public class Address

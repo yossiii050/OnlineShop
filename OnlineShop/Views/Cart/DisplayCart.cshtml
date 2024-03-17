@@ -64,6 +64,7 @@
 
     @if (Model?.Count > 0)
     {
+
         <table class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
@@ -84,10 +85,17 @@
                         <td width="10%">@item.Quantity</td>
                         <td width="20%">@item.ProductPrice</td>
                         <td width="20%">@(item.ProductPrice * item.Quantity)</td>
-
+                        <td width="20%">
+                            <form action="@Url.Action("RemoveFromCart", "Cart")" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="quantity" value="@item.Quantity" />
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
                     </tr>
                     totalPrice += item.ProductPrice * item.Quantity;
                 }
+
             </tbody>
             <tfoot>
                 <tr>
