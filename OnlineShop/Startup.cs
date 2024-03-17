@@ -26,10 +26,13 @@ public class Startup
 
         // Add other services
         services.AddMvc();
+
+        services.AddSession();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseSession();
         // Configure the app
         app.UseRouting();
         app.UseEndpoints(endpoints =>

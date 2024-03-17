@@ -5,8 +5,16 @@ namespace OnlineShop.Models.Cart
 {
     public class CartItem
     {
+        public int Id { get; set; } // Primary key
         public int ProductId { get; set; }
         public int Quantity { get; set; }
+        public string ProductName { get; set; }
+        public decimal ProductPrice { get; set; }
+        public string UserId { get; set; } // Add this line
+        public string Image { get; set; }
+
+        public virtual Product Product { get; set; }
+        public virtual User user { get; set; }
     }
 
     public static class SessionExtensions

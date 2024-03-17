@@ -1,0 +1,56 @@
+﻿@model IEnumerable<OnlineShop.Models.Order>
+
+<style>
+    .product-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .product-table th, .product-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .product-table th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .product-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .product-table tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<table class="product-table">
+    <thead>
+        <tr>
+            <th>OrderId</th>
+            <th>OrderDate</th>
+            <th>User</th>
+            <th>TotalPrice</th>
+            
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.OrderDate</td>
+                <td>@order.User.Email</td>
+                <td>@order.TotalPrice</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("AddProduct", "Product")" class="btn btn-primary">Add Product</a>
+
+
+

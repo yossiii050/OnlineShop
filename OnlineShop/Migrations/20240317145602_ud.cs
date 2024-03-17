@@ -5,7 +5,7 @@
 namespace OnlineShop.Migrations
 {
     /// <inheritdoc />
-    public partial class newupdate : Migration
+    public partial class ud : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

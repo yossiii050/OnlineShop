@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineShop.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserManager<User> _userManager;
+
         private readonly DBProjectContext _users;
-        public AccountController(DBProjectContext users)
+        public AccountController(UserManager<User> userManager,DBProjectContext users)
         {
             _users=users;
+            _userManager=userManager;
         }
             
         
@@ -99,6 +104,24 @@ namespace OnlineShop.Controllers
             }
 
             return RedirectToAction("DisplayUsers");
+        }
+
+        public async Task<IActionResult> GetOrdersForUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+            var orders = _users.Orders
+                             .Where(o => o.UserId == user.Id)
+                             .Include(o => o.OrderItems)
+                             .ThenInclude(oi => oi.Product)
+                             .AsNoTracking() // Optional, improves performance for read-only queries
+                             .ToList(); // Execute the query and convert to a list
+
+            return View("OrderHistory", orders);
         }
 
     }

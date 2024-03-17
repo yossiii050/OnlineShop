@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240315222854_image")]
-    partial class image
+    [Migration("20240316184912_newdb")]
+    partial class newdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,7 +191,7 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("admins");
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
@@ -208,7 +208,7 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
@@ -238,7 +238,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
@@ -274,7 +274,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
@@ -419,7 +419,7 @@ namespace OnlineShop.Migrations
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.HasOne("OnlineShop.Models.Category", "Category")
-                        .WithMany("Product")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -468,7 +468,7 @@ namespace OnlineShop.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
                 {
-                    b.Navigation("Product");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>

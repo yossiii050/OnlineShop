@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240315230423_newupdate")]
-    partial class newupdate
+    [Migration("20240317161334_ud34")]
+    partial class ud34
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,7 +191,41 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("admins");
+                    b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("OnlineShop.Models.Cart.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
@@ -208,7 +242,7 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
@@ -238,7 +272,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
@@ -274,7 +308,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
@@ -407,6 +441,25 @@ namespace OnlineShop.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OnlineShop.Models.Cart.CartItem", b =>
+                {
+                    b.HasOne("OnlineShop.Models.Product", "Product")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShop.Models.User", "user")
+                        .WithMany("CartItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
                 {
                     b.HasOne("OnlineShop.Models.User", "User")
@@ -419,7 +472,7 @@ namespace OnlineShop.Migrations
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.HasOne("OnlineShop.Models.Category", "Category")
-                        .WithMany("Product")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -468,11 +521,18 @@ namespace OnlineShop.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
                 {
-                    b.Navigation("Product");
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("OnlineShop.Models.Product", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

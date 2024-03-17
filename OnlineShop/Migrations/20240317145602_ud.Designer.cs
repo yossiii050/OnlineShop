@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240315161736_regular")]
-    partial class regular
+    [Migration("20240317145602_ud")]
+    partial class ud
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,7 +191,7 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("admins");
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
@@ -208,48 +208,7 @@ namespace OnlineShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("Item");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
@@ -279,7 +238,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
@@ -300,6 +259,10 @@ namespace OnlineShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -311,7 +274,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
@@ -444,17 +407,6 @@ namespace OnlineShop.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OnlineShop.Models.Item", b =>
-                {
-                    b.HasOne("OnlineShop.Models.Category", null)
-                        .WithMany("Items")
-                        .HasForeignKey("CategoryId");
-
-                    b.HasOne("OnlineShop.Models.Order", null)
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId");
-                });
-
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
                 {
                     b.HasOne("OnlineShop.Models.User", "User")
@@ -467,7 +419,7 @@ namespace OnlineShop.Migrations
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.HasOne("OnlineShop.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -516,12 +468,7 @@ namespace OnlineShop.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
                 {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.Order", b =>
-                {
-                    b.Navigation("Items");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
