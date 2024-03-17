@@ -36,7 +36,8 @@ namespace OnlineShop.Controllers
                         ProductName= product.Name,
                         UserId = userId,
                         ProductPrice = product.Price,
-                        Quantity = quantity
+                        Quantity = quantity,
+                        Image= product.Image,
                     });
                 }
                 product.Amount-=quantity;
@@ -65,7 +66,8 @@ namespace OnlineShop.Controllers
                         ProductId = id,
                         ProductName = product.Name,  // Set the product name
                         ProductPrice = product.Price,       // Set the product price
-                        Quantity = quantity
+                        Quantity = quantity,
+                        Image = product.Image,
                     });
                 }
                 product.Amount-=quantity;
@@ -78,43 +80,7 @@ namespace OnlineShop.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult AddToCart1(int id, int quantity)
-        {
-            var cartSessionKey = GetCartSessionKey();
-            var cart = HttpContext.Session.GetObject<List<CartItem>>(cartSessionKey) ?? new List<CartItem>();
-
-
-            // Retrieve the product details from the database
-            var product = _db.Products.Find(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            // Add the product to the cart
-            var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
-            if (cartItem != null)
-            {
-                cartItem.Quantity += quantity;
-            }
-            else
-            {
-                cart.Add(new CartItem
-                {
-                    ProductId = id,
-                    ProductName = product.Name,  // Set the product name
-                    ProductPrice = product.Price,       // Set the product price
-                    Quantity = quantity
-                });
-            }
-            product.Amount-=quantity;
-            _db.SaveChanges();
-            // Save the cart back to the session
-            HttpContext.Session.SetObject(cartSessionKey, cart);
-
-            return RedirectToAction("DisplayCart");
-        }
+        
         public IActionResult DisplayCart()
         {
             List<CartItem> cart;
@@ -139,15 +105,7 @@ namespace OnlineShop.Controllers
             return View(cart);
         }
 
-        public IActionResult DisplayCart1()
-        {
-            var cartSessionKey = GetCartSessionKey();
-            // Retrieve the cart from the session
-            var cart = HttpContext.Session.GetObject<List<CartItem>>(cartSessionKey) ?? new List<CartItem>();
-
-            // Pass the cart to the view
-            return View(cart);
-        }
+        
 
         [HttpPost]
         public IActionResult RemoveFromCart(int productId, int quantity)
@@ -193,15 +151,79 @@ namespace OnlineShop.Controllers
 
             return RedirectToAction("DisplayCart");
         }
-
-
-        private string GetCartSessionKey()
+        [HttpPost]
+        public IActionResult Checkout()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return $"Cart_{User.Identity.Name}";
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var cartItems = _db.CartItems.Where(c => c.UserId == userId).ToList();
+
+                var order = new Order
+                {
+                    UserId = userId,
+                    OrderDate = DateTime.UtcNow,
+                    TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    OrderItems = cartItems.Select(item => new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.ProductPrice
+                    }).ToList()
+                };
+
+                _db.Orders.Add(order);
+                _db.CartItems.RemoveRange(cartItems); // Remove the cart items
+                _db.SaveChanges();
+
+                // Redirect to a confirmation page or order details page
+                return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
             }
-            return "Cart_Anonymous";
+
+            // Handle the case for non-authenticated users or add an error message
+            return RedirectToAction("Index", "Home");
         }
+
+        
+        public IActionResult SubmitBillingInfo()
+        {
+            List<CartItem> cart;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                // For authenticated users, retrieve the cart from the database
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                cart = _db.CartItems
+                          .Where(c => c.UserId == userId)
+                          .Include(c => c.Product) // Include related Product data
+                          .ToList();
+            }
+            else
+            {
+                // For non-authenticated users, retrieve the cart from the session
+
+                cart = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+            }
+
+            // Pass the cart to the view
+            return View(cart);
+            
+        }
+
+        public IActionResult OrderConfirmation(int orderId)
+        {
+            var order = _db.Orders.Include(o => o.OrderItems)
+                                  .ThenInclude(oi => oi.Product)
+                                  .FirstOrDefault(o => o.Id == orderId);
+
+            if (order == null || (User.Identity.IsAuthenticated && order.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier)))
+            {
+                // Handle the case where the order is not found or does not belong to the current user
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(order);
+        }
+
     }
 }

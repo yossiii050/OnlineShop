@@ -1,59 +1,136 @@
-﻿
-@model List<CartItem>
+﻿@model List<CartItem>
 @using OnlineShop.Models.Cart
+<style>
+    /* Totals section */
+    .totals {
+        .totals-item
 
+    {
+        float: right;
+        clear: both;
+        width: 100%;
+        margin-bottom: 10px;
+        label
+
+    {
+        float: left;
+        clear: both;
+        width: 79%;
+        text-align: right;
+    }
+
+    .totals-value {
+        float: right;
+        width: 21%;
+        text-align: right;
+    }
+
+    }
+
+    .totals-item-total {
+        font-family: $font-bold;
+    }
+
+    }
+
+    .checkout {
+        float: right;
+        border: 0;
+        margin-top: 20px;
+        padding: 6px 25px;
+        background-color: #6b6;
+        color: #fff;
+        font-size: 25px;
+        border-radius: 3px;
+    }
+
+        .checkout:hover {
+            background-color: #494;
+        }
+
+
+
+
+</style>
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Product List</h2>
+            <h2 class="text-primary">Shopping Cart</h2>
         </div>
-        <div class="col-6 text-right">
-            <a asp-action="Upsert" class="btn btn-primary">
-                <i class="fas fa-plus"></i> &nbsp; Create New Product
-            </a>
-        </div>
+        
     </div>
 
     <br /><br />
 
-@if (Model?.Count > 0)
-{
+    @if (Model?.Count > 0)
+    {
+
         <table class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                decimal totalPrice = 0;
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    decimal totalPrice = 0;
                 }
-            @foreach (var item in Model)
-            {
-                <tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
                         <td width="30%">@item.ProductName</td>
                         <td width="10%">@item.Quantity</td>
                         <td width="20%">@item.ProductPrice</td>
                         <td width="20%">@(item.ProductPrice * item.Quantity)</td>
-                                        
-                </tr>
+                        <td width="20%">
+                            <form action="@Url.Action("RemoveFromCart", "Cart")" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="quantity" value="@item.Quantity" />
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
                     totalPrice += item.ProductPrice * item.Quantity;
-            }
-        </tbody>
+                }
+
+            </tbody>
             <tfoot>
                 <tr>
                     <th colspan="3">Total Price:</th>
                     <th>@totalPrice</th>
                 </tr>
             </tfoot>
-    </table>
-}
-else
-{
-    <p>Your cart is empty.</p>
-}
+        </table>
 
+        <div class="totals">
+            <div class="totals-item">
+                <label>Subtotal</label>
+                <div class="totals-value" id="cart-subtotal">@totalPrice</div>
+            </div>
+            <div class="totals-item">
+                <label>Tax (17%)</label>
+                <div class="totals-value" id="cart-tax">@(totalPrice*0.17m)</div>
+            </div>
+            
+            <div class="totals-item totals-item-total">
+                <label>Grand Total</label>
+                <div class="totals-value" id="cart-total">@(totalPrice*1.17m)</div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post))
+        {
+            <button type="submit" class="checkout">Checkout</button>
+        }
+
+    }
+    else
+    {
+        <p>Your cart is empty.</p>
+    }
+
+    
 </div>

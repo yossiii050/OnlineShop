@@ -34,7 +34,25 @@ namespace OnlineShop.Models
 				.HasOne(p => p.Category)
 				.WithMany(c => c.Products)
 				.HasForeignKey(p => p.CategoryId);
-		}
+
+            // Configure the relationship between Order and User
+            builder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId);
+
+            // Configure the relationship between OrderItem and Order
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            // Configure the relationship between OrderItem and Product
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId);
+        }
         //Users
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }

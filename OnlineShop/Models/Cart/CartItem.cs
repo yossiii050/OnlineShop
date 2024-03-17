@@ -11,6 +11,7 @@ namespace OnlineShop.Models.Cart
         public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }
         public string UserId { get; set; } // Add this line
+        public string Image { get; set; }
 
         public virtual Product Product { get; set; }
         public virtual User user { get; set; }
