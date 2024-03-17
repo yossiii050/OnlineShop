@@ -61,7 +61,9 @@
             } else {
                 if (action === 'add') {
                     // Add to cart logic here
-                    alert('Added ' + quantity + ' item(s) to cart.');
+                    $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
+                        alert('Added ' + quantity + ' item(s) to cart.');
+                    });
                 } else if (action === 'buy') {
                     // Buy now logic here
                     alert('Proceeding to buy ' + quantity + ' item(s).');

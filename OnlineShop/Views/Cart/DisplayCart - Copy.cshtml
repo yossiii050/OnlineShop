@@ -1,0 +1,59 @@
+﻿
+@model List<CartItem>
+@using OnlineShop.Models.Cart
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-action="Upsert" class="btn btn-primary">
+                <i class="fas fa-plus"></i> &nbsp; Create New Product
+            </a>
+        </div>
+    </div>
+
+    <br /><br />
+
+@if (Model?.Count > 0)
+{
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                decimal totalPrice = 0;
+                }
+            @foreach (var item in Model)
+            {
+                <tr>
+                        <td width="30%">@item.ProductName</td>
+                        <td width="10%">@item.Quantity</td>
+                        <td width="20%">@item.ProductPrice</td>
+                        <td width="20%">@(item.ProductPrice * item.Quantity)</td>
+                                        
+                </tr>
+                    totalPrice += item.ProductPrice * item.Quantity;
+            }
+        </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3">Total Price:</th>
+                    <th>@totalPrice</th>
+                </tr>
+            </tfoot>
+    </table>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+</div>
