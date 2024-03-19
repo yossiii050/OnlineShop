@@ -60,16 +60,18 @@
                     <div class="order-info">
                         <p><strong>Order Id:</strong> @order.OrderId</p>
                         <!-- Assuming these properties exist in your OrderDetailsViewModel -->
-                        <p><strong>User Name:</strong> order.UserName</p>
+                        <p><strong>User Name:</strong> @order.UserName</p>
                         <p><strong>Confirmation Number:</strong> order.ConfirmationNumber</p>
                         <p><strong>Delivery Date:</strong> @order.OrderDate.ToString("g")</p>
+                        <p><strong>Order Status:</strong> @order.Status.ToString()</p>
+
                     </div>
                     <div class="shipping-address">
                         <!-- Assuming you have a ShippingAddress property -->
                         <p><strong>Shipping Address</strong></p>
                         <p>order.ShippingAddress.FullName</p>
-                        <p>order.ShippingAddress.Address</p>
-                        <p>order.ShippingAddress.City, order.ShippingAddress.State order.ShippingAddress.Zip</p>
+                        <p>@order.ShipStreet</p>
+                        <p>@order.ShipCity @order.ShipCountry @order.ShipZipCode</p>
                     </div>
                     <div class="cancel-order">
                         <!-- Cancel order button implementation -->
@@ -97,7 +99,7 @@
                                         <td>item.ProductName</td>
                                         <td>@item.Price.ToString("C")</td>
                                         <td>@item.Quantity</td>
-                                        <td>@(item.Price * item.Quantity).ToString("C")</td>
+                                        <td>@(item.Price * item.Quantity).ToString()</td>
                                     </tr>
                                 }
                             </tbody>

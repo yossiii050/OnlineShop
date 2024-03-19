@@ -21,26 +21,34 @@ namespace OnlineShop.Controllers
 
         public IActionResult Index()
         {
-            List<Order> orders = _db.Orders.ToList();
-            foreach (var order in orders)
-            {
-                _db.Entry(order).Collection(o => o.OrderItems).Load();
-            }
+            List<Order> orders = _db.Orders
+                                    .Include(o => o.User) // Include the User navigation property
+                                    .Include(o => o.OrderItems) // Include OrderItems
+                                    .ThenInclude(oi => oi.Product) // Include Product if needed
+                                    .ToList();
+
             List<OrderDetailsViewModel> orderDetailsViewModels = orders.Select(order => new OrderDetailsViewModel
             {
+                UserName = order.User.UserName,
                 OrderId = order.Id,
+                ShipStreet = order.ShipStreet,
+                ShipCity = order.ShipCity,
+                ShipCountry = order.ShipCountry,
+                ShipZipCode = order.ShipZipCode,
+                Status = order.Status,
                 OrderDate = order.OrderDate,
                 TotalPrice = order.TotalPrice,
-                Items = order.OrderItems?.Select(item => new OrderItemViewModel
+                Items = order.OrderItems.Select(item => new OrderItemViewModel
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     Price = item.Price
-                }).ToList() ?? new List<OrderItemViewModel>()
+                }).ToList()
             }).ToList();
 
             return View(orderDetailsViewModels);
         }
+
         public IActionResult UserOrders()
         {
             if (User.Identity.IsAuthenticated)
@@ -50,15 +58,23 @@ namespace OnlineShop.Controllers
 
                 // Retrieve the orders from the database that are associated with the current user.
                 List<Order> userOrders = _db.Orders
-                                            .Where(o => o.UserId == userId) // Filter by User ID
-                                            .Include(o => o.OrderItems) // Include related OrderItems data
-                                            .ThenInclude(oi => oi.Product) // Include Product data if needed
-                                            .ToList();
+                            .Include(o => o.User) // Include the User navigation property
+                            .Where(o => o.UserId == userId)
+                            .Include(o => o.OrderItems)
+                            .ThenInclude(oi => oi.Product)
+                            .ToList();
+
 
                 // Map the orders to OrderDetailsViewModel
                 List<OrderDetailsViewModel> orderDetailsViewModels = userOrders.Select(order => new OrderDetailsViewModel
                 {
+                    UserName=order.User.UserName,
                     OrderId = order.Id,
+                    ShipStreet= order.ShipStreet,
+                    ShipCity= order.ShipCity,
+                    ShipCountry= order.ShipCountry,
+                    ShipZipCode= order.ShipZipCode,
+                    Status = order.Status,
                     OrderDate = order.OrderDate,
                     TotalPrice = order.TotalPrice,
                     Items = order.OrderItems.Select(item => new OrderItemViewModel

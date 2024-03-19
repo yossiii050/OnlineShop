@@ -3,6 +3,7 @@ using OnlineShop.Models;
 using OnlineShop.Models.Cart;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using OnlineShop.Models.ViewModels;
 
 namespace OnlineShop.Controllers
 {
@@ -152,7 +153,7 @@ namespace OnlineShop.Controllers
             return RedirectToAction("DisplayCart");
         }
         [HttpPost]
-        public IActionResult Checkout()
+        public IActionResult Checkout(CheckoutViewModel model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -164,6 +165,10 @@ namespace OnlineShop.Controllers
                     UserId = userId,
                     OrderDate = DateTime.UtcNow,
                     TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    ShipStreet = model.x.ShipStreet,
+                    ShipCity = model.x.ShipCity,
+                    ShipCountry = model.x.ShipCountry,
+                    ShipZipCode = model.x.ShipZipCode,
                     OrderItems = cartItems.Select(item => new OrderItem
                     {
                         ProductId = item.ProductId,
@@ -184,8 +189,27 @@ namespace OnlineShop.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        
         public IActionResult SubmitBillingInfo()
+        {
+            var viewModel = new CheckoutViewModel();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                viewModel.CartItems = _db.CartItems
+                                        .Where(c => c.UserId == userId)
+                                        .Include(c => c.Product)
+                                        .ToList();
+            }
+            else
+            {
+                viewModel.CartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+            }
+
+            return View(viewModel);
+        }
+
+        public IActionResult SubmitBillingInfo1()
         {
             List<CartItem> cart;
 
