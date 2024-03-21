@@ -1,0 +1,59 @@
+﻿@model IEnumerable<OnlineShop.Models.Category>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<h2>Manage Categories</h2>
+
+<style>
+    .category-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .category-table th, .category-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .category-table th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .category-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .category-table tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<table class="category-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Category", new { id = category.Id })" class="btn btn-success">Edit</a>
+                    <a href="@Url.Action("Delete", "Category", new { id = category.Id })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+<a asp-action="AddCategory" class="btn btn-primary">Add New Category</a>

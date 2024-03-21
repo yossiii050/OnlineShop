@@ -2,26 +2,28 @@
 
 @{
     ViewData["Title"] = "Home Page";
-    //https://www.yo-yoo.co.il/wallp/images/uploads/a39a01.jpg
 }
-    <style>
-    body {
-        background-image: url(images/home-bg.jpg);
-        }
-    </style>
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
-    @foreach (var prod in Model.Products)
-    {
-        <partial name="_IndividualProductCard" model="prod"/>
-        
+<style>
+    body {
+        background-image: url(https://r4.wallpaperflare.com/wallpaper/986/511/579/hogwarts-legacy-hogwarts-harry-potter-video-game-art-screen-shot-hd-wallpaper-cfe1955f0761af86ae16b8591ffc66e6.jpg);
+        background-repeat: no-repeat;
+        background-size: cover; /* This will cover the entire element's background */
+        background-position: center; /* This centers the background image */
     }
-    
+</style>
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Welcome</h1>
     </div>
 
-    <p><a href="@Url.Action("DisplayProducts", "Products")" class="btn btn-primary">View Products</a></p>
+    <div class="row row-cols-3 row-cols-md-3 g-4">
+        @foreach (var prod in Model.Products)
+        {
+            <div class="col">
+                <partial name="_IndividualProductCard" model="prod" />
+            </div>
+        }
+    </div>
 </div>
-
-

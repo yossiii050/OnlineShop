@@ -1,26 +1,75 @@
 ﻿@model OnlineShop.Models.Product
 
-<div class="col-lg-4 col-md-6 pb-4">
-    <!-- Card-->
-    <div class="card bg-white rounded shadow-sm" style="border:1px solid #222">
-        <div class="card-body px-3 pt-3 pb-1 row">
-            <div class="col-7"><label class="float-left">@Model.Name</label></div>
-            <div class="col-5"><label class="float-right"><span class="text-info h5">@Model.Price</span> / ILS</label> </div>
+<div class="product-container" style="background-image: url('@Model.Image');">
+    <div class="overlay">
+        <div class="items"></div>
+        <div class="items head">
+            <p>@Model.Name</p>
+            <hr>
         </div>
-        <img class="card-img-top img-fluid d-block mx-auto mb-3" src="https://icon-library.com/images/small-rose-icon/small-rose-icon-7.jpg" style="width:130px;height:150px;" alt="Card image cap">
-        <div class="card-body p-1 px-3 row">
-            <div class="col-6">
-                <span class="badge p-2 border w-100" style="background-color:lavenderblush">Category.Name</span>
-            </div>
-            <div class="col-6 border-0">
-                <span class="badge p-2 border w-100" style="background-color:aliceblue">ApplicationType.Name</span>
-            </div>
-            <div class="col-12 pt-2" style="font-size:13px; text-align:justify">
-                
-            </div>
-            <div class="col-12 p-1">
-                <a class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
-            </div>
+        <div class="items description">
+            <p>@Model.Description</p>
         </div>
+        <div class="items price">
+            <p class="new">ILS @Model.Price</p>
+        </div>
+        @if (Model.Amount > 0)
+        {
+            <div class="items quantity">
+                <input type="number" id="quantity-@Model.Id" value="1" min="1" max="@Model.Amount">
+            </div>
+            <div class="items actions">
+                <button class="btn btn-add-to-cart" onclick="handleAction(@Model.Id, 'add')"><i class="fa fa-shopping-cart"></i><span>Add to Cart</span></button>
+                <button class="btn btn-buy" onclick="handleAction(@Model.Id, 'buy')"><i class="fa fa-bolt"></i><span>Buy Now</span></button>
+            </div>
+        }
+        else
+        {
+            <div class="items out-of-stock">
+                <p>Out of Stock</p>
+                <button class="btn btn-notify" onclick="notifyMe(this)">Notify Me</button>
+            </div>
+
+            <div class="notify-input" style="display: none;">
+                <input type="email" placeholder="Enter your email">
+                <button onclick="sendNotification(this)">Submit</button>
+            </div>
+            <p class="notify-message" style="display: none;">A notification will be sent to your email when the product is available.</p>
+        }
     </div>
+
+    <script>
+        function notifyMe(button) {
+            var notifyInput = button.parentNode.nextElementSibling; // Get the next sibling of the parent node
+            notifyInput.style.display = 'block';
+            button.style.display = 'none';
+        }
+
+        function sendNotification(button) {
+            var notifyMessage = button.parentNode.nextElementSibling; // Get the next sibling of the parent node
+            notifyMessage.style.display = 'block';
+            button.parentNode.style.display = 'none';
+        }
+
+        function handleAction(productId, action) {
+            var quantityInput = document.getElementById('quantity-' + productId);
+            var quantity = parseInt(quantityInput.value);
+            var maxQuantity = parseInt(quantityInput.max);
+
+            if (quantity > maxQuantity) {
+                alert('Not enough in stock.');
+            } else {
+                if (action === 'add') {
+                    // Add to cart logic here
+                    $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
+                        alert('Added ' + quantity + ' item(s) to cart.');
+                    });
+                } else if (action === 'buy') {
+                    // Buy now logic here
+                    alert('Proceeding to buy ' + quantity + ' item(s).');
+                }
+            }
+        }
+    </script>
+
 </div>

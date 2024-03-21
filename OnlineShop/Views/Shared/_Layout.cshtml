@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 </head>
 <style>
     :root {
@@ -131,7 +132,7 @@
         display: flex;
         align-items: center;
         min-height: 100vh;
-        background: url(../images/home-bg.jpg) no-repeat;
+        background: url(../images/home-bgs.jpg) no-repeat;
         background-size: cover;
         background-position: center;
     }
@@ -166,7 +167,15 @@
         display: flex;
         justify-content: center;
         margin-top: 8rem; /* Adjust margin-top as needed */
+
+        .products-grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
 </style>
+
+
 <body>
     <header>
 
@@ -175,6 +184,7 @@
         
         <nav class="navbar">
             <a href="/">home</a>
+
             <a href="/Home/About">about</a>
             <a href="/Products/DisplayCategory">products</a>
 
@@ -192,6 +202,24 @@
                     </div>
                 </div>
             }
+
+            <a href="#about">about</a>
+            <a href="/order/UserOrders">My Orders</a>
+            
+            <div class="dropdown" id="adminDropdown">
+                <a class="dropdown-toggle" role="button" id="adminDropdownToggle" aria-haspopup="true" aria-expanded="false">
+                    Admin Management
+                </a>
+                <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
+                    <a class="dropdown-item" href="/Account/DisplayUsers">User Manage</a>
+                    <a class="dropdown-item" href="/Category">Categories Manage</a>
+                    <a class="dropdown-item" href="/Product">Products Manage</a>
+                    <a class="dropdown-item" href="/order">Orders</a>
+                </div>
+            </div>
+            
+
+
             <a href="#contact">contact</a>
             
         </nav>
@@ -199,7 +227,7 @@
         <partial name="_LoginPartial" />
         <div class="icons">
             <a href="#" class="fas fa-heart"></a>
-            <a href="/Checkout" class="fas fa-shopping-cart"></a>
+            <a href="/CART/DisplayCart" class="fas fa-shopping-cart"></a>
             <a href="/Account/DisplayUsers" class="fas fa-user"></a>
             
         </div>

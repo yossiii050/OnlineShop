@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using OnlineShop.Models.Cart;
 
 namespace OnlineShop.Models
 {
@@ -27,23 +28,48 @@ namespace OnlineShop.Models
                     a.Property(a => a.Country).HasColumnName("Country");
                     a.Property(a => a.ZipCode).HasColumnName("ZipCode");
                 });
+
+			// Configure the relationship between Product and Category
+			builder.Entity<Product>()
+				.HasOne(p => p.Category)
+				.WithMany(c => c.Products)
+				.HasForeignKey(p => p.CategoryId);
+
+            // Configure the relationship between Order and User
+            builder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId);
+
+            // Configure the relationship between OrderItem and Order
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            // Configure the relationship between OrderItem and Product
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId);
         }
         //Users
-        public DbSet<Admin> admins { get; set; }
-        public DbSet<User> User { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         //Products
-        public DbSet<Category> Category { get; set; }
-        public DbSet<Item> Item { get; set; }
-        public DbSet<Product> Product { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
 
 
+        public DbSet<CartItem> CartItems { get; set; }
 
         //Orders
-        public DbSet<Order> Order { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
-        
+
     }
     public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<User>
     {
