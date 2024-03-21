@@ -56,23 +56,23 @@ using(var scope=app.Services.CreateScope())
     }
 }
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var usersManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+/*using (var scope = app.Services.CreateScope())
+{
+    var usersManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-//    string email = "admin@admin.com";
-//    string password = "Admin123!!!";
+    string email = "admin@admin.com";
+    string password = "Admin123!!!";
 
-//    if(await usersManager.FindByEmailAsync(email)==null)
-//    {
-//        var user=new IdentityUser();
-//        user.UserName = email;
-//        user.Email = email;
+    if (await usersManager.FindByEmailAsync(email) == null)
+    {
+        var user = new IdentityUser();
+        user.UserName = email;
+        user.Email = email;
 
-//        await usersManager.CreateAsync(user, password);
+        await usersManager.CreateAsync(user, password);
 
-//        await usersManager.AddToRoleAsync(user, "Admin");
-//    }
-//}
+        await usersManager.AddToRoleAsync(user, "Admin");
+    }
+}*/
 app.Run();
 

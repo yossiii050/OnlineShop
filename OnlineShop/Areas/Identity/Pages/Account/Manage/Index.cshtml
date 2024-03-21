@@ -16,32 +16,35 @@
                 <label asp-for="Username" class="form-label"></label>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." disabled />
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Street" class="form-control" placeholder="Street" />
+                <input asp-for="Input.Street" class="form-control" placeholder="Street" disabled />
                 <label asp-for="Input.Street" class="form-label"></label>
                 <span asp-validation-for="Input.Street" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.City" class="form-control" placeholder="City" />
+                <input asp-for="Input.City" class="form-control" placeholder="City" disabled />
                 <label asp-for="Input.City" class="form-label"></label>
                 <span asp-validation-for="Input.City" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Country" class="form-control" placeholder="Country" />
+                <input asp-for="Input.Country" class="form-control" placeholder="Country" disabled />
                 <label asp-for="Input.Country" class="form-label"></label>
                 <span asp-validation-for="Input.Country" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.ZipCode" class="form-control" placeholder="Zip Code" />
+                <input asp-for="Input.ZipCode" class="form-control" placeholder="Zip Code" disabled />
                 <label asp-for="Input.ZipCode" class="form-label"></label>
                 <span asp-validation-for="Input.ZipCode" class="text-danger"></span>
             </div>
 
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+           <!-- <aside style="background-color: #f0f0f0; padding: 10px; border-left: 4px solid #ccc;">
+                <p>This is a styled side note.</p>
+             </aside> -->
+            <!--<button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary" disabled>Save</button>-->
         </form>
     </div>
 </div>

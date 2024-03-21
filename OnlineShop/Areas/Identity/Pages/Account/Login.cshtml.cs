@@ -19,7 +19,7 @@ using System.Security.Claims;
 
 namespace OnlineShop.Areas.Identity.Pages.Account
 {
-    public class LoginModel : PageModel
+    public class LoginModel : PageModel 
     {
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;

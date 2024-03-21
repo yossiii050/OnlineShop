@@ -19,6 +19,9 @@ namespace  OnlineShop.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public static string Index => "Index";
 
+       // public static string Test => "Test";
+
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -66,6 +69,9 @@ namespace  OnlineShop.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+
+
+        //public static string TestNavClass(ViewContext viewContext) => PageNavClass(viewContext, Test);
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -117,7 +123,11 @@ namespace  OnlineShop.Areas.Identity.Pages.Account.Manage
         public static string UpdateAddress => "UpdateAddress";
 
         public static string UpdateAddressNavClass(ViewContext viewContext) => PageNavClass(viewContext, UpdateAddress);
-        
+
+        public static string UpdateEmail => "UpdateEmail";
+        public static string UpdateEmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, UpdateEmail);
+
+
         public static string UpdateCreditCard => "UpdateCreditCard";
         public static string UpdateCreditCardNavClass(ViewContext viewContext) => PageNavClass(viewContext, UpdateCreditCard);
 
