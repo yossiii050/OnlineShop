@@ -23,20 +23,7 @@ public class Startup
 
 
 
-        services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree"));
-        //services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
-        services.AddScoped<IBrainTreeGate, BrainTreeGate>();
-
-        var brainTreeSettings = Configuration.GetSection("BrainTree").Get<BrainTreeSettings>();
-        Console.WriteLine($"BrainTree Environment: {brainTreeSettings.Environment}");
-        Console.WriteLine($"BrainTree MerchantId: {brainTreeSettings.MerchantId}");
-        Console.WriteLine($"BrainTree PublicKey: {brainTreeSettings.PublicKey}");
-        Console.WriteLine($"BrainTree PrivateKey: {brainTreeSettings.PrivateKey}");
-
-        // Add BrainTree configuration
-        services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree"));
-        services.AddScoped<IBrainTreeGate, BrainTreeGate>();
-
+        
         //aes
         var aesSettings = Configuration.GetSection("AES").Get<AESSettings>();
         services.AddSingleton(aesSettings);
