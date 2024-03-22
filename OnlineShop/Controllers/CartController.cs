@@ -4,15 +4,21 @@ using OnlineShop.Models.Cart;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Models.ViewModels;
+using OnlineShop.Models.BrainTree;
 
 namespace OnlineShop.Controllers
 {
     public class CartController : Controller
     {
         private DBProjectContext _db;
-        public CartController(DBProjectContext db)
+        //private readonly IBrainTreeGate _brain;
+        public CartController(DBProjectContext db)//, IBrainTreeGate brain)
         {
+            //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
+            //_brain=brain;
+            
+
         }
 
 
@@ -189,6 +195,8 @@ namespace OnlineShop.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        
+
         public IActionResult SubmitBillingInfo()
         {
             var viewModel = new CheckoutViewModel();
@@ -200,6 +208,10 @@ namespace OnlineShop.Controllers
                                         .Where(c => c.UserId == userId)
                                         .Include(c => c.Product)
                                         .ToList();
+
+                //var gateway=_brain.GetGateway();
+               // var clientToken = gateway.ClientToken.Generate();
+               // ViewBag.ClientToken = clientToken;
             }
             else
             {
@@ -209,30 +221,7 @@ namespace OnlineShop.Controllers
             return View(viewModel);
         }
 
-        public IActionResult SubmitBillingInfo1()
-        {
-            List<CartItem> cart;
-
-            if (User.Identity.IsAuthenticated)
-            {
-                // For authenticated users, retrieve the cart from the database
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                cart = _db.CartItems
-                          .Where(c => c.UserId == userId)
-                          .Include(c => c.Product) // Include related Product data
-                          .ToList();
-            }
-            else
-            {
-                // For non-authenticated users, retrieve the cart from the session
-
-                cart = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
-            }
-
-            // Pass the cart to the view
-            return View(cart);
-            
-        }
+       
 
         public IActionResult OrderConfirmation(int orderId)
         {

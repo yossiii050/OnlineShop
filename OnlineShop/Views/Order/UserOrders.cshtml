@@ -29,6 +29,12 @@
         cursor: pointer;
     }
 
+        .btn-cancel:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+
     .order-details {
         width: 100%;
         border-collapse: collapse;
@@ -74,7 +80,7 @@
                     </div>
                     <div class="cancel-order">
                         <!-- Cancel order button implementation -->
-                        <button class="btn-cancel">Cancel Order</button>
+                        <button class="btn-cancel" onclick="cancelOrder(@order.OrderId)" @(order.Status != OrderStatus.Accepted ? "disabled" : "")>Cancel Order</button>
                     </div>
                 </div>
                 <div class="order-details-wrapper">
@@ -117,3 +123,28 @@
     }
 </div>
 
+@section Scripts {
+    <script>
+        function cancelOrder(orderId) {
+            if (confirm('Are you sure you want to cancel this order?')) {
+                $.ajax({
+                    url: '@Url.Action("UpdateOrderStatus", "Order")',
+                    type: 'POST',
+                    data: { orderId: orderId, newStatus: 'Cancelled' },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Order cancelled successfully!');
+                            location.reload(); // Reload the page to update the order status
+                        } else {
+                            alert('Failed to cancel order.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error cancelling order.');
+                    }
+                });
+            }
+        }
+
+    </script>
+}

@@ -99,6 +99,20 @@ namespace OnlineShop.Controllers
 
 
 
+        [HttpPost]
+        public IActionResult UpdateOrderStatus(int orderId, OrderStatus newStatus)
+        {
+            var order = _db.Orders.FirstOrDefault(o => o.Id == orderId);
+            if (order == null)
+            {
+                return Json(new { success = false, message = "Order not found." });
+            }
+
+            order.Status = newStatus;
+            _db.SaveChanges();
+
+            return Json(new { success = true });
+        }
 
 
     }

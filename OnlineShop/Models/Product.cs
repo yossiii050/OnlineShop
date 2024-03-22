@@ -29,7 +29,7 @@ namespace OnlineShop.Models
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
-        public ICollection<CartItem> CartItems { get; set; }
+        public ICollection<CartItem>? CartItems { get; set; }
 
 
     }

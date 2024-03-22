@@ -57,6 +57,7 @@ namespace OnlineShop.Models
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<CreditCard> CreditCards { get; set; }
 
         //Products
         public DbSet<Category> Categories { get; set; }

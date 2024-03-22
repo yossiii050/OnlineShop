@@ -2,120 +2,191 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
-using Stripe;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
+using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using Newtonsoft.Json.Linq;
 
-public class UpdateCreditCardModel : PageModel
+
+namespace OnlineShop.Areas.Identity.Pages.Account.Manage
 {
-    private readonly UserManager<User> _userManager;
-    [TempData]
-    public string StatusMessage { get; set; }
-    public UpdateCreditCardModel(UserManager<User> userManager)
+
+    public class UpdateCreditCardModel : PageModel
     {
-        _userManager = userManager;
+        private DBProjectContext _db;
+        private List<CreditCard> userCardss;
+        private readonly UserManager<User> _userManager;
+        public string StatusMessage { get; set; }
+        public List<CreditCard> CreditCards { get; set; }
+
+        public string CardNumber { get; set; }
+        public string ExpirationDate { get; set; }
+        public string CVV { get; set; }
+        public string CardOwner { get; set; }
+
+        private readonly IAESSettings _aesSettings;
 
 
-    }
+        [BindProperty]
+        public UpdateCreditCardInputModel InputModel { get; set; }
 
-    public class InputModel
-    {
-        [Required]
-        [Display(Name = "New Credit Card Number")]
-        public string NewCreditCardNumber { get; set; }
-    }
-
-    [BindProperty]
-    public InputModel Input { get; set; }
-
-    public async Task<IActionResult> OnGetAsync()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        public class UpdateCreditCardInputModel
         {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            [Required]
+            [Display(Name = "CardNumber")]
+            public string CardNumber { get; set; }
+
+            [Required]
+            [Display(Name = "ExpirationDate")]
+            public string ExpirationDate { get; set; }
+
+            [Required]
+            [Display(Name = "CVV")]
+            public string CVV { get; set; }
+
+            [Required]
+            [Display(Name = "CardOwner")]
+            public string CardOwner { get; set; }
         }
 
-        await LoadAsync(user);
-        return Page();
-    }
 
-    private async Task LoadAsync(User user)
-    {
-        if (!string.IsNullOrEmpty(user.CreditCardNumber))
+        public UpdateCreditCardModel(UserManager<User> userManager, IAESSettings aesSettings, DBProjectContext db)
         {
-            // Initialize Stripe services with your API key
-            StripeConfiguration.ApiKey = "sk_test_51OoVvpDsGN87ngbiWu2M49BCYYy8udqXd2BAZEQ28dufWZx5bLXRqUPgqOpLLoGamAJU5IKVSgKjNdW51GVQ5VAZ00wmyk9ePQ";
+            _userManager = userManager;
+            _db = db;
+            _aesSettings = aesSettings;
 
-            // Initialize CustomerService with your API key
-            var customerService = new CustomerService();
+        }
 
-            // Retrieve the customer information from Stripe
-            var customer = await customerService.GetAsync(user.CreditCardNumber);
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<CreditCard> userCards = _db.CreditCards.Where(c => c.UserId == userId).ToList();
 
-            // Check if the customer has any cards
+            // Decrypt the credit card information and assign it to the model properties
+            foreach (var card in userCards)
+            {
+                // Decrypt the card information and assign it to the properties
+                // Example:
+                // card.DecryptedCardNumber = Decrypt(card.EncryptedCardNumber);
+                // Add other decryption as needed
+            }
+
+            // Assign the decrypted cards to a model property to display them in the view
+            // Example:
+            CreditCards = userCards;
+
+            return Page();
+        }
+
+
+        public async Task<IActionResult> OnPostAsync()
+        {
             
-            if (customer.DefaultSourceId != null )
-            {
-                // Assume we only show the first card
-                var card = 1;
-                
-                
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userCard = _db.CreditCards.FirstOrDefault(c => c.UserId == userId);
 
-            }
-            else
-            {
-                Console.WriteLine("No card found for customer");
-            }
-        }
-        else
-        {
-            Console.WriteLine("User does not have a Stripe customer ID");
-        }
-    }
-
-
-    public async Task<IActionResult> OnPostAsync()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
-
-        // Initialize Stripe services with your API key
-        StripeConfiguration.ApiKey = "sk_test_51OoVvpDsGN87ngbiWu2M49BCYYy8udqXd2BAZEQ28dufWZx5bLXRqUPgqOpLLoGamAJU5IKVSgKjNdW51GVQ5VAZ00wmyk9ePQ";
-
-        var customerService = new CustomerService();
-
-        // Create a new customer in Stripe
-        var customerOptions = new CustomerCreateOptions
-        {
-            Email = user.Email, // User's email address,
-            Name=user.FirstName+user.LastName,
-            Phone=user.PhoneNumber,
+            byte[] key = Convert.FromBase64String(_aesSettings.Key);
+            byte[] iv = Convert.FromBase64String(_aesSettings.IV);
             
 
-        };
+            if (!ModelState.IsValid)
+            {
+                TempData["UpdateMessage"] = "Fields Error.";
 
-        var customer = customerService.Create(customerOptions);
+                userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
+                CreditCards=userCardss;
+                return Page();
+            }
 
-        // Retrieve the Stripe customer ID
-        var stripeCustomerId = customer.Id;
 
-        // Create a new card for the customer
-        var cardOptions = new CardCreateOptions
+            CardNumber=InputModel.CardNumber;
+            ExpirationDate=InputModel.ExpirationDate;
+            CVV=InputModel.CVV;
+            CardOwner=InputModel.CardOwner;
+
+            if(!IsCardNumberValid(CardNumber))
+            {
+                userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
+                CreditCards=userCardss;
+                TempData["UpdateMessage"] = "Credit Card Number Error.";
+                return Page();
+            }
+            if(!IsExpirationDateValid(ExpirationDate))
+            {
+                userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
+                CreditCards=userCardss;
+                TempData["UpdateMessage"] = "Expiration Date Error.";
+                return Page();
+            }
+            if (!IsCvvValid(CVV))
+            {
+                userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
+                CreditCards=userCardss;
+                TempData["UpdateMessage"] = "CVV Error.";
+                return Page();
+            }
+
+            // Encrypt the credit card information
+            byte[] encryptedCardNumber = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(CardNumber, key, iv);
+            //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
+            byte[] encryptedCVV = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(CVV, key, iv);
+
+            _db.CreditCards.Add(new CreditCard
+            {
+                EncryptedCardNumber = encryptedCardNumber,
+                EncryptedExpirationDate=ExpirationDate,
+                EncryptedCVV = encryptedCVV,
+                UserId=userId,
+                NameCardOwner=CardOwner,
+                fourLastNumber=CardNumber.Substring(CardNumber.Length - 4)
+            });
+            _db.SaveChanges();
+           
+            TempData["SuccesMessage"] = "Credit Card Added.";
+            userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
+            CreditCards=userCardss;
+            //return RedirectToAction("Index","Home");
+            //return View();
+            return Page();
+        }
+
+        public static bool IsCardNumberValid(string cardNumber)
         {
-            Source = "tok_visa", // Stripe token representing the new credit card
-        };
+            int sum = 0;
+            bool alternate = false;
+            for (int i = cardNumber.Length - 1; i >= 0; i--)
+            {
+                char[] digits = cardNumber.ToCharArray();
+                int n = int.Parse(digits[i].ToString());
+                if (alternate)
+                {
+                    n *= 2;
+                    if (n > 9)
+                    {
+                        n = (n % 10) + 1;
+                    }
+                }
+                sum += n;
+                alternate = !alternate;
+            }
+            return (sum % 10 == 0);
+        }
+        public static bool IsExpirationDateValid(string expirationDate)
+        {
+            if (DateTime.TryParseExact(expirationDate, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expDate))
+            {
+                return expDate > DateTime.Now;
+            }
+            return false;
+        }
 
-        var cardService = new CardService();
-        var card = cardService.Create(stripeCustomerId, cardOptions);
+        public static bool IsCvvValid(string cvv)
+        {
+            return cvv.Length >= 3 && cvv.Length <= 4 && cvv.All(char.IsDigit);
+        }
 
-        // Save the Stripe customer ID to the user record
-        user.CreditCardNumber = stripeCustomerId;
-        ViewData["CardBrand"] = card.Brand;
-        ViewData["CardLast4"] = card.Last4;
-        return Page();
     }
-
 }
