@@ -29,7 +29,7 @@ namespace OnlineShop.Controllers
 
             List<OrderDetailsViewModel> orderDetailsViewModels = orders.Select(order => new OrderDetailsViewModel
             {
-                UserName = order.User.UserName,
+                UserName = order.User?.UserName ?? "Guest",
                 OrderId = order.Id,
                 ShipStreet = order.ShipStreet,
                 ShipCity = order.ShipCity,
@@ -38,11 +38,14 @@ namespace OnlineShop.Controllers
                 Status = order.Status,
                 OrderDate = order.OrderDate,
                 TotalPrice = order.TotalPrice,
+                confirmationNumber=order.confirmationNumber,
+                fourCardNumber=order.fourCardNumber,
                 Items = order.OrderItems.Select(item => new OrderItemViewModel
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    Price = item.Price
+                    Price = item.Price,
+                    Name=item.Name
                 }).ToList()
             }).ToList();
 
@@ -77,12 +80,14 @@ namespace OnlineShop.Controllers
                     Status = order.Status,
                     OrderDate = order.OrderDate,
                     TotalPrice = order.TotalPrice,
+                    confirmationNumber=order.confirmationNumber,
+                    fourCardNumber=order.fourCardNumber,
                     Items = order.OrderItems.Select(item => new OrderItemViewModel
                     {
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
                         Price = item.Price,
-                        //ProductName = item.Product.Name // Assuming you have a Product.Name property
+                        Name=item.Name
                     }).ToList()
                 }).ToList();
 
@@ -98,7 +103,7 @@ namespace OnlineShop.Controllers
         }
 
 
-
+        
         [HttpPost]
         public IActionResult UpdateOrderStatus(int orderId, OrderStatus newStatus)
         {

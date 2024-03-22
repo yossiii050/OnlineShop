@@ -158,17 +158,23 @@ namespace OnlineShop.Controllers
 
             return RedirectToAction("DisplayCart");
         }
+
         [HttpPost]
-        public IActionResult Checkout(CheckoutViewModel model)
+        public IActionResult Checkout(CheckoutViewModel model, string selectedCardId)
         {
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var cartItems = _db.CartItems.Where(c => c.UserId == userId).ToList();
+                var cardinfo = _db.CreditCards
+                    .Where(t => (t.Id).ToString() == selectedCardId)                    
+                    .ToList();
 
                 var order = new Order
                 {
                     UserId = userId,
+                    confirmationNumber=GenerateConfirmationNumber(),
+                    fourCardNumber=cardinfo[0].fourLastNumber,
                     OrderDate = DateTime.UtcNow,
                     TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
                     ShipStreet = model.x.ShipStreet,
@@ -179,7 +185,8 @@ namespace OnlineShop.Controllers
                     {
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
-                        Price = item.ProductPrice
+                        Price = item.ProductPrice,
+                        Name=item.ProductName
                     }).ToList()
                 };
 
@@ -190,12 +197,59 @@ namespace OnlineShop.Controllers
                 // Redirect to a confirmation page or order details page
                 return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
             }
+            else
+            {
+                var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+
+                var order = new Order
+                {
+                    
+                    UserId = null,
+                    confirmationNumber=GenerateConfirmationNumber(),
+                    fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
+                    OrderDate = DateTime.UtcNow,
+                    TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    ShipStreet = model.x.ShipStreet,
+                    ShipCity = model.x.ShipCity,
+                    ShipCountry = model.x.ShipCountry,
+                    ShipZipCode = model.x.ShipZipCode,
+                    OrderItems = cartItems.Select(item => new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.ProductPrice,
+                        Name=item.ProductName
+                    }).ToList()
+                };
+
+                _db.Orders.Add(order);
+                //_db.CartItems.RemoveRange(cartItems); // Remove the cart items
+                _db.SaveChanges();
+
+                // Redirect to a confirmation page or order details page
+                return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
+
+            }
 
             // Handle the case for non-authenticated users or add an error message
             return RedirectToAction("Index", "Home");
         }
 
-        
+        private string GenerateConfirmationNumber()
+        {
+            var random = new Random();
+            var length = 10; // You can adjust the length as needed
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var confirmationNumber = new char[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                confirmationNumber[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string(confirmationNumber);
+        }
+
 
         public IActionResult SubmitBillingInfo()
         {
@@ -208,14 +262,19 @@ namespace OnlineShop.Controllers
                                         .Where(c => c.UserId == userId)
                                         .Include(c => c.Product)
                                         .ToList();
+                viewModel.userCards= _db.CreditCards.Where(c => c.UserId == userId).ToList();
+
+                return View(viewModel);
 
                 //var gateway=_brain.GetGateway();
-               // var clientToken = gateway.ClientToken.Generate();
-               // ViewBag.ClientToken = clientToken;
+                // var clientToken = gateway.ClientToken.Generate();
+                // ViewBag.ClientToken = clientToken;
             }
             else
             {
                 viewModel.CartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+                return View("SubmitBillingInfoNotRegUsers", viewModel);
+                
             }
 
             return View(viewModel);
@@ -234,7 +293,7 @@ namespace OnlineShop.Controllers
                 // Handle the case where the order is not found or does not belong to the current user
                 return RedirectToAction("Index", "Home");
             }
-
+            TempData["orderConf"] = order.confirmationNumber;
             return View(order);
         }
 

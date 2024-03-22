@@ -67,7 +67,8 @@
                         <p><strong>Order Id:</strong> @order.OrderId</p>
                         <!-- Assuming these properties exist in your OrderDetailsViewModel -->
                         <p><strong>User Name:</strong> @order.UserName</p>
-                        <p><strong>Confirmation Number:</strong> order.ConfirmationNumber</p>
+                        <p><strong>Confirmation Number:</strong> @order.confirmationNumber</p>
+                        <p><strong>Credit Card:</strong>**** **** **** @order.fourCardNumber</p>
                         <p><strong>Delivery Date:</strong> @order.OrderDate.ToString("g")</p>
                         <p><strong>Order Status:</strong> @order.Status.ToString()</p>
                     </div>
@@ -101,10 +102,10 @@
                                 {
                                     <tr>
                                         <td>@item.ProductId</td>
-                                        <td>item.ProductName</td>
+                                        <td>@item.Name</td>
                                         <td>@item.Price.ToString("C")</td>
                                         <td>@item.Quantity</td>
-                                        <td>@(item.Price * item.Quantity).ToString()</td>
+                                        <td>@(item.Price * item.Quantity)</td>
                                     </tr>
                                 }
                             </tbody>

@@ -39,7 +39,9 @@ namespace OnlineShop.Models
             builder.Entity<Order>()
                 .HasOne(o => o.User)
                 .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.UserId);
+                .HasForeignKey(o => o.UserId)
+                .IsRequired(false);  // Add this line
+
 
             // Configure the relationship between OrderItem and Order
             builder.Entity<OrderItem>()

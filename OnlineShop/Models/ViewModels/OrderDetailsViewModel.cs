@@ -13,6 +13,8 @@
         public string ShipCountry { get; set; }
         public string ShipZipCode { get; set; }
         public OrderStatus Status { get; set; }
+        public string fourCardNumber { get; set; }
+        public string confirmationNumber { get; set; }
     }
 
     public class OrderItemViewModel
@@ -20,5 +22,6 @@
         public int ProductId { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public string Name { get; set; }
     }
 }
