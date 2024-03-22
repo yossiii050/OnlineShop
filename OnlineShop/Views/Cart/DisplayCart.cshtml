@@ -169,27 +169,35 @@
                                         <td class="text-end">₪ @totalPrice</td>
                                     </tr>
                                     <tr>
-                                        <td>Discount : </td>
-                                        <td class="text-end">- ₪ (calculate discount here)</td>
+                                        <td>Discount :</td>
+                                        <td class="text-end">- ₪ <span id="discount">0.00</span></td>
                                     </tr>
                                     <tr>
                                         <td>Shipping Charge :</td>
-                                        <td class="text-end">₪ (calculate shipping here)</td>
+                                        <td class="text-end">₪ 25(calculate shipping here)</td>
                                     </tr>
                                     <tr>
                                         <td>Estimated Tax : </td>
-                                        <td class="text-end">₪ @(totalPrice * 0.18m) (assuming 18% tax)</td>
+                                        <td class="text-end">₪ @((totalPrice * 0.18m).ToString("F2")) (assuming 18% tax)</td>
                                     </tr>
                                     <tr class="bg-light">
                                         <th>Total :</th>
                                         <td class="text-end">
                                             <span class="fw-bold">
-                                                ₪ @(totalPrice * 1.18m) (total including tax)
+                                                ₪ <span id="finalprice">
+                                                    @(((totalPrice)+(totalPrice * 0.18m)+25).ToString("F2"))
+                                                </span>
                                             </span>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="card-body p-4 pt-2">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Promo Code" id="promoCode">
+                                <button class="btn btn-primary" onclick="applyPromoCode()">Apply</button>
+                            </div>
                         </div>
                         <!-- end table-responsive -->
                     </div>
@@ -200,3 +208,25 @@
     <!-- end row -->
     
 </div>
+
+    <script>
+        function applyPromoCode() {
+            var promoCode = document.getElementById('promoCode').value;
+            $.ajax({
+                url: '@Url.Action("ApplyPromoCode", "Cart")',
+                type: 'POST',
+                data: { promoCode: promoCode },
+                success: function (response) {
+                    if (response.error) {
+                        alert(response.error);
+                    } else {
+                        document.getElementById('discount').innerText = @(totalPrice)*response.discount.toFixed(2);
+                    document.getElementById('finalprice').innerText = @((totalPrice * 0.18m)+(totalPrice)+25)-@(totalPrice)* response.discount;
+                    }
+                },
+                error: function () {
+                    alert('Error applying promo code');
+                }
+            });
+        }
+    </script>

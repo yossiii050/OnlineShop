@@ -4,62 +4,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 <style>
-    .credit-card {
-        margin: 10px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        border-radius: 7px;
-        width: 95%;
-        max-width: 250px;
-        position: relative;
-        transition: all 0.4s ease;
-        box-shadow: 0 2px 4px 0 #cfd7df;
-        min-height: 60px;
-        padding: 13px;
-        background: #1a1b1c;
-        color: #efefef;
-    }
-
-        .credit-card.selected {
-            border: 2px solid #4CAF50; /* Change the color as needed */
-        }
-        .credit-card.selectable:hover {
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-        }
-
-    .credit-card-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-    }
-    /*  NUMBER FORMATTING */
-
-    .credit-card-last4 {
-        font-family: "PT Mono", Helvetica, sans-serif;
-        font-size: 24px;
-    }
-
-        .credit-card-last4:before {
-            content: "**** **** **** ";
-            color: #4f4d4d;
-            font-size: 20px;
-        }
-
-    .credit-card.visa {
-        background: #4862e2;
-        color: #eaeef2;
-    }
-
-        .credit-card.visa .credit-card-last4:before {
-            color: #8999e5;
-        }
-
-        .credit-card.visa::after {
-            height: 16px;
-            width: 50px;
-            background-image: url('data:image/png;base64,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');
-        }
     body {
         margin-top: 20px;
         background-color: #f1f3f7;
@@ -306,8 +250,6 @@
                 <div class="card-body">
                     @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "mt-2" }))
                     {
-                        <input type="hidden" id="selectedCardId" name="selectedCardId" value="" />
-
                         <ol class="activity-checkout mb-0 px-4 mt-3">
                             <!-- Billing Info -->
                             <li class="checkout-item">
@@ -368,9 +310,8 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label" for="country">Country</label>
-                                                @Html.DropDownListFor(m => m.x.ShipCountry, new SelectList(Address.CountryList), "Select a country", new { @class = "form-control", id = "country" })
+                                                @Html.TextBoxFor(m => m.x.ShipCountry, new { @class = "form-control", id = "country", placeholder = "Enter country" })
                                             </div>
-
                                             <div class="mb-3">
                                                 <label class="form-label" for="zipCode">Zip Code</label>
                                                 @Html.TextBoxFor(m => m.x.ShipZipCode, new { @class = "form-control", id = "zipCode", placeholder = "Enter zip code" })
@@ -379,41 +320,6 @@
                                     </div>
                                 </div>
                             </li>
-                            <div class="checkout-item">
-                                <div class="avatar checkout-icon p-1">
-                                    <div class="avatar-title rounded-circle bg-primary">
-                                        <i class="bx bx-credit-card text-white font-size-20"></i>
-                                    </div>
-                                    
-                                </div>
-                                
-                                    <div>
-                                        <h5 class="font-size-16 mb-1">Payment Info</h5>
-                                        <p class="text-muted text-truncate mb-4">Enter your payment details below.</p>
-                                        <div id="dropin-container"></div> <!-- Braintree Drop-in UI -->
-                                    </div>
-                                <div class="credit-card-container">
-                                    @foreach (var card in Model.userCards)
-                                    {
-                                        <div class="credit-card visa selectable" onclick="selectCard('@card.Id', this)">
-                                            <div class="credit-card-last4">
-                                                @card.fourLastNumber
-                                            </div>
-                                            <div class="credit-card-expiry">
-                                                @card.EncryptedExpirationDate
-                                            </div>
-                                            <div class="credit-card-name">
-                                                @card.NameCardOwner
-                                            </div>
-                                            
-                                        </div>
-                                        }
-                                    <a href="/Identity/Account/Manage/UpdateCreditCard" class="btn btn-primary">Update Credit Card</a>
-
-                                    
-                                </div>
-                                
-                            </div>
 
                             <!-- Other sections like Payment Info can be added here -->
                         </ol>
@@ -425,7 +331,7 @@
                                 </a>
                             </div>
                             <div class="col text-end">
-                                <button id="submit-button" type="submit" class="btn btn-success">
+                                <button type="submit" class="btn btn-success">
                                     <i class="mdi mdi-cart-outline me-1"></i> Proceed
                                 </button>
                             </div>
@@ -479,7 +385,7 @@
                                         <h5 class="font-size-14 m-0">Discount :</h5>
                                     </td>
                                     <td>
-                                        - ₪@((subTotal * 0.10m).ToString("F2")) <!-- Assuming a 10% discount -->
+                                        - ₪@(subTotal * 0.10m) <!-- Assuming a 10% discount -->
                                     </td>
                                 </tr>
                                 <tr>
@@ -495,7 +401,7 @@
                                         <h5 class="font-size-14 m-0">Estimated Tax :</h5>
                                     </td>
                                     <td>
-                                        ₪@((subTotal * 0.18m).ToString("F2")) <!-- Assuming 18% tax -->
+                                        ₪@(subTotal * 0.18m) <!-- Assuming 18% tax -->
                                     </td>
                                 </tr>
                                 <tr class="bg-light">
@@ -503,7 +409,7 @@
                                         <h5 class="font-size-14 m-0">Total:</h5>
                                     </td>
                                     <td>
-                                        ₪@((subTotal - (subTotal * 0.10m) + 25 + (subTotal * 0.18m)).ToString("F2"))
+                                        ₪@(subTotal - (subTotal * 0.10m) + 25 + (subTotal * 0.18m))
                                     </td>
                                 </tr>
                             </tbody>
@@ -516,17 +422,3 @@
     <!-- end row -->
 
 </div>
-    <script src="https://js.braintreegateway.com/web/dropin/1.33.0/js/dropin.min.js"></script>
-    
-    <script>
-        function selectCard(cardId, element) {
-            document.getElementById('selectedCardId').value = cardId;
-            // Remove 'selected' class from all cards
-            var cards = document.getElementsByClassName('credit-card');
-            for (var i = 0; i < cards.length; i++) {
-                cards[i].classList.remove('selected');
-            }
-            // Add 'selected' class to the clicked card
-            element.classList.add('selected');
-        }
-    </script>
