@@ -255,6 +255,8 @@ namespace OnlineShop.Controllers
         public IActionResult SubmitBillingInfo()
         {
             var viewModel = new CheckoutViewModel();
+            List<string> countries = Address.CountryList;
+            ViewBag.CountryList = Address.CountryList;
 
             if (User.Identity.IsAuthenticated)
             {

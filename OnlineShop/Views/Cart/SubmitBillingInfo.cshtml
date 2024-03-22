@@ -368,8 +368,9 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label" for="country">Country</label>
-                                                @Html.TextBoxFor(m => m.x.ShipCountry, new { @class = "form-control", id = "country", placeholder = "Enter country" })
+                                                @Html.DropDownListFor(m => m.x.ShipCountry, new SelectList(Address.CountryList), "Select a country", new { @class = "form-control", id = "country" })
                                             </div>
+
                                             <div class="mb-3">
                                                 <label class="form-label" for="zipCode">Zip Code</label>
                                                 @Html.TextBoxFor(m => m.x.ShipZipCode, new { @class = "form-control", id = "zipCode", placeholder = "Enter zip code" })
@@ -407,6 +408,8 @@
                                             
                                         </div>
                                         }
+                                    <a href="/Identity/Account/Manage/UpdateCreditCard" class="btn btn-primary">Update Credit Card</a>
+
                                     
                                 </div>
                                 
