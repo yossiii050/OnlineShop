@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Models.ViewModels;
 using OnlineShop.Models.BrainTree;
+//using System.Data.Entity;
 
 namespace OnlineShop.Controllers
 {
@@ -295,6 +296,23 @@ namespace OnlineShop.Controllers
             }
             TempData["orderConf"] = order.confirmationNumber;
             return View(order);
+        }
+        [HttpPost]
+        public ActionResult ApplyPromoCode(string promoCode)
+        {
+            var promo = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCode && p.IsActive && p.ExpiryDate > DateTime.Now);
+            if (promo != null)
+            {
+                // Apply discount
+                //var discountAmount = (totalPrice * promo.DiscountPercentage) / 100;
+                //totalPrice -= discountAmount;
+
+                return Json(new { discount = promo.DiscountPercentage/100});
+            }
+            else
+            {
+                return Json(new { error = "Invalid promo code" });
+            }
         }
 
     }

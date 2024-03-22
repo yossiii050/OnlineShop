@@ -9,6 +9,8 @@ namespace OnlineShop.Models.ViewModels
 
         public List<CreditCard> userCards { get; set; }
         
+
+
         public string CardNotRegUser { get; set; }
         public string ExpNotRegUser { get; set; }
         public string CvvdNotRegUser { get; set; }
