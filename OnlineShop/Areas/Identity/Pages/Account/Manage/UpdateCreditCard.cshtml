@@ -81,7 +81,16 @@
         <div class="credit-card-name">
             @card.NameCardOwner
         </div>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete('@card.Id')">
+            <i class="fas fa-trash-alt"></i> Delete
+        </button>
     </div>
+    <form id="deleteCardForm-@card.Id" method="post" asp-page-handler="DeleteCreditCard">
+        <input type="hidden" name="cardId" value="@card.Id" />
+    </form>
+
+
+
 
 }
 <h1>Add Cards:</h1>
@@ -151,3 +160,10 @@
         margin: 0 auto;
     }
 </style>
+<script>
+    function confirmDelete(cardId) {
+        if (confirm("Are you sure you want to delete this card?")) {
+            document.getElementById('deleteCardForm-' + cardId).submit();
+        }
+    }
+</script>

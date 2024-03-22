@@ -152,7 +152,18 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             //return View();
             return Page();
         }
-
+        [HttpPost]
+        public async Task<IActionResult> OnPostDeleteCreditCardAsync(int cardId)
+        {
+            var cardToDelete = _db.CreditCards.FirstOrDefault(c => c.Id == cardId);
+            if (cardToDelete != null)
+            {
+                _db.CreditCards.Remove(cardToDelete);
+                await _db.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Credit Card Deleted.";
+            }
+            return RedirectToPage();
+        }
         public static bool IsCardNumberValid(string cardNumber)
         {
             int sum = 0;
