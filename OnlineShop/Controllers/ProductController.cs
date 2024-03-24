@@ -32,7 +32,7 @@ namespace OnlineShop.Controllers
         public async Task<IActionResult> AddProduct(Product product)
         {
             ModelState.Remove("Category");
-
+            ModelState.Remove("CartItems");
             if (ModelState.IsValid)
             {
                 _context.Products.Add(product);
