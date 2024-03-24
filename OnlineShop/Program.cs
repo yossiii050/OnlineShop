@@ -3,6 +3,7 @@ using Stripe;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using OnlineShop.Models;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,13 @@ builder.Services.AddDbContext<DBProjectContext>(options =>
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<DBProjectContext>();
-    
+
+builder.Services.AddRazorPages();
+
+// Bind AES settings from appsettings.json
+builder.Services.Configure<AESSettings>(builder.Configuration.GetSection("AES"));
+builder.Services.AddSingleton<IAESSettings>(sp => sp.GetRequiredService<IOptions<AESSettings>>().Value);
+
 
 var app = builder.Build();
 

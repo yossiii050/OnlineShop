@@ -39,7 +39,9 @@ namespace OnlineShop.Models
             builder.Entity<Order>()
                 .HasOne(o => o.User)
                 .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.UserId);
+                .HasForeignKey(o => o.UserId)
+                .IsRequired(false);  // Add this line
+
 
             // Configure the relationship between OrderItem and Order
             builder.Entity<OrderItem>()
@@ -57,6 +59,7 @@ namespace OnlineShop.Models
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<CreditCard> CreditCards { get; set; }
 
         //Products
         public DbSet<Category> Categories { get; set; }
@@ -64,6 +67,7 @@ namespace OnlineShop.Models
 
 
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<PromoCode> PromoCodes { get; set; }
 
         //Orders
         public DbSet<Order> Orders { get; set; }

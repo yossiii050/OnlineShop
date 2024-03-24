@@ -1,0 +1,26 @@
+﻿@model OnlineShop.Models.Cart.PromoCode
+
+<h2>Create Promo Code</h2>
+
+@using (Html.BeginForm("Create", "PromoCode", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.Code)
+        @Html.TextBoxFor(model => model.Code, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.DiscountPercentage)
+        @Html.TextBoxFor(model => model.DiscountPercentage, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ExpiryDate)
+        @Html.TextBoxFor(model => model.ExpiryDate, new { @class = "form-control", type = "date" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.IsActive)
+        @Html.CheckBoxFor(model => model.IsActive)
+    </div>
+    <button type="submit" class="btn btn-success">Create</button>
+}
+
+<a href="@Url.Action("Index", "PromoCode")" class="btn btn-secondary">Back to List</a>

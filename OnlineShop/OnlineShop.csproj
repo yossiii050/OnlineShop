@@ -45,6 +45,8 @@
 
   <ItemGroup>
 
+    <PackageReference Include="Braintree" Version="5.24.0" />
+
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />

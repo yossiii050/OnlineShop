@@ -1,0 +1,28 @@
+﻿@model OnlineShop.Models.Cart.PromoCode
+
+<h2>Delete Promo Code</h2>
+
+<h3>Are you sure you want to delete this promo code?</h3>
+<div>
+    <h4>Promo Code</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Code</dt>
+        <dd>@Html.DisplayFor(model => model.Code)</dd>
+        <dt>Discount Percentage</dt>
+        <dd>@Html.DisplayFor(model => model.DiscountPercentage)</dd>
+        <dt>Expiry Date</dt>
+        <dd>@Html.DisplayFor(model => model.ExpiryDate)</dd>
+        <dt>Active</dt>
+        <dd>@Html.DisplayFor(model => model.IsActive)</dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

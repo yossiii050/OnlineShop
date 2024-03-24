@@ -3,15 +3,23 @@ using OnlineShop.Models;
 using OnlineShop.Models.Cart;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using OnlineShop.Models.ViewModels;
+using OnlineShop.Models.BrainTree;
+//using System.Data.Entity;
 
 namespace OnlineShop.Controllers
 {
     public class CartController : Controller
     {
         private DBProjectContext _db;
-        public CartController(DBProjectContext db)
+        //private readonly IBrainTreeGate _brain;
+        public CartController(DBProjectContext db)//, IBrainTreeGate brain)
         {
+            //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
+            //_brain=brain;
+            
+
         }
 
 
@@ -151,24 +159,35 @@ namespace OnlineShop.Controllers
 
             return RedirectToAction("DisplayCart");
         }
+
         [HttpPost]
-        public IActionResult Checkout()
+        public IActionResult Checkout(CheckoutViewModel model, string selectedCardId)
         {
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var cartItems = _db.CartItems.Where(c => c.UserId == userId).ToList();
+                var cardinfo = _db.CreditCards
+                    .Where(t => (t.Id).ToString() == selectedCardId)                    
+                    .ToList();
 
                 var order = new Order
                 {
                     UserId = userId,
+                    confirmationNumber=GenerateConfirmationNumber(),
+                    fourCardNumber=cardinfo[0].fourLastNumber,
                     OrderDate = DateTime.UtcNow,
                     TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    ShipStreet = model.x.ShipStreet,
+                    ShipCity = model.x.ShipCity,
+                    ShipCountry = model.x.ShipCountry,
+                    ShipZipCode = model.x.ShipZipCode,
                     OrderItems = cartItems.Select(item => new OrderItem
                     {
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
-                        Price = item.ProductPrice
+                        Price = item.ProductPrice,
+                        Name=item.ProductName
                     }).ToList()
                 };
 
@@ -179,36 +198,92 @@ namespace OnlineShop.Controllers
                 // Redirect to a confirmation page or order details page
                 return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
             }
+            else
+            {
+                var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+
+                var order = new Order
+                {
+                    
+                    UserId = null,
+                    confirmationNumber=GenerateConfirmationNumber(),
+                    fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
+                    OrderDate = DateTime.UtcNow,
+                    TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    ShipStreet = model.x.ShipStreet,
+                    ShipCity = model.x.ShipCity,
+                    ShipCountry = model.x.ShipCountry,
+                    ShipZipCode = model.x.ShipZipCode,
+                    OrderItems = cartItems.Select(item => new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.ProductPrice,
+                        Name=item.ProductName
+                    }).ToList()
+                };
+
+                _db.Orders.Add(order);
+                //_db.CartItems.RemoveRange(cartItems); // Remove the cart items
+                _db.SaveChanges();
+
+                // Redirect to a confirmation page or order details page
+                return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
+
+            }
 
             // Handle the case for non-authenticated users or add an error message
             return RedirectToAction("Index", "Home");
         }
 
-        
+        private string GenerateConfirmationNumber()
+        {
+            var random = new Random();
+            var length = 10; // You can adjust the length as needed
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var confirmationNumber = new char[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                confirmationNumber[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string(confirmationNumber);
+        }
+
+
         public IActionResult SubmitBillingInfo()
         {
-            List<CartItem> cart;
+            var viewModel = new CheckoutViewModel();
+            List<string> countries = Address.CountryList;
+            ViewBag.CountryList = Address.CountryList;
 
             if (User.Identity.IsAuthenticated)
             {
-                // For authenticated users, retrieve the cart from the database
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                cart = _db.CartItems
-                          .Where(c => c.UserId == userId)
-                          .Include(c => c.Product) // Include related Product data
-                          .ToList();
+                viewModel.CartItems = _db.CartItems
+                                        .Where(c => c.UserId == userId)
+                                        .Include(c => c.Product)
+                                        .ToList();
+                viewModel.userCards= _db.CreditCards.Where(c => c.UserId == userId).ToList();
+
+                return View(viewModel);
+
+                //var gateway=_brain.GetGateway();
+                // var clientToken = gateway.ClientToken.Generate();
+                // ViewBag.ClientToken = clientToken;
             }
             else
             {
-                // For non-authenticated users, retrieve the cart from the session
-
-                cart = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+                viewModel.CartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+                return View("SubmitBillingInfoNotRegUsers", viewModel);
+                
             }
 
-            // Pass the cart to the view
-            return View(cart);
-            
+            return View(viewModel);
         }
+
+       
 
         public IActionResult OrderConfirmation(int orderId)
         {
@@ -221,8 +296,25 @@ namespace OnlineShop.Controllers
                 // Handle the case where the order is not found or does not belong to the current user
                 return RedirectToAction("Index", "Home");
             }
-
+            TempData["orderConf"] = order.confirmationNumber;
             return View(order);
+        }
+        [HttpPost]
+        public ActionResult ApplyPromoCode(string promoCode)
+        {
+            var promo = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCode && p.IsActive && p.ExpiryDate > DateTime.Now);
+            if (promo != null)
+            {
+                // Apply discount
+                //var discountAmount = (totalPrice * promo.DiscountPercentage) / 100;
+                //totalPrice -= discountAmount;
+
+                return Json(new { discount = promo.DiscountPercentage/100});
+            }
+            else
+            {
+                return Json(new { error = "Invalid promo code" });
+            }
         }
 
     }

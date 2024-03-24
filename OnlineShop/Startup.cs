@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Models;
+using OnlineShop.Models.BrainTree;
 using Stripe;
 
 public class Startup
@@ -18,15 +19,21 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Add Stripe configuration
-        services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+        Console.WriteLine($"fdsahf Environment::");
 
-        // Configure Stripe
-        StripeConfiguration.ApiKey = Configuration["Stripe:SecretKey"];
+
+
+        
+        //aes
+        var aesSettings = Configuration.GetSection("AES").Get<AESSettings>();
+        services.AddSingleton(aesSettings);
+
+        // Add framework services.
+        services.AddRazorPages();
 
         // Add other services
         services.AddMvc();
-
+        services.AddControllersWithViews();
         services.AddSession();
     }
 

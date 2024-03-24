@@ -200,12 +200,13 @@
                         <a class="dropdown-item" href="/Category">Categories Manage</a>
                         <a class="dropdown-item" href="/Product">Products Manage</a>
                         <a class="dropdown-item" href="/order">Orders</a>
+                        <a class="dropdown-item" href="/promocode">Promo Codes</a>
                     </div>
                 </div>
             }
 
             <a href="/order/UserOrders">My Orders</a>
-            
+
              @if (User.IsInRole("Regular") || User.IsInRole("Advanced"))
             {
                 <div class="dropdown" id="adminDropdown">
@@ -218,6 +219,7 @@
                         <a class="dropdown-item" href="/Product">Products Manage</a>
                         <a class="dropdown-item" href="/order">Orders</a>
                     </div>
+
                 </div>
             }
          

@@ -21,26 +21,37 @@ namespace OnlineShop.Controllers
 
         public IActionResult Index()
         {
-            List<Order> orders = _db.Orders.ToList();
-            foreach (var order in orders)
-            {
-                _db.Entry(order).Collection(o => o.OrderItems).Load();
-            }
+            List<Order> orders = _db.Orders
+                                    .Include(o => o.User) // Include the User navigation property
+                                    .Include(o => o.OrderItems) // Include OrderItems
+                                    .ThenInclude(oi => oi.Product) // Include Product if needed
+                                    .ToList();
+
             List<OrderDetailsViewModel> orderDetailsViewModels = orders.Select(order => new OrderDetailsViewModel
             {
+                UserName = order.User?.UserName ?? "Guest",
                 OrderId = order.Id,
+                ShipStreet = order.ShipStreet,
+                ShipCity = order.ShipCity,
+                ShipCountry = order.ShipCountry,
+                ShipZipCode = order.ShipZipCode,
+                Status = order.Status,
                 OrderDate = order.OrderDate,
                 TotalPrice = order.TotalPrice,
-                Items = order.OrderItems?.Select(item => new OrderItemViewModel
+                confirmationNumber=order.confirmationNumber,
+                fourCardNumber=order.fourCardNumber,
+                Items = order.OrderItems.Select(item => new OrderItemViewModel
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    Price = item.Price
-                }).ToList() ?? new List<OrderItemViewModel>()
+                    Price = item.Price,
+                    Name=item.Name
+                }).ToList()
             }).ToList();
 
             return View(orderDetailsViewModels);
         }
+
         public IActionResult UserOrders()
         {
             if (User.Identity.IsAuthenticated)
@@ -50,23 +61,33 @@ namespace OnlineShop.Controllers
 
                 // Retrieve the orders from the database that are associated with the current user.
                 List<Order> userOrders = _db.Orders
-                                            .Where(o => o.UserId == userId) // Filter by User ID
-                                            .Include(o => o.OrderItems) // Include related OrderItems data
-                                            .ThenInclude(oi => oi.Product) // Include Product data if needed
-                                            .ToList();
+                            .Include(o => o.User) // Include the User navigation property
+                            .Where(o => o.UserId == userId)
+                            .Include(o => o.OrderItems)
+                            .ThenInclude(oi => oi.Product)
+                            .ToList();
+
 
                 // Map the orders to OrderDetailsViewModel
                 List<OrderDetailsViewModel> orderDetailsViewModels = userOrders.Select(order => new OrderDetailsViewModel
                 {
+                    UserName=order.User.UserName,
                     OrderId = order.Id,
+                    ShipStreet= order.ShipStreet,
+                    ShipCity= order.ShipCity,
+                    ShipCountry= order.ShipCountry,
+                    ShipZipCode= order.ShipZipCode,
+                    Status = order.Status,
                     OrderDate = order.OrderDate,
                     TotalPrice = order.TotalPrice,
+                    confirmationNumber=order.confirmationNumber,
+                    fourCardNumber=order.fourCardNumber,
                     Items = order.OrderItems.Select(item => new OrderItemViewModel
                     {
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
                         Price = item.Price,
-                        //ProductName = item.Product.Name // Assuming you have a Product.Name property
+                        Name=item.Name
                     }).ToList()
                 }).ToList();
 
@@ -82,7 +103,21 @@ namespace OnlineShop.Controllers
         }
 
 
+        
+        [HttpPost]
+        public IActionResult UpdateOrderStatus(int orderId, OrderStatus newStatus)
+        {
+            var order = _db.Orders.FirstOrDefault(o => o.Id == orderId);
+            if (order == null)
+            {
+                return Json(new { success = false, message = "Order not found." });
+            }
 
+            order.Status = newStatus;
+            _db.SaveChanges();
+
+            return Json(new { success = true });
+        }
 
 
     }

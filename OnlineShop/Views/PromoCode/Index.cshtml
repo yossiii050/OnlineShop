@@ -1,0 +1,35 @@
+﻿@model IEnumerable<OnlineShop.Models.Cart.PromoCode>
+
+<h2>Promo Codes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Discount Percentage</th>
+            <th>Expiry Date</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var promo in Model)
+        {
+            <tr>
+                <td>@promo.Code</td>
+                <td>@promo.DiscountPercentage</td>
+                <td>@promo.ExpiryDate.ToString("d")</td>
+                <td>@promo.IsActive</td>
+                <td>
+                    <a href="@Url.Action("Edit", "PromoCode", new { id = promo.Id })">Edit</a> |
+                    <a href="@Url.Action("Delete", "PromoCode", new { id = promo.Id })">Delete</a> |
+                    <a href="@Url.Action("ToggleActive", "PromoCode", new { id = promo.Id })">
+                        @(promo.IsActive ? "Deactivate" : "Activate")
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "PromoCode")" class="btn btn-primary">Create New Promo Code</a>

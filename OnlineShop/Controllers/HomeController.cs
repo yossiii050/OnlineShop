@@ -15,6 +15,7 @@ namespace OnlineShop.Controllers
         {
             _logger = logger;
             _db=db;
+            Console.WriteLine($"BrainTreeGate injected:");
 
         }
 
