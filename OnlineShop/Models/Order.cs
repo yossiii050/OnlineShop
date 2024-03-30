@@ -17,8 +17,10 @@ namespace OnlineShop.Models
 		public int Id { get; set; }
 		public DateTime OrderDate { get; set; }
 		public decimal TotalPrice { get; set; }
-		
-		public string UserId { get; set; }
+        public decimal FinalPrice { get; set; }
+        public decimal DiscountHas {  get; set; }
+
+        public string UserId { get; set; }
 		public virtual User User { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         public string ShipStreet { get; set; }

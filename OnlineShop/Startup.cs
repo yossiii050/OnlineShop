@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Models;
@@ -22,7 +23,7 @@ public class Startup
         Console.WriteLine($"fdsahf Environment::");
 
 
-
+        services.AddTransient<IEmailSender,IEmailSender>();
         
         //aes
         var aesSettings = Configuration.GetSection("AES").Get<AESSettings>();

@@ -8,6 +8,7 @@
     Microsoft.AspNetCore.Identity.UI
 
     Stripe.Net
+    Mailjet.Api
 ```
 
 ## Config SQL DB
