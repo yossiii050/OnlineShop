@@ -21,6 +21,7 @@ body {
   margin-bottom: 60px;
 }
 
+
 .product-container {
     width: 300px;
     height: 400px;
@@ -67,7 +68,7 @@ body {
         transition: all 0.5s;
     }
 
-.price {
+.items.price {
     font-size: 22px;
     line-height: 10px;
     font-weight: bold;
@@ -75,6 +76,24 @@ body {
     transform: translateY(40px);
     transition: all 0.7s;
 }
+
+    .items.price .old {
+        text-decoration: line-through;
+        color: #FEF5DF; /* Adjust the color to match your design */
+    }
+
+    .items.price .new {
+        color: #FEF5DF; /* Adjust the color to match your design */
+    }
+
+.product-container:hover .overlay .price {
+    transform: translateY(0px);
+    transition-delay: 0.3s;
+    opacity: 1;
+}
+
+
+
 
 .cart {
     font-size: 12px;
