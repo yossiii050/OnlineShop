@@ -130,9 +130,9 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             }
 
             // Encrypt the credit card information
-            byte[] encryptedCardNumber = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(CardNumber, key, iv);
+            byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(CardNumber, key, iv);
             //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
-            byte[] encryptedCVV = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(CVV, key, iv);
+            byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(CVV, key, iv);
 
             _db.CreditCards.Add(new CreditCard
             {

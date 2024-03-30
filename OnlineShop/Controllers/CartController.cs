@@ -87,8 +87,84 @@ namespace OnlineShop.Controllers
             return RedirectToAction("DisplayCart");
         }
 
+        [HttpPost]
+        public IActionResult CheckAvailability(int productId, int quantity)
+        {
+            var product = _db.Products.Find(productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
 
-        
+            if (quantity > product.Amount)
+            {
+                // Inform the user that the requested quantity is not available
+                return Json(new { error = "Requested quantity is not available. Only " + product.Amount + " available." });
+            }
+
+            // Update the cart with the new quantity
+            // (You will need to implement the logic to update the cart)
+            UpdateQuantity(productId, quantity);
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult UpdateQuantity(int id, int quantity)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var cartItem = _db.CartItems.FirstOrDefault(c => c.ProductId == id && c.UserId == userId);
+
+                var product = _db.Products.Find(id);
+                if (quantity>cartItem.Quantity)
+                {
+                    var NewQuant = quantity-cartItem.Quantity;
+
+                    cartItem.Quantity += NewQuant;
+                    product.Amount-=NewQuant;
+                }
+                else
+                {
+                    var difQuant = cartItem.Quantity-quantity;
+                    cartItem.Quantity = quantity;
+                    product.Amount += difQuant;
+                }
+                
+                _db.SaveChanges();
+            }
+            else
+            {
+                var cart = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+
+                var product = _db.Products.Find(id);
+
+
+                // Add the product to the cart
+                var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
+                if (quantity>cartItem.Quantity)
+                {
+                    var NewQuant = quantity-cartItem.Quantity;
+
+                    cartItem.Quantity += NewQuant;
+                    product.Amount-=NewQuant;
+                }
+                else
+                {
+                    var difQuant = cartItem.Quantity-quantity;
+                    cartItem.Quantity = quantity;
+                    product.Amount += difQuant;
+                }
+               
+                _db.SaveChanges();
+                // Save the cart back to the session
+                HttpContext.Session.SetObject("cart", cart);
+            }
+
+            return RedirectToAction("DisplayCart");
+        }
+
+
         public IActionResult DisplayCart()
         {
             List<CartItem> cart;
@@ -161,7 +237,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        public IActionResult Checkout(CheckoutViewModel model, string selectedCardId)
+        public IActionResult Checkout(CheckoutViewModel model, string selectedCardId,decimal PracentofDisc)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -170,14 +246,16 @@ namespace OnlineShop.Controllers
                 var cardinfo = _db.CreditCards
                     .Where(t => (t.Id).ToString() == selectedCardId)                    
                     .ToList();
-
+                var cartItemsSum=cartItems.Sum(item => item.ProductPrice * item.Quantity);
                 var order = new Order
                 {
                     UserId = userId,
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=cardinfo[0].fourLastNumber,
                     OrderDate = DateTime.UtcNow,
-                    TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    TotalPrice = cartItemsSum,
+                    FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
+                    DiscountHas=PracentofDisc*100,
                     ShipStreet = model.x.ShipStreet,
                     ShipCity = model.x.ShipCity,
                     ShipCountry = model.x.ShipCountry,
@@ -189,6 +267,7 @@ namespace OnlineShop.Controllers
                         Price = item.ProductPrice,
                         Name=item.ProductName
                     }).ToList()
+                    
                 };
 
                 _db.Orders.Add(order);
@@ -201,6 +280,7 @@ namespace OnlineShop.Controllers
             else
             {
                 var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
+                var cartItemsSum = cartItems.Sum(item => item.ProductPrice * item.Quantity);
 
                 var order = new Order
                 {
@@ -209,7 +289,9 @@ namespace OnlineShop.Controllers
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
                     OrderDate = DateTime.UtcNow,
-                    TotalPrice = cartItems.Sum(item => item.ProductPrice * item.Quantity),
+                    TotalPrice = cartItemsSum,
+                    FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
+                    DiscountHas=PracentofDisc*100,
                     ShipStreet = model.x.ShipStreet,
                     ShipCity = model.x.ShipCity,
                     ShipCountry = model.x.ShipCountry,
@@ -308,7 +390,6 @@ namespace OnlineShop.Controllers
                 // Apply discount
                 //var discountAmount = (totalPrice * promo.DiscountPercentage) / 100;
                 //totalPrice -= discountAmount;
-
                 return Json(new { discount = promo.DiscountPercentage/100});
             }
             else

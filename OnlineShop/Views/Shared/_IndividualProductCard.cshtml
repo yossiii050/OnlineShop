@@ -66,7 +66,11 @@
                     });
                 } else if (action === 'buy') {
                     // Buy now logic here
-                    alert('Proceeding to buy ' + quantity + ' item(s).');
+
+                    $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
+                        // Redirect to the cart or checkout page after adding the item to the cart
+                        window.location.href = '@Url.Action("DisplayCart", "Cart")'; // Change this to your cart or checkout URL
+                    });
                 }
             }
         }

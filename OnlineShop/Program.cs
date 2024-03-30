@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using OnlineShop.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using OnlineShop.Utillity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(); // Add this line
 
-
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 //here we add all services
 builder.Services.AddDbContext<DBProjectContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));

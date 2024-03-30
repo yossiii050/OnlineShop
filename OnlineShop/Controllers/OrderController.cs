@@ -38,6 +38,8 @@ namespace OnlineShop.Controllers
                 Status = order.Status,
                 OrderDate = order.OrderDate,
                 TotalPrice = order.TotalPrice,
+                DiscountHas=order.DiscountHas,
+                FinalPrice=order.FinalPrice,
                 confirmationNumber=order.confirmationNumber,
                 fourCardNumber=order.fourCardNumber,
                 Items = order.OrderItems.Select(item => new OrderItemViewModel
@@ -80,6 +82,8 @@ namespace OnlineShop.Controllers
                     Status = order.Status,
                     OrderDate = order.OrderDate,
                     TotalPrice = order.TotalPrice,
+                    DiscountHas=order.DiscountHas,
+                    FinalPrice=order.FinalPrice,
                     confirmationNumber=order.confirmationNumber,
                     fourCardNumber=order.fourCardNumber,
                     Items = order.OrderItems.Select(item => new OrderItemViewModel
