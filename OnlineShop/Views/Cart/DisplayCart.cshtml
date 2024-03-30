@@ -112,10 +112,14 @@
                                         <div class="mt-3">
                                             <p class="text-muted mb-2">Quantity</p>
                                             <div class="d-inline-flex">
-                                                <select class="form-select form-select-sm w-xl">
-                                                    <option value="@item.Quantity">@item.Quantity</option>
-                                                    <!-- Add more options if needed -->
+                                                <select class="form-select form-select-sm w-xl" name="quantity" onchange="checkAvailability(this, @item.ProductId)" data-product-id="@item.ProductId">
+                                                    @for (int i = 1; i <= 10; i++)
+                                                    {
+                                                        <!option value="@i" @(item.Quantity == i ? "selected" : "")>@i</!option>
+                                                    }
                                                 </select>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -193,12 +197,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="card-body p-4 pt-2">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Promo Code" id="promoCode">
-                                <button class="btn btn-primary" onclick="applyPromoCode()">Apply</button>
-                            </div>
-                        </div>
+                        
                         <!-- end table-responsive -->
                     </div>
                 </div>
@@ -210,23 +209,29 @@
 </div>
 
     <script>
-        function applyPromoCode() {
-            var promoCode = document.getElementById('promoCode').value;
-            $.ajax({
-                url: '@Url.Action("ApplyPromoCode", "Cart")',
-                type: 'POST',
-                data: { promoCode: promoCode },
-                success: function (response) {
-                    if (response.error) {
-                        alert(response.error);
-                    } else {
-                        document.getElementById('discount').innerText = @(totalPrice)*response.discount.toFixed(2);
-                    document.getElementById('finalprice').innerText = @((totalPrice * 0.18m)+(totalPrice)+25)-@(totalPrice)* response.discount;
-                    }
-                },
-                error: function () {
-                    alert('Error applying promo code');
+        
+
+    function checkAvailability(selectElement, productId) {
+        var selectedQuantity = selectElement.value;
+
+        $.ajax({
+            url: '@Url.Action("CheckAvailability", "Cart")',
+            type: 'POST', // Change this to POST
+            data: { productId: productId, quantity: selectedQuantity },
+            success: function (response) {
+                if (response.error) {
+                    alert(response.error);
+                    $(selectElement).val(product.Amount); // Reset to the available amount
                 }
-            });
-        }
+                else {
+                    // Reload the page to reflect the updated cart
+                    location.reload();
+                }
+            },
+            error: function () {
+                alert('Error checking availability');
+            }
+        });
+    }
+
     </script>
