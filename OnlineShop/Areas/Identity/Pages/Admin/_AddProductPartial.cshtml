@@ -3,7 +3,6 @@
 @inject DBProjectContext Context // Inject the DB context to access categories
 
 
-
 <form asp-page="/Admin/Dashboard" method="post">
         <div class="form-group">
         <label asp-for="Name" class="form-label">Name</label>
@@ -29,13 +28,16 @@
         <input asp-for="Amount" class="form-control" />
         <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
-    <div class="form-group">
+
+  
+
+    <!--<div class="form-group">
         <label asp-for="CategoryId" class="form-label">Category</label>
         <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
             <option value="">-- Select Category --</option>
         </select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>
+    </div>-->
 
     <div>
         <label for="CategoryId">Category:</label>
@@ -46,6 +48,8 @@
             }
         </select>
     </div>
+
+
 
     <div class="form-group">
         <label asp-for="DiscountPercentage">Discount Percentage</label>

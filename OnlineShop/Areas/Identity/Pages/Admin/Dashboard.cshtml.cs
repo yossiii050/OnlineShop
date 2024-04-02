@@ -31,18 +31,20 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
 
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(Product product)
         {
+            ModelState.Remove("Category");
+            ModelState.Remove("CartItems");
+
             if (!ModelState.IsValid)
             {
+                Categories = await _context.Categories.ToListAsync(); // Reload categories for the view
                 return Page();
             }
-
-            _context.Products.Add(NewProduct);
+            _context.Products.Add(product);
             await _context.SaveChangesAsync();
+            return RedirectToPage(); // Or redirect to the appropriate page        }
 
-            return RedirectToPage(); // Redirect to the dashboard page to refresh the content
         }
-
     }
 }
