@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
 </head>
+
 <style>
     :root {
         --pink: #e84393;
@@ -51,9 +51,9 @@
         background: rgba(255, 51, 153,.05);
     }
 
-        .heading span {
-            color: var(--pink);
-        }
+    .heading span {
+        color: var(--pink);
+    }
 
     .btn {
         display: inline-block;
@@ -66,9 +66,9 @@
         font-size: 1.7rem;
     }
 
-        .btn:hover {
-            background: var(--pink);
-        }
+    .btn:hover {
+        background: var(--pink);
+    }
 
     header {
         
@@ -84,49 +84,49 @@
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
     }
 
-        header .navbar-brand {
-            font-size: 3rem;
-            color: #333;
-            font-weight: bolder;
+    header .navbar-brand {
+        font-size: 3rem;
+        color: #333;
+        font-weight: bolder;
+    }
+
+        header .navbar-brand span {
+            color: var(--pink);
         }
 
-            header .navbar-brand span {
-                color: var(--pink);
-            }
+    header .navbar a {
+        font-size: 2rem;
+        padding: 0 1.5rem;
+        color: #666;
+    }
 
-        header .navbar a {
-            font-size: 2rem;
-            padding: 0 1.5rem;
-            color: #666;
-        }
+    header .navbar a:hover {
+        color: var(--pink);
+    }
 
-            header .navbar a:hover {
-                color: var(--pink);
-            }
+    header .icons a {
+        font-size: 2.5rem;
+        color: #333;
+        margin-left: 1.5rem;
+    }
 
-        header .icons a {
-            font-size: 2.5rem;
-            color: #333;
-            margin-left: 1.5rem;
-        }
+    header .icons a:hover {
+        color: var(--pink);
+    }
 
-            header .icons a:hover {
-                color: var(--pink);
-            }
+    header #toggler {
+        display: none;
+    }
 
-        header #toggler {
-            display: none;
-        }
-
-        header .fa-bars {
-            font-size: 3rem;
-            color: #333;
-            border-radius: .5rem;
-            padding: .5rem 1.5rem;
-            cursor: pointer;
-            border: .1rem solid rgba(0,0,0,.3);
-            display: none;
-        }
+    header .fa-bars {
+        font-size: 3rem;
+        color: #333;
+        border-radius: .5rem;
+        padding: .5rem 1.5rem;
+        cursor: pointer;
+        border: .1rem solid rgba(0,0,0,.3);
+        display: none;
+    }
 
     .home {
         display: flex;
@@ -137,32 +137,30 @@
         background-position: center;
     }
 
-        .home .content {
-            max-width: 50rem;
-        }
+    .home .content {
+        max-width: 50rem;
+    }
 
-            .home .content h3 {
-                font-size: 6rem;
-                color: #333;
-            }
+    .home .content h3 {
+        font-size: 6rem;
+        color: #333;
+    }
 
-            .home .content span {
-                font-size: 3.5rem;
-                color: var(--pink);
-                padding: 1rem 0;
-                line-height: 1.5;
-            }
+    .home .content span {
+        font-size: 3.5rem;
+        color: var(--pink);
+        padding: 1rem 0;
+        line-height: 1.5;
+    }
 
-            .home .content p {
-                font-size: 1.5rem;
-                color: #999;
-                padding: 1rem 0;
-                line-height: 1.5;
-            }
+    .home .content p {
+        font-size: 1.5rem;
+        color: #999;
+        padding: 1rem 0;
+        line-height: 1.5;
+    }
 
 
-
-    /* Add new style for form container */
     .form-container {
         display: flex;
         justify-content: center;
@@ -175,8 +173,7 @@
 
 </style>
 
-
-<body>
+<body>   
     <header>
 
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineShop</a>
@@ -186,9 +183,11 @@
             <a href="/">home</a>
 
             <a href="/Home/About">about</a>
+
             <a href="/Products/DisplayCategory">products</a>
 
             @if (User.IsInRole("Admin")) 
+
             {
                 <div class="dropdown" id="adminDropdown">
                     <a class="dropdown-toggle" role="button" id="adminDropdownToggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -267,6 +266,9 @@
             });
         });
     </script>
+
+    
+
 </body>
 
 

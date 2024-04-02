@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace OnlineShop.Util
+namespace OnlineShop.Utillity
 {
     public static class EncryptionHelper
     {

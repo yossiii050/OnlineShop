@@ -11,7 +11,15 @@
             <p>@Model.Description</p>
         </div>
         <div class="items price">
-            <p class="new">ILS @Model.Price</p>
+            @if (Model.IsOnSale)
+            {
+                <p class="old">ILS @Model.Price</p>
+                <p class="new">ILS @(Model.Price - (Model.Price * Model.DiscountPercentage / 100))</p>
+            }
+            else
+            {
+                <p class="new">ILS @Model.Price</p>
+            }
         </div>
         @if (Model.Amount > 0)
         {
@@ -66,7 +74,11 @@
                     });
                 } else if (action === 'buy') {
                     // Buy now logic here
-                    alert('Proceeding to buy ' + quantity + ' item(s).');
+
+                    $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
+                        // Redirect to the cart or checkout page after adding the item to the cart
+                        window.location.href = '@Url.Action("DisplayCart", "Cart")'; // Change this to your cart or checkout URL
+                    });
                 }
             }
         }

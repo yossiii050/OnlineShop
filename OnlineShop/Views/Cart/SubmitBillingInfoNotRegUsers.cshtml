@@ -364,6 +364,7 @@
                     @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "mt-2" }))
                     {
                         <input type="hidden" id="selectedCardLast4" name="selectedCardLast4" value="" />
+                        <input type="hidden" id="PracentofDisc" name="PracentofDisc" value="" />
 
                         <ol class="activity-checkout mb-0 px-4 mt-3">
                             <!-- Billing Info -->
@@ -544,11 +545,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @{
-                                    decimal subTotal = 0;
-                                }
-                                @foreach (var item in Model.CartItems)
-                                {
+                                    @{
+                                        decimal subTotal = 0;
+                                    }
+                                    @foreach (var item in Model.CartItems)
+                                    {
                                     <tr>
                                         <th scope="row"><img src="@item.Image" alt="product-img" title="product-img" class="avatar-lg rounded"></th>
                                         <td>
@@ -557,51 +558,47 @@
                                         </td>
                                         <td>₪@(item.ProductPrice * item.Quantity)</td>
                                     </tr>
-                                    subTotal += item.ProductPrice * item.Quantity;
-                                }
+                                        subTotal += item.ProductPrice * item.Quantity;
+                                    }
                                 <tr>
-                                    <td colspan="2">
-                                        <h5 class="font-size-14 m-0">Sub Total :</h5>
-                                    </td>
-                                    <td>
-                                        ₪@subTotal
-                                    </td>
+                                    <td>Sub Total :</td>
+                                    <td class="text-end">₪ @subTotal</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">
-                                        <h5 class="font-size-14 m-0">Discount :</h5>
-                                    </td>
-                                    <td>
-                                        - ₪@((subTotal * 0.10m).ToString("F2")) <!-- Assuming a 10% discount -->
-                                    </td>
+                                    <td>Discount :</td>
+                                    <td class="text-end">- ₪ <span id="discount">0.00</span></td>
+
+
                                 </tr>
                                 <tr>
-                                    <td colspan="2">
-                                        <h5 class="font-size-14 m-0">Shipping Charge :</h5>
-                                    </td>
-                                    <td>
-                                        ₪25
-                                    </td>
+                                    <td>Shipping Charge :</td>
+                                    <td class="text-end">₪ 25(calculate shipping here)</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">
-                                        <h5 class="font-size-14 m-0">Estimated Tax :</h5>
-                                    </td>
-                                    <td>
-                                        ₪@((subTotal * 0.18m).ToString("F2")) <!-- Assuming 18% tax -->
-                                    </td>
+                                    <td>Estimated Tax : </td>
+                                    <td class="text-end">₪ @((subTotal * 0.18m).ToString("F2")) (assuming 18% tax)</td>
                                 </tr>
                                 <tr class="bg-light">
-                                    <td colspan="2">
-                                        <h5 class="font-size-14 m-0">Total:</h5>
-                                    </td>
-                                    <td>
-                                        ₪@((subTotal - (subTotal * 0.10m) + 25 + (subTotal * 0.18m)).ToString("F2"))
+                                    <th>Total :</th>
+                                    <td class="text-end">
+                                        <span class="fw-bold">
+                                            ₪ <span id="finalprice">
+                                                    @(((subTotal)+(subTotal * 0.18m)+25).ToString("F2"))
+                                            </span>
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
+
                         </table>
                     </div>
+                    <div class="card-body p-4 pt-2">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Promo Code" id="promoCode">
+                            <button class="btn btn-primary" onclick="applyPromoCode()">Apply</button>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -609,3 +606,28 @@
     <!-- end row -->
 
 </div>
+    <script src="https://js.braintreegateway.com/web/dropin/1.33.0/js/dropin.min.js"></script>
+
+    <script>
+        function applyPromoCode() {
+            var promoCode = document.getElementById('promoCode').value;
+            $.ajax({
+                url: '@Url.Action("ApplyPromoCode", "Cart")',
+                type: 'POST',
+                data: { promoCode: promoCode },
+                success: function (response) {
+                    if (response.error) {
+                        alert(response.error);
+                    } else {
+                        document.getElementById('discount').innerText = @(subTotal)* response.discount.toFixed(2);
+                        document.getElementById('PracentofDisc').value = response.discount;
+
+                        document.getElementById('finalprice').innerText = @((subTotal * 0.18m)+(subTotal)+25)-@(subTotal) * response.discount;
+                    }
+                },
+                error: function () {
+                    alert('Error applying promo code');
+                }
+            });
+        }
+    </script>

@@ -8,7 +8,7 @@ namespace OnlineShop.Models.ViewModels
         public Order x{ get; set; }
 
         public List<CreditCard> userCards { get; set; }
-        
+        public Decimal FinalPrice { get; set; }
 
 
         public string CardNotRegUser { get; set; }

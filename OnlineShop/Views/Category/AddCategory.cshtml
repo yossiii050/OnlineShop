@@ -5,12 +5,62 @@
 }
 
 <h2>Add Category</h2>
+<style>
+    .category-form-container {
+        background: rgba(77, 77, 77, 0.9);
+        color: #FEF5DF;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px; /* Adjust as needed */
+        margin: auto; /* Center the form */
+    }
 
-<form asp-action="AddCategory" method="post">
-    <div>
-        <label asp-for="Name"></label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-family: 'Playfair Display', serif;
+        font-size: 18px;
+    }
+
+    .form-control {
+        background-color: transparent;
+        color: #FEF5DF;
+        border: 1px solid #FEF5DF;
+        border-radius: 5px;
+        padding: 10px;
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+    }
+
+        .form-control:focus {
+            border-color: #258cfb;
+            box-shadow: 0 0 0 0.2rem rgba(37, 140, 251, 0.25);
+        }
+
+    .btn-primary {
+        background-color: #258cfb;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+    }
+
+    .btn-primary:hover {
+        background-color: #1a6cba;
+    }
+</style>
+<div class="container mt-5">
+    <div class="category-form-container">
+        <form asp-action="AddCategory" method="post">
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">Category Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
     </div>
-    <button type="submit">Add Category</button>
-</form>
+</div>

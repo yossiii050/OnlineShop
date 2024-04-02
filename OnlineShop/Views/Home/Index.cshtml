@@ -6,16 +6,137 @@
 
 <style>
     body {
-        background-image: url(https://r4.wallpaperflare.com/wallpaper/986/511/579/hogwarts-legacy-hogwarts-harry-potter-video-game-art-screen-shot-hd-wallpaper-cfe1955f0761af86ae16b8591ffc66e6.jpg);
+        background-image: url(https://images.hdqwalls.com/download/hogwarts-legacy-2021-hf-3840x2160.jpg);
         background-repeat: no-repeat;
         background-size: cover; /* This will cover the entire element's background */
         background-position: center; /* This centers the background image */
     }
 </style>
 
+<style>
+    
+    .welcome-text {
+        font-family: 'Playfair Display', serif; /* Example font, adjust as per your product card's font */
+        color: #FEF5DF; /* Example color, adjust to match your product card */
+        font-size: 30px; /* Adjust as needed */
+        background: rgba(77, 77, 77, 0.5); /* Background similar to product card */
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .search-container {
+        text-align: right; /* Align to the right */
+        padding: 20px; /* Adjust padding as needed */
+        width: 100%; /* Make the container take up the entire width */
+    }
+
+    .search-box {
+        display: block; /* Make the box take up the entire line */
+        background: rgba(77, 77, 77, 0.9);
+        color: #FEF5DF;
+        padding: 10px; /* Adjust padding as needed */
+        border-radius: 10px;
+        width: 100%; /* Make the search box take up the entire width */
+    }
+
+    .search-input {
+        width: calc(100% - 140px); /* Adjust width to leave space for the button */
+        padding: 10px;
+        margin-right: 10px;
+        border: 1px solid #FEF5DF;
+        background-color: transparent;
+        color: #FEF5DF;
+        border-radius: 5px;
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+    }
+
+    .search-button {
+        background-color: #258cfb;
+        color: #FEF5DF;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+        float: right; /* Align the button to the right */
+    }
+
+    .search-button:hover {
+        background-color: #1a6cba;
+    }
+
+    .filter-container {
+        text-align: center;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .filter-box {
+        display: inline-block;
+        background: rgba(77, 77, 77, 0.9);
+        color: #FEF5DF;
+        padding: 10px;
+        border-radius: 10px;
+        width: auto;
+    }
+
+    .filter-input, .checkbox-input {
+        margin: 5px;
+        padding: 5px;
+        border: 1px solid #FEF5DF;
+        background-color: transparent;
+        color: #FEF5DF;
+        border-radius: 5px;
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+    }
+
+    .filter-input:focus {
+        background-color: rgba(77, 77, 77, 0.9); /* Match the product card background */
+        color: #FEF5DF; /* Match the product card text color */
+        outline: none; /* Remove the default focus outline */
+    }
+
+    .checkbox-input {
+        display: inline-block;
+    }
+
+    .checkbox-input input {
+        margin-right: 5px;
+    }
+
+    .filter-button {
+        background-color: #258cfb;
+        color: #FEF5DF;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+    }
+
+    .filter-button:hover {
+        background-color: #1a6cba;
+    }
+
+
+</style>
+
 <div class="container mt-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">Welcome</h1>
+    <div class="welcome-text mb-5">
+        <h1 class="display-4">Welcome to the Harry Potter store!</h1>
+    </div>
+    <div class="search-container text-center mb-4">
+        <div class="search-box">
+            <form asp-action="Search" asp-controller="Home" method="get">
+                <input type="text" name="search" placeholder="Search products..." class="search-input">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
     </div>
 
     <div class="row row-cols-3 row-cols-md-3 g-4">
@@ -27,3 +148,46 @@
         }
     </div>
 </div>
+
+<div class="filter-container text-center mb-4">
+    <div class="filter-box">
+        <form asp-action="Filter" asp-controller="Home" method="get">
+            <select name="sort" class="filter-input">
+                <option value="">Sort By</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="popular">Most Popular</option>
+            </select>
+            <select name="category" class="filter-input">
+                <option value="">Select Category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <input type="text" name="priceRange" class="filter-input" placeholder="Price Range (e.g., 10-50)">
+            <div class="checkbox-input">
+                <input type="checkbox" id="filterOnSale" name="onSale" value="true" class="form-check-input">
+                <label for="filterOnSale" class="form-check-label">On Sale</label>
+            </div>
+
+            <button type="submit" class="filter-button">Apply Filters</button>
+        </form>
+    </div>
+</div>
+
+
+@* <audio id="audioPlayer" autoplay>
+    <source src="~/audio/HP.MP3" type="audio/mpeg">
+</audio>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var audio = document.getElementById('audioPlayer');
+        audio.play();
+        audio.addEventListener('ended', function () {
+            audio.pause();
+        });
+    });
+</script> *@
+

@@ -126,7 +126,10 @@
                             </tbody>
                         </table>
                         <div class="order-total">
-                            <p><strong>Total:</strong> @order.TotalPrice.ToString("C")</p>
+                            <p><strong>Sub Total:</strong> @order.TotalPrice.ToString("C")</p>
+                            <p><strong>Discount:</strong> @order.DiscountHas %</p>
+                            <p><strong>Shipping Charge:</strong>₪ 25</p>
+                            <p><strong>Total:</strong> @order.FinalPrice.ToString("C")</p>
                         </div>
                     }
                     else
