@@ -214,10 +214,11 @@
 
                                                         <div style="text-align: right; margin-bottom: 20px;">
                                                             <select id="roleSelect" onchange="filterByRole()" style="padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; outline: none; cursor: pointer;">
-                                                                <option value="All">All Users</option> <!-- "All Users" option -->
-                                                                <option value="Admin">Admin</option>
-                                                                <option value="Advanced">Advanced</option>
-                                                                <option value="Regular">Regular</option>
+                                                                <option value="All" style="color: black;">All Users</option> <!-- "All Users" option -->
+                                                                <option value="Admin" style="color: #441BD1;">Admin</option>
+                                                                <option value="Advanced" style="color: #D11B84;">Advanced</option>
+                                                                <option value="Regular" style="color: #0C973C;">Regular</option>
+
                                                             </select>
                                                         </div>
 
@@ -232,7 +233,7 @@
                                                                     <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">City</th>
                                                                     <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Zip Code</th>
                                                                     <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Role</th>
-                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Actions</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Upgrade</th>
 
                                                                 </tr>
                                                             </thead>
@@ -240,9 +241,9 @@
                                                                 @foreach (var user in usersWithRoles)
                                                                 {
                                                                     var roleColor = "#FFFFFF"; // Default color
-                                                                    if (user.RoleName == "Regular") roleColor = "green";
-                                                                    else if (user.RoleName == "Advanced") roleColor = "pink";
-                                                                    else if (user.RoleName == "Admin") roleColor = "blue";
+                                                                    if (user.RoleName == "Regular") roleColor = "#0C973C";
+                                                                    else if (user.RoleName == "Advanced") roleColor = "#D11B84";
+                                                                    else if (user.RoleName == "Admin") roleColor = "#441BD1";
 
                                                                     <tr data-role="@user.RoleName">
                                                                         <td style="border: 1px solid #ddd; padding: 8px;">@user.FirstName</td>
@@ -251,7 +252,7 @@
                                                                         <td style="border: 1px solid #ddd; padding: 8px;">@user.City</td>
                                                                         <td style="border: 1px solid #ddd; padding: 8px;">@user.ZipCode</td>
                                                                         <td style="border: 1px solid #ddd; padding: 8px;">
-                                                                            <span style="color: @roleColor;">@user.RoleName</span>
+                                                                            <span style="color: @roleColor; font-weight: bold;">@user.RoleName</span>
                                                                         </td>
                                                                         <td style="border: 1px solid #ddd; padding: 8px;">
                                                                             @if (user.RoleName == "Advanced") // Only show upgrade button for Advanced users
@@ -290,35 +291,13 @@
                                                 <div>
                                                     <h4 class="card-title card-title-dash"></h4>
 
-                                                        <h3>Users Summary</h3>
-                                                        <table style="width: 100%; border-collapse: collapse;">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Email</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Zip Code</th>
+                                                        <h3>Add / Remove Products</h3>
+                                                        
+                                                        <div>
+                                                            <h2>Add New Product</h2>
+                                                            @Html.Partial("_AddProductPartial", Model.NewProduct)
+                                                        </div>
 
-                                                                    <!-- Add more headers as needed -->
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach (var user in Model.Users)
-                                                                {
-                                                                    <tr>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.UserName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Address.City</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Address.ZipCode</td>
-
-
-
-                                                                    </tr>
-                                                                }
-                                                            </tbody>
-                                                        </table>
                                                     </div>
 
                                                </div>
@@ -387,38 +366,8 @@
                                                         <h4 class="card-title card-title-dash"></h4>
 
                                                         <h3> Advanced Users Summary</h3>
-                                                        <table style="width: 100%; border-collapse: collapse;">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Email</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th> <!-- Added City header -->
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Zip Code</th> <!-- Added Zip Code header -->
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Role</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach (var user in usersWithRoles) // Ensure this matches your user list variable
-                                                                {
-                                                                    var roleColor = "#FFFFFF"; // Default color
-                                                                    if (user.RoleName == "Regular") roleColor = "green";
-                                                                    else if (user.RoleName == "Advanced") roleColor = "pink";
-                                                                    else if (user.RoleName == "Admin") roleColor = "blue";
-
-                                                                    <tr>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Email</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.City</td> <!-- Display City -->
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.ZipCode</td> <!-- Display Zip Code -->
-                                                                        <td style="border: 1px solid #333; padding: 8px;">
-                                                                            <span style="color: @roleColor;">@user.RoleName</span> <!-- Color-coded role name -->
-                                                                        </td>
-                                                                    </tr>
-                                                                }
-                                                            </tbody>
-                                                        </table>
+                                                        
+                                                      
 
 
 
