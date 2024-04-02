@@ -638,22 +638,18 @@ namespace OnlineShop.Migrations
                                 .HasColumnType("nvarchar(450)");
 
                             b1.Property<string>("City")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("City");
 
                             b1.Property<string>("Country")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Country");
 
                             b1.Property<string>("Street")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Street");
 
                             b1.Property<string>("ZipCode")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("ZipCode");
 
