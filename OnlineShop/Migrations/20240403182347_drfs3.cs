@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineShop.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:OnlineShop/Migrations/20240403164051_dd33.cs
-    public partial class dd33 : Migration
-========
-    public partial class mog : Migration
->>>>>>>> a57f53b7ec2292f7cedec130755274ca5b5e9d7d:OnlineShop/Migrations/20240402105615_mog.cs
+    public partial class drfs3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -238,7 +234,6 @@ namespace OnlineShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:OnlineShop/Migrations/20240403164051_dd33.cs
                 name: "messages",
                 columns: table => new
                 {
@@ -262,8 +257,6 @@ namespace OnlineShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-========
->>>>>>>> a57f53b7ec2292f7cedec130755274ca5b5e9d7d:OnlineShop/Migrations/20240402105615_mog.cs
                 name: "Orders",
                 columns: table => new
                 {
@@ -431,14 +424,11 @@ namespace OnlineShop.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:OnlineShop/Migrations/20240403164051_dd33.cs
                 name: "IX_messages_UserId",
                 table: "messages",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-========
->>>>>>>> a57f53b7ec2292f7cedec130755274ca5b5e9d7d:OnlineShop/Migrations/20240402105615_mog.cs
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -487,12 +477,9 @@ namespace OnlineShop.Migrations
                 name: "CreditCards");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:OnlineShop/Migrations/20240403164051_dd33.cs
                 name: "messages");
 
             migrationBuilder.DropTable(
-========
->>>>>>>> a57f53b7ec2292f7cedec130755274ca5b5e9d7d:OnlineShop/Migrations/20240402105615_mog.cs
                 name: "OrderItems");
 
             migrationBuilder.DropTable(

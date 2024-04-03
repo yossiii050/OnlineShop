@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240403164051_dd33")]
-    partial class dd33
+    [Migration("20240403182347_drfs3")]
+    partial class drfs3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -454,6 +454,9 @@ namespace OnlineShop.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DiscountPercentage")
+                        .HasColumnType("int");
 
                     b.Property<string>("Image")
                         .IsRequired()
