@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Controllers
 {
-	public class ProductController : Controller
-	{
+	public class ProductController : BaseController
+    {
 		private readonly DBProjectContext _context;
 
-		public ProductController(DBProjectContext context)
-		{
+		public ProductController(DBProjectContext context) : base(context)
+        {
 			_context = context;
 		}
 

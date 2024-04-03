@@ -5,23 +5,81 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Models.ViewModels;
 using OnlineShop.Models.BrainTree;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Mailjet.Client.Resources;
+using Braintree;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OnlineShop.Models.Message;
 //using System.Data.Entity;
 
 namespace OnlineShop.Controllers
 {
-    public class CartController : Controller
+    public class CartController : BaseController
     {
         private DBProjectContext _db;
-        //private readonly IBrainTreeGate _brain;
-        public CartController(DBProjectContext db)//, IBrainTreeGate brain)
+        
+        private readonly IBraintreeService _braintreeService;
+
+        public CartController(DBProjectContext db) : base(db)//, IBrainTreeGate brain)
         {
             //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
-            //_brain=brain;
-            
+            //_braintreeService = braintreeService;
+
+
 
         }
 
+        public IActionResult Test()
+        {
+            var gateway = new BraintreeGateway
+            {
+                Environment = Braintree.Environment.SANDBOX,
+                MerchantId= "q2h7nz489hsfj9r7",
+                PublicKey= "9p7mxg8yjfg5vfgm",
+                PrivateKey= "83f9cc7b1390a399bcc471aeaebfec5b"
+            };
+
+            TransactionRequest request = new TransactionRequest
+            {
+                Amount = 1000.00M,
+                PaymentMethodNonce = "CreditCard",
+                Options = new TransactionOptionsRequest
+                {
+                    SubmitForSettlement = true
+                }
+            };
+
+            Result<Transaction> result = gateway.Transaction.Sale(request);
+
+            if (result.IsSuccess())
+            {
+                Transaction transaction = result.Target;
+                Console.WriteLine("Success!: " + transaction.Id);
+            }
+            else if (result.Transaction != null)
+            {
+                Transaction transaction = result.Transaction;
+                Console.WriteLine("Error processing transaction:");
+                Console.WriteLine("  Status: " + transaction.Status);
+                Console.WriteLine("  Code: " + transaction.ProcessorResponseCode);
+                Console.WriteLine("  Text: " + transaction.ProcessorResponseText);
+            }
+            else
+            {
+                foreach (ValidationError error in result.Errors.DeepAll())
+                {
+                    Console.WriteLine("Attribute: " + error.Attribute);
+                    Console.WriteLine("  Code: " + error.Code);
+                    Console.WriteLine("  Message: " + error.Message);
+                }
+            }
+            return View();
+        }
+
+        
+
+    
 
         [HttpPost]
         public IActionResult AddToCart(int id, int quantity)
@@ -270,6 +328,15 @@ namespace OnlineShop.Controllers
                     
                 };
 
+                var message = new MessageInbox
+                {
+                    Subject = "Order No."+order.confirmationNumber,
+                    Content = "your order has been successfully placed.",
+                    ReceivedTime = DateTime.Now,
+                    IsRead = false,
+                    UserId=userId
+                };
+                _db.messages.Add(message);
                 _db.Orders.Add(order);
                 _db.CartItems.RemoveRange(cartItems); // Remove the cart items
                 _db.SaveChanges();
@@ -337,8 +404,8 @@ namespace OnlineShop.Controllers
         public IActionResult SubmitBillingInfo()
         {
             var viewModel = new CheckoutViewModel();
-            List<string> countries = Address.CountryList;
-            ViewBag.CountryList = Address.CountryList;
+            List<string> countries = Models.Address.CountryList;
+            ViewBag.CountryList = Models.Address.CountryList;
 
             if (User.Identity.IsAuthenticated)
             {

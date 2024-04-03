@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Models.BrainTree
 {
-    public interface IBrainTreeGate
+    public interface IBraintreeService
     {
         IBraintreeGateway CreateGateway();
 
