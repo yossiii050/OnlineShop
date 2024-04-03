@@ -139,17 +139,7 @@
         </div>
     </div>
 
-    <div class="row row-cols-3 row-cols-md-3 g-4">
-        @foreach (var prod in Model.Products)
-        {
-            <div class="col">
-                <partial name="_IndividualProductCard" model="prod" />
-            </div>
-        }
-    </div>
-</div>
-
-<div class="filter-container text-center mb-4">
+    <div class="filter-container text-center mb-4">
     <div class="filter-box">
         <form asp-action="Filter" asp-controller="Home" method="get">
             <select name="sort" class="filter-input">
@@ -177,17 +167,14 @@
 </div>
 
 
-@* <audio id="audioPlayer" autoplay>
-    <source src="~/audio/HP.MP3" type="audio/mpeg">
-</audio>
+    <div class="row row-cols-3 row-cols-md-3 g-4">
+        @foreach (var prod in Model.Products)
+        {
+            <div class="col">
+                <partial name="_IndividualProductCard" model="prod" />
+            </div>
+        }
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var audio = document.getElementById('audioPlayer');
-        audio.play();
-        audio.addEventListener('ended', function () {
-            audio.pause();
-        });
-    });
-</script> *@
+
 

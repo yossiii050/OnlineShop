@@ -12,6 +12,8 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
 
         public Product NewProduct { get; set; }
 
+        public List<Product> Products { get; set; }
+
         public List<User> Users { get; set; }
 
         public List<Category> Categories { get; set; } // To hold the categories for the dropdown
@@ -27,7 +29,7 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
         {
             Users = await _context.Users.ToListAsync();
             Categories = await _context.Categories.ToListAsync();
-
+            Products = await _context.Products.Include(p => p.Category).ToListAsync();
 
         }
 
@@ -45,6 +47,37 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
             await _context.SaveChangesAsync();
             return RedirectToPage(); // Or redirect to the appropriate page        }
 
+        }
+
+        public async Task<IActionResult> OnPostEditAsync(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Load the categories for the dropdown to repopulate the form.
+            // You would typically pass the product to a form to edit it.
+            Categories = await _context.Categories.ToListAsync();
+
+            // You would need to have a way to show the edit form and populate it with the product details.
+            // This could be done using a Partial View or a Modal Dialog.
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+            }
+
+            // After deletion, redirect to the Dashboard page to refresh the product list.
+            return RedirectToPage();
         }
     }
 }

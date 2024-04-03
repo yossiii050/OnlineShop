@@ -19,6 +19,7 @@
     var totalUsers = 0;
     var totalAdmins = 0;
     var totalAdvanced = 0;
+    var totalOrders = 0;
     var advancedUsers = new List<dynamic>();
     var usersWithRoles = new List<dynamic>();
 
@@ -81,6 +82,9 @@
             }
         }
 
+        var command5 = new SqlCommand("SELECT COUNT(*) FROM Orders", connection1);
+        totalOrders = (int)command5.ExecuteScalar();
+
     }
 }
 
@@ -132,34 +136,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="home-tab">
-                <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab"
-                               aria-controls="overview" aria-selected="true">Overview</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab"
-                               aria-selected="false">Audiences</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#demographics" role="tab"
-                               aria-selected="false">Demographics</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab"
-                               aria-selected="false">More</a>
-                        </li>
-                    </ul>
-                    <div>
-                        
-                        <div class="btn-wrapper">
-                            <a href="#" class="btn btn-outline-dark align-items-center"><i class="icon-share"></i> Share</a>
-                            <a href="#" class="btn btn-outline-dark"><i class="icon-printer"></i> Print</a>
-                            <a href="#" class="btn btn-outline-dark align-items-center"><i class="icon-download"></i> Export</a>
-                        </div>
-                    </div>
-                </div>
+               
                
                 <div class="tab-content tab-content-basic">
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
@@ -170,32 +147,36 @@
                                     <div>
                                         <p class="statistics-title">Clients</p>
                                         <h3 class="rate-percentage">15</h3>
-                                        <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.5%</span></p>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i></p>
                                     </div>
                                     <div>
                                         <p class="statistics-title">Advanced Users</p>
                                         <h3 class="rate-percentage">@totalAdvanced</h3>
-                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
                                     </div>
                                     <div>
                                         <p class="statistics-title">Admins</p>
                                         <h3 class="rate-percentage">@totalAdmins</h3>
-                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
                                     </div>
                                     <div>
                                         <p class="statistics-title">Total Users</p>
                                         <h3 class="rate-percentage">@totalUsers</h3>
-                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
-                                    </div>                              
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></p>
+                                    </div>         
+                                    
                                     <div>
                                         <p class="statistics-title">New Orders</p>
-                                        <h3 class="rate-percentage">20</h3>
-                                        <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i>+5</p>
-                                    </div>                                  
+                                        <h3 class="rate-percentage">@totalOrders</h3>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></p>
+                                    </div>
+
+                                                                    
                                     
                                 </div>
                             </div>
                         </div>
+
 
 
                         <div class="row">
@@ -208,7 +189,7 @@
                                                     <div>
                                                         <h4 class="card-title card-title-dash"></h4>
 
-                                                        <h3> Role Table View</h3>
+                                                        <h2><b> Role Table View</b></h2>
 
 
 
@@ -281,6 +262,64 @@
                             </div>
                         </div>
 
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">Add New Product</h2>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                        <div>
+                                            @Html.Partial("_AddProductPartial", Model.NewProduct)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">Delete Product</h2>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Price</th>
+                                                    <th>Description</th>
+                                                    <th>Amount</th>
+                                                    <th>Category</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var product in Model.Products)
+                                                {
+                                                    <tr>
+                                                        <td>@product.Name</td>
+                                                        <td>@product.Price</td>
+                                                        <td>@product.Description</td>
+                                                        <td>@product.Amount</td>
+                                                        <td>@product.Category.Name</td>
+                                                        
+                                                        <td>
+                                                            <a asp-page-handler="Edit" asp-route-id="@product.Id" class="btn btn-primary">Edit</a>
+                                                            <a asp-page-handler="Delete" asp-route-id="@product.Id" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
                         <div class="row">
                         <div class="col-lg-8 d-flex flex-column">
                             <div class="row flex-grow">
@@ -291,10 +330,10 @@
                                                 <div>
                                                     <h4 class="card-title card-title-dash"></h4>
 
-                                                        <h3>Add / Remove Products</h3>
+                                                        <h2>Add New Product</h2>
                                                         
                                                         <div>
-                                                            <h2>Add New Product</h2>
+                                                            
                                                             @Html.Partial("_AddProductPartial", Model.NewProduct)
                                                         </div>
 
