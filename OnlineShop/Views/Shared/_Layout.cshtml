@@ -195,11 +195,20 @@
                         Admin Management
                     </a>
                     <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
-                        <a class="dropdown-item" href="/Identity/Admin/Dashboard">Dashboard</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="dropdown-item" href="/Identity/Admin/Dashboard">Dashboard</a>
+                        }
+                        
                         <a class="dropdown-item" href="/Category">Categories Manage</a>
                         <a class="dropdown-item" href="/Product">Products Manage</a>
                         <a class="dropdown-item" href="/order">Orders</a>
-                        <a class="dropdown-item" href="/promocode">Promo Codes</a>
+                        
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="dropdown-item" href="/promocode">Promo Codes</a>
+                        }
                     </div>
                 </div>
             }
