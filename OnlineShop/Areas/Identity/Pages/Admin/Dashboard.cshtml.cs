@@ -136,5 +136,67 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
                 }
             }
         }
+
+        public async Task<IActionResult> OnPostDowngradeUserRoleAsync(string userId)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Find the existing role entry for the user
+                    var currentRoleEntry = await _context.UserRoles
+                        .FirstOrDefaultAsync(ur => ur.UserId == userId);
+
+                    if (currentRoleEntry == null)
+                    {
+                        // The user does not have a role, handle appropriately
+                        transaction.Rollback();
+                        return Page();
+                    }
+
+                    // Determine the current role name
+                    var currentRoleName = await _context.Roles
+                        .Where(r => r.Id == currentRoleEntry.RoleId)
+                        .Select(r => r.Name)
+                        .SingleOrDefaultAsync();
+
+                    // Define the new role based on the current role
+                    string newRoleName = currentRoleName == "Admin" ? "Advanced" : "Regular";
+
+                    // Get the new role ID from the AspNetRoles table
+                    var newRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == newRoleName);
+                    if (newRole == null)
+                    {
+                        // The new role doesn't exist in AspNetRoles table, handle the error
+                        transaction.Rollback();
+                        return Page();
+                    }
+
+                    // Remove the existing role entry
+                    _context.UserRoles.Remove(currentRoleEntry);
+                    await _context.SaveChangesAsync();
+
+                    // Add the new role entry for the user
+                    var newUserRole = new IdentityUserRole<string>
+                    {
+                        UserId = userId,
+                        RoleId = newRole.Id
+                    };
+                    _context.UserRoles.Add(newUserRole);
+                    await _context.SaveChangesAsync();
+
+                    // Commit the transaction
+                    transaction.Commit();
+                    return RedirectToPage();
+                }
+                catch (Exception)
+                {
+                    // If any exception occurs, rollback the transaction and handle it
+                    transaction.Rollback();
+                    throw; // Re-throw the exception to handle it elsewhere (or to return an error response)
+                }
+            }
+        }
+
     }
 }
