@@ -30,10 +30,10 @@
         var command1 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers", connection1);
         totalUsers = (int)command1.ExecuteScalar();
         
-        var command2 = new SqlCommand("SELECT COUNT(*) FROM Admins", connection1);
+        var command2 = new SqlCommand("SELECT COUNT(*) FROM AspNetUserRoles WHERE RoleId=(SELECT RoleId FROM AspNetRoles WHERE Name='Admin')", connection1);
         totalAdmins = (int)command2.ExecuteScalar();
 
-        var command3 = new SqlCommand("SELECT COUNT(*) FROM Admins", connection1);
+        var command3 = new SqlCommand("SELECT COUNT(*) FROM AspNetUserRoles WHERE RoleId=(SELECT RoleId FROM AspNetRoles WHERE Name='Advanced') ", connection1);
         totalAdvanced = (int)command3.ExecuteScalar();
         
        // var command4 = new SqlCommand("SELECT * FROM AspNetUserRoles WHERE (SELECT id FROM AspNetRoles WHERE Name = "Admin")", connection);
@@ -88,8 +88,13 @@
     }
 }
 
-
 <style>
+    body {
+        background-image: url(https://images.hdqwalls.com/download/hogwarts-legacy-2021-hf-3840x2160.jpg);
+        background-repeat: no-repeat;
+        background-size: cover; /* This will cover the entire element's background */
+        background-position: center; /* This centers the background image */
+    }
     .btn-outline-dark {
         background-color: lavender;
         border-color: lavender;
@@ -129,6 +134,10 @@
     }
 </script>
 
+
+<br />
+<br />
+<br />
 
 
 
@@ -176,6 +185,9 @@
                                 </div>
                             </div>
                         </div>
+
+                        <br />
+                        <br /><br />
 
 
 
@@ -262,6 +274,9 @@
                             </div>
                         </div>
 
+                        <br />
+                        <br /><br />
+
 
 
                         <div class="row">
@@ -310,111 +325,42 @@
                                 </div>
                             </div>
                         </div>
-
-
-
+                        <br />
+                        <br /><br />
 
 
                         <div class="row">
-                        <div class="col-lg-8 d-flex flex-column">
-                            <div class="row flex-grow">
-                                <div class="col-12 grid-margin stretch-card">
-                                    <div class="card card-rounded">
-                                        <div class="card-body">
-                                            <div class="d-sm-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <h4 class="card-title card-title-dash"></h4>
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title"> Categories </h2>
 
-                                                        <h2>Add New Product</h2>
-                                                        
-                                                        <div>
-                                                            
-                                                            @Html.Partial("_AddProductPartial", Model.NewProduct)
-                                                        </div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var category in Model.Categories)
+                                                {
+                                                    <tr>
+                                                        <td>@category.Name</td>
 
-                                                    </div>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <a href="/Category" class="btn btn-primary">Edit / Delete Catgories</a>
+                                        <a href="/Category/AddCategory" class="btn btn-primary">Add New Category</a>
 
-                                               </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-lg-8 d-flex flex-column">
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="d-sm-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <h4 class="card-title card-title-dash"></h4>
-
-                                                        <h3> Advanced Users Summary</h3>
-                                                        <table style="width: 100%; border-collapse: collapse;">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">First Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Last Name</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Email</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">City</th>
-                                                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Zip Code</th>
-
-                                                                    <!-- Add more headers as needed -->
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach (var user in advancedUsers)
-                                                                {
-                                                                    <tr>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.FirstName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.LastName</td>
-                                                                        <td style="border: 1px solid #333; padding: 8px;">@user.Email</td>
-
-
-
-                                                                    </tr>
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-8 d-flex flex-column">
-                                <div class="row flex-grow">
-                                    <div class="col-12 grid-margin stretch-card">
-                                        <div class="card card-rounded">
-                                            <div class="card-body">
-                                                <div class="d-sm-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <h4 class="card-title card-title-dash"></h4>
-
-                                                        <h3> Advanced Users Summary</h3>
-                                                        
-                                                      
-
-
-
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <br />
+                        <br /><br />
 
 
 
