@@ -78,43 +78,44 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
 
         public async Task<IActionResult> OnPostUpgradeUserRoleAsync(string userId)
         {
-            // Find the existing role for the user
-            var currentRole = await _context.UserRoles
-                .FirstOrDefaultAsync(ur => ur.UserId == userId);
-
-            if (currentRole == null)
-            {
-                // Handle the case where the role is not found
-                return Page();
-            }
-
-            var newRole1 = await _context.Roles
-                            .FirstOrDefaultAsync(r => r.Name == "Advanced");
-            if (newRole1 == null)
-            {
-                // Handle the situation where the role does not exist.
-            }
-
-            // Determine the new role ID based on the current role
-            var newRoleId = (currentRole.RoleId == "RegularRoleId") ? "AdvancedRoleId" : "AdminRoleId";
-
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    // Remove the existing role
-                    _context.UserRoles.Remove(currentRole);
-                    await _context.SaveChangesAsync();
+                    // Find the current role entry for the user
+                    var currentRoleEntry = await _context.UserRoles
+                        .FirstOrDefaultAsync(ur => ur.UserId == userId);
 
-                    // Add the new role
-                    var newRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Advanced");
-                    if (newRole == null)
+                    if (currentRoleEntry == null)
                     {
-                        // The role doesn't exist in AspNetRoles table, handle the error
+                        // The user does not have a role, handle appropriately
                         transaction.Rollback();
                         return Page();
                     }
 
+                    // Determine the current role name
+                    var currentRoleName = await _context.Roles
+                        .Where(r => r.Id == currentRoleEntry.RoleId)
+                        .Select(r => r.Name)
+                        .SingleOrDefaultAsync();
+
+                    // Define the new role based on the current role
+                    string newRoleName = currentRoleName == "Regular" ? "Advanced" : "Admin";
+
+                    // Get the new role ID from the AspNetRoles table
+                    var newRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == newRoleName);
+                    if (newRole == null)
+                    {
+                        // The new role doesn't exist in AspNetRoles table, handle the error
+                        transaction.Rollback();
+                        return Page();
+                    }
+
+                    // Remove the existing role entry
+                    _context.UserRoles.Remove(currentRoleEntry);
+                    await _context.SaveChangesAsync();
+
+                    // Add the new role entry for the user
                     var newUserRole = new IdentityUserRole<string>
                     {
                         UserId = userId,
@@ -123,17 +124,17 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
                     _context.UserRoles.Add(newUserRole);
                     await _context.SaveChangesAsync();
 
+                    // Commit the transaction
                     transaction.Commit();
                     return RedirectToPage();
                 }
                 catch (Exception)
                 {
+                    // If any exception occurs, rollback the transaction and handle it
                     transaction.Rollback();
-                    throw;
+                    throw; // Re-throw the exception to handle it elsewhere (or to return an error response)
                 }
             }
-
-            return RedirectToPage();
         }
     }
 }
