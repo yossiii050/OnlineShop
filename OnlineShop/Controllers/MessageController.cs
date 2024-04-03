@@ -5,10 +5,10 @@ using OnlineShop.Models.Message;
 using System.Security.Claims;
 namespace OnlineShop.Controllers
 {
-    public class MessageController : Controller
+    public class MessageController : BaseController
     {
         private readonly DBProjectContext _context;
-        public MessageController(DBProjectContext context)
+        public MessageController(DBProjectContext context): base(context)
         {
             _context = context;
         }

@@ -12,10 +12,10 @@ using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
-    public class OrderController : Controller
+    public class OrderController : BaseController
     {
         private DBProjectContext _db;
-        public OrderController(DBProjectContext db)
+        public OrderController(DBProjectContext db):base(db)
         {
             _db = db;
         }

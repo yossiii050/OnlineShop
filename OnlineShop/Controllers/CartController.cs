@@ -14,13 +14,13 @@ using OnlineShop.Models.Message;
 
 namespace OnlineShop.Controllers
 {
-    public class CartController : Controller
+    public class CartController : BaseController
     {
         private DBProjectContext _db;
         
         private readonly IBraintreeService _braintreeService;
 
-        public CartController(DBProjectContext db)//, IBrainTreeGate brain)
+        public CartController(DBProjectContext db) : base(db)//, IBrainTreeGate brain)
         {
             //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;

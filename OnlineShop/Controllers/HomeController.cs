@@ -7,12 +7,12 @@ using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
 
         private readonly ILogger<HomeController> _logger;
         private readonly DBProjectContext _db;
-        public HomeController(ILogger<HomeController> logger, DBProjectContext db)
+        public HomeController(ILogger<HomeController> logger, DBProjectContext db) : base(db)
         {
             _logger = logger;
             _db=db;

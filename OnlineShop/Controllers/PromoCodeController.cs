@@ -4,11 +4,11 @@ using OnlineShop.Models.Cart;
 
 namespace OnlineShop.Controllers
 {
-    public class PromoCodeController : Controller
+    public class PromoCodeController : BaseController
     {
         private readonly DBProjectContext _context;
 
-        public PromoCodeController(DBProjectContext context)
+        public PromoCodeController(DBProjectContext context) : base(context)
         {
             _context = context;
         }

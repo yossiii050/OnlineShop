@@ -6,12 +6,12 @@ using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly UserManager<User> _userManager;
 
         private readonly DBProjectContext _users;
-        public AccountController(UserManager<User> userManager,DBProjectContext users)
+        public AccountController(UserManager<User> userManager,DBProjectContext users) : base(users)
         {
             _users=users;
             _userManager=userManager;
