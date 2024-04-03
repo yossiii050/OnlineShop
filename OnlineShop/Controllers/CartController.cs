@@ -9,6 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Mailjet.Client.Resources;
 using Braintree;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OnlineShop.Models.Message;
 //using System.Data.Entity;
 
 namespace OnlineShop.Controllers
@@ -327,6 +328,15 @@ namespace OnlineShop.Controllers
                     
                 };
 
+                var message = new MessageInbox
+                {
+                    Subject = "Order No."+order.confirmationNumber,
+                    Content = "your order has been successfully placed.",
+                    ReceivedTime = DateTime.Now,
+                    IsRead = false,
+                    UserId=userId
+                };
+                _db.messages.Add(message);
                 _db.Orders.Add(order);
                 _db.CartItems.RemoveRange(cartItems); // Remove the cart items
                 _db.SaveChanges();

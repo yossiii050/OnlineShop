@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
@@ -14,6 +15,7 @@ namespace OnlineShop.Controllers
         {
             _users=users;
             _userManager=userManager;
+
         }
             
         

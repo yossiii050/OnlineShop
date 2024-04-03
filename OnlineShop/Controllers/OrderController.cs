@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using OnlineShop.Models;
 using OnlineShop.Models.Cart;
-
+using OnlineShop.Models.Message;
 using OnlineShop.Models.ViewModels;
 using System.Linq;
 using System.Security.Claims;
@@ -118,6 +119,45 @@ namespace OnlineShop.Controllers
             }
 
             order.Status = newStatus;
+
+            if(newStatus==OrderStatus.Shipped)
+            {
+                var message = new MessageInbox
+                {
+                    Subject = "Order No."+order.confirmationNumber,
+                    Content = "your order has been shipped.",
+                    ReceivedTime = DateTime.Now,
+                    IsRead = false,
+                    UserId=order.UserId
+                };
+                _db.messages.Add(message);
+            }
+            else if(newStatus==OrderStatus.Completed)
+            {
+                var message = new MessageInbox
+                {
+                    Subject = "Order No."+order.confirmationNumber,
+                    Content = "your order has been completed successfully .",
+                    ReceivedTime = DateTime.Now,
+                    IsRead = false,
+                    UserId=order.UserId
+                };
+                _db.messages.Add(message);
+            }
+            else if (newStatus==OrderStatus.Cancelled)
+            {
+                var message = new MessageInbox
+                {
+                    Subject = "Order No."+order.confirmationNumber,
+                    Content = "your order has been cancelled.",
+                    ReceivedTime = DateTime.Now,
+                    IsRead = false,
+                    UserId=order.UserId
+                };
+                _db.messages.Add(message);
+            }
+
+
             _db.SaveChanges();
 
             return Json(new { success = true });

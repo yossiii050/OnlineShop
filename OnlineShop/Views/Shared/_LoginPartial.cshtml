@@ -23,6 +23,12 @@
         header .navbar a:hover {
             color: var(--pink);
         }
+
+    .icons .badge {
+        top: -5px;
+        right: -5px;
+        transform: translate(50%, -50%);
+    }
 </style>
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
@@ -38,6 +44,20 @@
             <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
         </form>
     </li>
+        <div class="icons">
+            <a href="/message" class="fas fa-inbox" style="position: relative;">
+                @if (ViewBag.UnreadMessages > 0)
+                {
+                    <span style="background-color: red; color: white; border-radius: 50%; padding: 1px 3px; font-size: 10px; position: absolute; top: -5px; right: -5px;">
+                    @ViewBag.UnreadMessages
+                </span>
+                }
+            </a>
+        </div>
+
+
+
+
 }
 
 else

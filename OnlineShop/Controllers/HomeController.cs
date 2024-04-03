@@ -3,6 +3,7 @@ using OnlineShop.Models;
 using OnlineShop.Models.ViewModels;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
@@ -26,6 +27,12 @@ namespace OnlineShop.Controllers
                 Products = _db.Products.Include(p => p.Category),
                 Categories = _db.Categories
             };
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                ViewBag.UnreadMessages = _db.messages.Count(p => p.UserId == userId && !p.IsRead);
+            }
             return View(homeVM);
         }
 
