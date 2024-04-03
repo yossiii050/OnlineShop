@@ -40,6 +40,7 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
 
             if (!ModelState.IsValid)
             {
+                Products = await _context.Products.Include(p => p.Category).ToListAsync();
                 Categories = await _context.Categories.ToListAsync(); // Reload categories for the view
                 return Page();
             }
@@ -49,35 +50,7 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
 
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+       
 
-            // Load the categories for the dropdown to repopulate the form.
-            // You would typically pass the product to a form to edit it.
-            Categories = await _context.Categories.ToListAsync();
-
-            // You would need to have a way to show the edit form and populate it with the product details.
-            // This could be done using a Partial View or a Modal Dialog.
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            }
-
-            // After deletion, redirect to the Dashboard page to refresh the product list.
-            return RedirectToPage();
-        }
     }
 }
