@@ -21,6 +21,10 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
 
         private readonly UserManager<User> _userManager;
 
+        public DbSet<IdentityUserRole<string>> UserRoles { get; set; }
+        public DbSet<IdentityRole> Roles { get; set; }
+
+
         public DashboardModel(DBProjectContext context,UserManager<User> userManager)
         {
             _context = context;
@@ -72,46 +76,37 @@ namespace OnlineShop.Areas.Identity.Pages.Admin
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> UpgradeUserRole(string userId)
+        public async Task<IActionResult> OnPostUpgradeUserRoleAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            var userRole = await _context.UserRoles
+                                          .FirstOrDefaultAsync(ur => ur.UserId == userId);
+            if (userRole == null)
             {
-                // Handle user not found
-                return NotFound();
+                // Handle the case where the user role is not found
+                return Page();
             }
 
-            var currentRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-            string targetRoleName = currentRole == "Regular" ? "Advanced" : "Admin";
+            // Fetch the current role name
+            var currentRole = await _context.Roles
+                                            .Where(r => r.Id == userRole.RoleId)
+                                            .Select(r => r.Name)
+                                            .FirstOrDefaultAsync();
 
-            var targetRole = await _context.Roles
-                .Where(r => r.Name == targetRoleName)
-                .FirstOrDefaultAsync();
-
-            if (targetRole == null)
+            // Determine the new role based on the current role
+            string newRoleName = currentRole == "Regular" ? "Advanced" : "Admin";
+            var newRole = await _context.Roles
+                                        .FirstOrDefaultAsync(r => r.Name == newRoleName);
+            if (newRole == null)
             {
-                // Handle target role not found
-                return NotFound();
+                // Handle the case where the new role is not found
+                return Page();
             }
 
-            // Remove user from current roles
-            var removeResult = await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
-            if (!removeResult.Succeeded)
-            {
-                // Handle error
-                return BadRequest();
-            }
+            // Update the user role
+            userRole.RoleId = newRole.Id;
+            await _context.SaveChangesAsync();
 
-            // Add user to the new role
-            var addRoleResult = await _userManager.AddToRoleAsync(user, targetRoleName);
-            if (!addRoleResult.Succeeded)
-            {
-                // Handle error
-                return BadRequest();
-            }
-
-            return RedirectToPage("/Identity/Admin/Dashboard"); // Redirect to the user management page or appropriate page
+            return RedirectToPage();
         }
-
     }
 }

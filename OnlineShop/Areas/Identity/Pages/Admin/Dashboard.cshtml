@@ -20,6 +20,7 @@
     var totalAdmins = 0;
     var totalAdvanced = 0;
     var totalOrders = 0;
+    var totalRegular = 0;
     var advancedUsers = new List<dynamic>();
     var usersWithRoles = new List<dynamic>();
 
@@ -30,10 +31,10 @@
         var command1 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers", connection1);
         totalUsers = (int)command1.ExecuteScalar();
         
-        var command2 = new SqlCommand("SELECT COUNT(*) FROM AspNetUserRoles WHERE RoleId=(SELECT RoleId FROM AspNetRoles WHERE Name='Admin')", connection1);
+        var command2 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Admin'", connection1);
         totalAdmins = (int)command2.ExecuteScalar();
 
-        var command3 = new SqlCommand("SELECT COUNT(*) FROM AspNetUserRoles WHERE RoleId=(SELECT RoleId FROM AspNetRoles WHERE Name='Advanced') ", connection1);
+        var command3 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Advanced'", connection1);
         totalAdvanced = (int)command3.ExecuteScalar();
         
        // var command4 = new SqlCommand("SELECT * FROM AspNetUserRoles WHERE (SELECT id FROM AspNetRoles WHERE Name = "Admin")", connection);
@@ -60,7 +61,7 @@
         
 
         var commandUsersWithRoles = new SqlCommand(@"
-            SELECT u.FirstName, u.LastName, u.Email, u.City, u.ZipCode, r.Name as RoleName
+            SELECT u.FirstName, u.LastName, u.Email, u.City, u.ZipCode, r.Name as RoleName , u.Id
             FROM AspNetUsers AS u
             LEFT JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId
             LEFT JOIN AspNetRoles AS r ON ur.RoleId = r.Id
@@ -77,13 +78,19 @@
                     Email = reader["Email"].ToString(),
                     City = reader["City"].ToString(), // Added
                     ZipCode = reader["ZipCode"].ToString(), // Added
-                    RoleName = reader["RoleName"].ToString()
+                    RoleName = reader["RoleName"].ToString(),
+                    Id = reader["Id"].ToString()
+
                 });
             }
         }
 
         var command5 = new SqlCommand("SELECT COUNT(*) FROM Orders", connection1);
         totalOrders = (int)command5.ExecuteScalar();
+
+        var command6 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Regular'", connection1);
+        totalRegular = (int)command6.ExecuteScalar();
+
 
     }
 }
@@ -155,7 +162,7 @@
                                    
                                     <div>
                                         <p class="statistics-title">Clients</p>
-                                        <h3 class="rate-percentage">15</h3>
+                                        <h3 class="rate-percentage">@totalRegular</h3>
                                         <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i></p>
                                     </div>
                                     <div>
@@ -248,15 +255,22 @@
                                                                             <span style="color: @roleColor; font-weight: bold;">@user.RoleName</span>
                                                                         </td>
                                                                         <td style="border: 1px solid #ddd; padding: 8px;">
-                                                                            @if (user.RoleName == "Advanced") // Only show upgrade button for Advanced users
+                                                                            @if (user.RoleName == "Advanced")
                                                                             {
-                                                                                <button>Upgrade to Admin</button>
+                                                                                <form method="post" asp-page-handler="UpgradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Upgrade to Admin</button>
+                                                                                </form>
                                                                             }
-                                                                            @if (user.RoleName == "Regular") // Only show upgrade button for Regular users
+                                                                            @if (user.RoleName == "Regular")
                                                                             {
-                                                                                <button>Upgrade to Advanced</button>
+                                                                                <form method="post" asp-page-handler="UpgradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Upgrade to Advanced</button>
+                                                                                </form>
                                                                             }
                                                                         </td>
+
                                                                     </tr>
                                                                 }
                                                             </tbody>
