@@ -234,6 +234,10 @@
                                                                     <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Zip Code</th>
                                                                     <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Role</th>
                                                                     <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Upgrade</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">downgrade</th>
+
+                                                                    
+
 
                                                                 </tr>
                                                             </thead>
@@ -269,6 +273,24 @@
                                                                                     <button type="submit">Upgrade to Advanced</button>
                                                                                 </form>
                                                                             }
+                                                                        </td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">
+                                                                            
+                                                                            @if (user.RoleName == "Admin")
+                                                                            {
+                                                                                <form method="post" asp-page-handler="DowngradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Downgrade to Advanced</button>
+                                                                                </form>
+                                                                            }
+                                                                            @if (user.RoleName == "Advanced")
+                                                                            {
+                                                                                <form method="post" asp-page-handler="DowngradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Downgrade to Regular</button>
+                                                                                </form>
+                                                                            }
+                                                                            
                                                                         </td>
 
                                                                     </tr>
