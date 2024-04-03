@@ -1,0 +1,403 @@
+﻿@page
+@using System.Data.SqlClient
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model OnlineShop.Areas.Identity.Pages.Admin.DashboardModel
+@using OnlineShop.Models 
+@inject DBProjectContext dbContext 
+
+
+@{
+    ViewData["Title"] = "Dashboard";
+    //Layout = "~/Identity/Admin/Layout.cshtml";
+
+    // Layout = "~/Areas/Identity/Admin/Dashb
+    // oard.cshtml";
+}
+
+@{
+    var totalUsers = 0;
+    var totalAdmins = 0;
+    var totalAdvanced = 0;
+    var totalOrders = 0;
+    var totalRegular = 0;
+    var advancedUsers = new List<dynamic>();
+    var usersWithRoles = new List<dynamic>();
+
+    var connectionString1 = Configuration.GetConnectionString("conn");
+    using (var connection1 = new SqlConnection(connectionString1))
+    {
+        connection1.Open();
+        var command1 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers", connection1);
+        totalUsers = (int)command1.ExecuteScalar();
+        
+        var command2 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Admin'", connection1);
+        totalAdmins = (int)command2.ExecuteScalar();
+
+        var command3 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Advanced'", connection1);
+        totalAdvanced = (int)command3.ExecuteScalar();
+        
+       // var command4 = new SqlCommand("SELECT * FROM AspNetUserRoles WHERE (SELECT id FROM AspNetRoles WHERE Name = "Admin")", connection);
+        var command4 = new System.Data.SqlClient.SqlCommand(@"
+            SELECT u.FirstName, u.LastName, u.Email
+            FROM AspNetUsers AS u
+            INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId
+            INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id
+            WHERE r.Name = 'Advanced'
+        ", connection1);
+
+        using (var reader = command4.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                advancedUsers.Add(new
+                {
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString(),
+                    Email = reader["Email"].ToString()
+                });
+            }
+        }
+        
+
+        var commandUsersWithRoles = new SqlCommand(@"
+            SELECT u.FirstName, u.LastName, u.Email, u.City, u.ZipCode, r.Name as RoleName , u.Id
+            FROM AspNetUsers AS u
+            LEFT JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId
+            LEFT JOIN AspNetRoles AS r ON ur.RoleId = r.Id
+        ", connection1);
+
+        using (var reader = commandUsersWithRoles.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                usersWithRoles.Add(new
+                {
+                    FirstName = reader["FirstName"].ToString(),
+                    LastName = reader["LastName"].ToString(),
+                    Email = reader["Email"].ToString(),
+                    City = reader["City"].ToString(), // Added
+                    ZipCode = reader["ZipCode"].ToString(), // Added
+                    RoleName = reader["RoleName"].ToString(),
+                    Id = reader["Id"].ToString()
+
+                });
+            }
+        }
+
+        var command5 = new SqlCommand("SELECT COUNT(*) FROM Orders", connection1);
+        totalOrders = (int)command5.ExecuteScalar();
+
+        var command6 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Regular'", connection1);
+        totalRegular = (int)command6.ExecuteScalar();
+
+
+    }
+}
+
+<style>
+    body {
+        background-image: url(https://images.hdqwalls.com/download/hogwarts-legacy-2021-hf-3840x2160.jpg);
+        background-repeat: no-repeat;
+        background-size: cover; /* This will cover the entire element's background */
+        background-position: center; /* This centers the background image */
+    }
+    .btn-outline-dark {
+        background-color: lavender;
+        border-color: lavender;
+        color: #333;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #e6e6fa; /* Lighter lavender on hover */
+            border-color: #ddd; /* Light grey border on hover */
+            color: #333; /* Dark text on hover */
+        }
+</style>
+ 
+<!--  
+<div class="statistics-details d-flex align-items-center justify-content-between">
+    <div>
+        <p class="statistics-title">Total Users</p>
+        <h3 class="rate-percentage">@totalUsers</h3>
+    </div>
+    <!-- other statistics details -->
+
+
+<script>
+    function filterByRole() {
+        var selectedRole = document.getElementById('roleSelect').value;
+        var table = document.getElementById('usersTable');
+        var tr = table.getElementsByTagName('tr');
+
+        for (var i = 1; i < tr.length; i++) { // Start from 1 to skip table header
+            var role = tr[i].getAttribute('data-role');
+            if (selectedRole == 'All' || role == selectedRole) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+</script>
+
+
+<br />
+<br />
+<br />
+
+
+
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="home-tab">
+               
+               
+                <div class="tab-content tab-content-basic">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="statistics-details d-flex align-items-center justify-content-between">
+                                   
+                                    <div>
+                                        <p class="statistics-title">Clients</p>
+                                        <h3 class="rate-percentage">@totalRegular</h3>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i></p>
+                                    </div>
+                                    <div>
+                                        <p class="statistics-title">Advanced Users</p>
+                                        <h3 class="rate-percentage">@totalAdvanced</h3>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
+                                    </div>
+                                    <div>
+                                        <p class="statistics-title">Admins</p>
+                                        <h3 class="rate-percentage">@totalAdmins</h3>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
+                                    </div>
+                                    <div>
+                                        <p class="statistics-title">Total Users</p>
+                                        <h3 class="rate-percentage">@totalUsers</h3>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></p>
+                                    </div>         
+                                    
+                                    <div>
+                                        <p class="statistics-title">New Orders</p>
+                                        <h3 class="rate-percentage">@totalOrders</h3>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></p>
+                                    </div>
+
+                                                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <br /><br />
+
+
+
+                        <div class="row">
+                            <div class="col-lg-8 d-flex flex-column">
+                                <div class="row flex-grow">
+                                    <div class="col-12 grid-margin stretch-card">
+                                        <div class="card card-rounded">
+                                            <div class="card-body">
+                                                <div class="d-sm-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h4 class="card-title card-title-dash"></h4>
+
+                                                        <h2><b> Role Table View</b></h2>
+
+
+
+                                                        <div style="text-align: right; margin-bottom: 20px;">
+                                                            <select id="roleSelect" onchange="filterByRole()" style="padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; outline: none; cursor: pointer;">
+                                                                <option value="All" style="color: black;">All Users</option> <!-- "All Users" option -->
+                                                                <option value="Admin" style="color: #441BD1;">Admin</option>
+                                                                <option value="Advanced" style="color: #D11B84;">Advanced</option>
+                                                                <option value="Regular" style="color: #0C973C;">Regular</option>
+
+                                                            </select>
+                                                        </div>
+
+
+
+                                                        <table id="usersTable" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">First Name</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Last Name</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Email</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">City</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Zip Code</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Role</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">Upgrade</th>
+                                                                    <th style="border: 1px solid #ddd; padding: 10px; background-color: #f2f2f2;">downgrade</th>
+
+                                                                    
+
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var user in usersWithRoles)
+                                                                {
+                                                                    var roleColor = "#FFFFFF"; // Default color
+                                                                    if (user.RoleName == "Regular") roleColor = "#0C973C";
+                                                                    else if (user.RoleName == "Advanced") roleColor = "#D11B84";
+                                                                    else if (user.RoleName == "Admin") roleColor = "#441BD1";
+
+                                                                    <tr data-role="@user.RoleName">
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.FirstName</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.LastName</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.Email</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.City</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">@user.ZipCode</td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">
+                                                                            <span style="color: @roleColor; font-weight: bold;">@user.RoleName</span>
+                                                                        </td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">
+                                                                            @if (user.RoleName == "Advanced")
+                                                                            {
+                                                                                <form method="post" asp-page-handler="UpgradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Upgrade to Admin</button>
+                                                                                </form>
+                                                                            }
+                                                                            @if (user.RoleName == "Regular")
+                                                                            {
+                                                                                <form method="post" asp-page-handler="UpgradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Upgrade to Advanced</button>
+                                                                                </form>
+                                                                            }
+                                                                        </td>
+                                                                        <td style="border: 1px solid #ddd; padding: 8px;">
+                                                                            
+                                                                            @if (user.RoleName == "Admin")
+                                                                            {
+                                                                                <form method="post" asp-page-handler="DowngradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Downgrade to Advanced</button>
+                                                                                </form>
+                                                                            }
+                                                                            @if (user.RoleName == "Advanced")
+                                                                            {
+                                                                                <form method="post" asp-page-handler="DowngradeUserRole">
+                                                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                                                    <button type="submit">Downgrade to Regular</button>
+                                                                                </form>
+                                                                            }
+                                                                            
+                                                                        </td>
+
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <br /><br />
+
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">Add New Product</h2>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                        <div>
+                                            @Html.Partial("_AddProductPartial", Model.NewProduct)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">Available Products</h2>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Category</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var product in Model.Products)
+                                                {
+                                                    <tr>
+                                                        <td>@product.Name</td>
+                                                        <td>@product.Price</td>
+                                                        <td>@product.Description</td>
+                                                        <td>@product.Amount</td>
+                                                        <td>@product.Category.Name</td>
+                                                        
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <a href="/Product" class="btn btn-primary">Edit / Delete Products</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br /><br />
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title"> Categories </h2>
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var category in Model.Categories)
+                                                {
+                                                    <tr>
+                                                        <td>@category.Name</td>
+
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <a href="/Category" class="btn btn-primary">Edit / Delete Catgories</a>
+                                        <a href="/Category/AddCategory" class="btn btn-primary">Add New Category</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <br /><br />
+
+
+
+                       
