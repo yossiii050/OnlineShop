@@ -21,6 +21,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         Console.WriteLine($"fdsahf Environment::");
+        services.AddTransient<IBraintreeService, BraintreeService>();
 
 
         services.AddTransient<IEmailSender,IEmailSender>();
