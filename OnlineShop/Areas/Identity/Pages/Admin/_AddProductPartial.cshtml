@@ -1,0 +1,61 @@
+﻿@model OnlineShop.Models.Product
+@using OnlineShop.Models 
+@inject DBProjectContext Context 
+
+
+
+<form asp-page="/Admin/Dashboard" method="post">
+        <div class="form-group">
+        <label asp-for="Name" class="form-label">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Price" class="form-label">Price</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label asp-for="Image" class="form-label">Image URL</label>
+        <input asp-for="Image" type="text" class="form-control" />
+        <span asp-validation-for="Image" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount" class="form-label">Amount</label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+  
+
+    <!--<div class="form-group">
+        <label asp-for="CategoryId" class="form-label">Category</label>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>-->
+
+    <div class="form-group">
+        <label asp-for="CategoryId" class="form-label">Choose Category</label>
+
+        <select id="CategoryId" name="CategoryId">
+            @foreach (var category in Context.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="DiscountPercentage">Discount Percentage</label>
+        <input asp-for="DiscountPercentage" class="form-control" />
+        <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+    </div>
+    <button type="button" class="btn btn-outline-primary">Add Product</button>
+</form>

@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OnlineShop.Controllers
 {
-	public class CategoryController : Controller
-	{
+	public class CategoryController : BaseController
+    {
 		private readonly DBProjectContext _context;
 
-		public CategoryController(DBProjectContext context)
-		{
+		public CategoryController(DBProjectContext context) : base(context)
+        {
 			_context = context;
 		}
 

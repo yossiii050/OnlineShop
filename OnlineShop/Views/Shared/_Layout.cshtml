@@ -71,12 +71,11 @@
     }
 
     header {
-        
         top: 0;
         left: 0;
         right: 0;
         background: #fff;
-        padding: 2rem 9%;
+        padding: 1rem 9%; /* Adjust this value */
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -84,11 +83,12 @@
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
     }
 
-    header .navbar-brand {
-        font-size: 3rem;
-        color: #333;
-        font-weight: bolder;
-    }
+
+        header .navbar-brand {
+            font-size: 3rem;
+            color: #333;
+            font-weight: bolder;
+        }
 
         header .navbar-brand span {
             color: var(--pink);
@@ -161,15 +161,17 @@
     }
 
 
-    .form-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 8rem; /* Adjust margin-top as needed */
 
-        .products-grid {
+    /* Add new style for form container */
+        .form-container {
             display: flex;
-            flex-wrap: wrap;
-        }
+            justify-content: center;
+            margin-top: 8rem; /* Adjust margin-top as needed */
+
+            .products-grid {
+                display: flex;
+                flex-wrap: wrap;
+            }
 
 </style>
 
@@ -184,56 +186,53 @@
 
             <a href="/Home/About">about</a>
 
-            <a href="/Products/DisplayCategory">products</a>
-
-            @if (User.IsInRole("Admin")) 
+            @if (true)//User.IsInRole("Admin") || User.IsInRole("Advanced"))
 
             {
+                <!-- <a href="/Product">products</a> -->
+
+            
                 <div class="dropdown" id="adminDropdown">
                     <a class="dropdown-toggle" role="button" id="adminDropdownToggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Admin Management2
+                        Admin Management
                     </a>
                     <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
-                        <a class="dropdown-item" href="/Identity/Admin/Dashboard">Dashboard</a>
-                        <a class="dropdown-item" href="/Account/DisplayUsers">User Manage</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="dropdown-item" href="/Identity/Admin/Dashboard">Dashboard</a>
+                        }
+                        
                         <a class="dropdown-item" href="/Category">Categories Manage</a>
                         <a class="dropdown-item" href="/Product">Products Manage</a>
                         <a class="dropdown-item" href="/order">Orders</a>
-                        <a class="dropdown-item" href="/promocode">Promo Codes</a>
+                        
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="dropdown-item" href="/promocode">Promo Codes</a>
+                        }
                     </div>
                 </div>
             }
 
-            <a href="/order/UserOrders">My Orders</a>
-
-             @if (User.IsInRole("Regular") || User.IsInRole("Advanced"))
+            @if (User.IsInRole("Regular") || User.IsInRole("Advanced") || User.IsInRole("Admin"))
             {
-                <div class="dropdown" id="adminDropdown">
-                    <a class="dropdown-toggle" role="button" id="adminDropdownToggle" aria-haspopup="true" aria-expanded="false">
-                        Admin Management1
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
-                        <a class="dropdown-item" href="/Account/DisplayUsers">User Manage</a>
-                        <a class="dropdown-item" href="/Category">Categories Manage</a>
-                        <a class="dropdown-item" href="/Product">Products Manage</a>
-                        <a class="dropdown-item" href="/order">Orders</a>
-                    </div>
-
-                </div>
+                 <a href="/order/UserOrders">My Orders</a>
             }
+               
+
+          
          
             
 
 
-            <a href="#contact">contact</a>
-            
+           
         </nav>
         
         <partial name="_LoginPartial" />
         <div class="icons">
-            <a href="#" class="fas fa-heart"></a>
             <a href="/CART/DisplayCart" class="fas fa-shopping-cart"></a>
-            <a href="/Account/DisplayUsers" class="fas fa-user"></a>
+            <a href="/Identity/Account/Manage" class="fas fa-user"></a>
             
         </div>
         
