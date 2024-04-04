@@ -71,6 +71,8 @@ namespace OnlineShop.Models
 
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
+        public DbSet<UserPromoCode> UserPromoCodes { get; set; }
+
 
         //Orders
         public DbSet<Order> Orders { get; set; }

@@ -31,6 +31,7 @@ namespace OnlineShop.Controllers
             List<OrderDetailsViewModel> orderDetailsViewModels = orders.Select(order => new OrderDetailsViewModel
             {
                 UserName = order.User?.UserName ?? "Guest",
+                UserNameandLname=order.User.FirstName+order.User.LastName,
                 OrderId = order.Id,
                 ShipStreet = order.ShipStreet,
                 ShipCity = order.ShipCity,
@@ -75,6 +76,7 @@ namespace OnlineShop.Controllers
                 List<OrderDetailsViewModel> orderDetailsViewModels = userOrders.Select(order => new OrderDetailsViewModel
                 {
                     UserName=order.User.UserName,
+                    UserNameandLname=order.User.FirstName+order.User.LastName,
                     OrderId = order.Id,
                     ShipStreet= order.ShipStreet,
                     ShipCity= order.ShipCity,
