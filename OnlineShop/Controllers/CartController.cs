@@ -17,13 +17,15 @@ namespace OnlineShop.Controllers
     public class CartController : BaseController
     {
         private DBProjectContext _db;
-        
+        private readonly IAESSettings _aesSettings;
+
         private readonly IBraintreeService _braintreeService;
 
-        public CartController(DBProjectContext db) : base(db)//, IBrainTreeGate brain)
+        public CartController(DBProjectContext db, IAESSettings aesSettings) : base(db)//, IBrainTreeGate brain)
         {
             //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
+            _aesSettings=aesSettings;
             //_braintreeService = braintreeService;
 
 
@@ -336,7 +338,7 @@ namespace OnlineShop.Controllers
                     Content = "your order has been successfully placed.",
                     ReceivedTime = DateTime.Now,
                     IsRead = false,
-                    UserId=userId
+                    UserId=""
                 };
                 if (user != null)
                 {
@@ -356,12 +358,30 @@ namespace OnlineShop.Controllers
             }
             else
             {
+                byte[] key = Convert.FromBase64String(_aesSettings.Key);
+                byte[] iv = Convert.FromBase64String(_aesSettings.IV);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CardNotRegUser, key, iv);
+                //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
+                byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CvvdNotRegUser, key, iv);
+
+                _db.CreditCards.Add(new Models.CreditCard
+                {
+                    EncryptedCardNumber = encryptedCardNumber,
+                    // TODO: Make saved date in format mm/yy
+                    EncryptedExpirationDate=model.ExpNotRegUser,
+                    EncryptedCVV = encryptedCVV,
+                    UserId=userId,
+                    NameCardOwner=model.NameNotRegUser,
+                    fourLastNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4)
+                });
+                _db.SaveChanges();
                 var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
                 var cartItemsSum = cartItems.Sum(item => item.ProductPrice * item.Quantity);
 
                 var order = new Order
                 {
-                    
+                    // TODO: Fix the userID save- not work
                     UserId = null,
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
