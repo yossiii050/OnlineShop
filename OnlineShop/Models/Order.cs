@@ -28,6 +28,7 @@ namespace OnlineShop.Models
         public string ShipCountry { get; set; }
         public string ShipZipCode { get; set; }
 
+        public CreditCard CreditCardUser { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Accepted; 
 
         public string fourCardNumber { get; set; }

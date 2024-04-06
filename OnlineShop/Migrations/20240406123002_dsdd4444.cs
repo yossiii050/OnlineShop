@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineShop.Migrations
 {
     /// <inheritdoc />
-    public partial class mog : Migration
+    public partial class dsdd4444 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -234,32 +234,47 @@ namespace OnlineShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "messages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    FinalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DiscountHas = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ShipStreet = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShipCity = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShipCountry = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShipZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    fourCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    confirmationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReceivedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
+                        name: "FK_messages_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductNotifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Notified = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductNotifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductNotifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -283,6 +298,68 @@ namespace OnlineShop.Migrations
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserPromoCodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PromoCodeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPromoCodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPromoCodes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserPromoCodes_PromoCodes_PromoCodeId",
+                        column: x => x.PromoCodeId,
+                        principalTable: "PromoCodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FinalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DiscountHas = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShipStreet = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShipCity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShipCountry = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShipZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreditCardUserId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    fourCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    confirmationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_CreditCards_CreditCardUserId",
+                        column: x => x.CreditCardUserId,
+                        principalTable: "CreditCards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -401,6 +478,11 @@ namespace OnlineShop.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_messages_UserId",
+                table: "messages",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -411,14 +493,34 @@ namespace OnlineShop.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_CreditCardUserId",
+                table: "Orders",
+                column: "CreditCardUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductNotifications_UserId",
+                table: "ProductNotifications",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPromoCodes_PromoCodeId",
+                table: "UserPromoCodes",
+                column: "PromoCodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPromoCodes_UserId",
+                table: "UserPromoCodes",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -446,13 +548,16 @@ namespace OnlineShop.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "CreditCards");
+                name: "messages");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "PromoCodes");
+                name: "ProductNotifications");
+
+            migrationBuilder.DropTable(
+                name: "UserPromoCodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -464,10 +569,16 @@ namespace OnlineShop.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "PromoCodes");
+
+            migrationBuilder.DropTable(
+                name: "CreditCards");
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

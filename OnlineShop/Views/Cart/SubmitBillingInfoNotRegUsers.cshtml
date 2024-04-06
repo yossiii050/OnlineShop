@@ -461,41 +461,56 @@
                                                         </div>
                                                     </div>
                                                     <div class="panel-body">
-                                                        <form method="post">
-                                                            <div class="mb-3">
-                                                                <label class="form-label" for="zipCode">Card Number</label>
-                                                                    @Html.TextBoxFor(m => m.CardNotRegUser, new { @class = "form-control", id = "CardNotRegUser", placeholder = "Enter Card Number" })
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-xs-7 col-md-7">
-                                                                    <div class="form-group">
-                                                                        <label><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
-                                                                        <input  type="tel" class="form-control" placeholder="MM / YY" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-xs-5 col-md-5 pull-right">
-                                                                    <div class="form-group">
-                                                                        <label>CV CODE</label>
-                                                                        <input type="tel" class="form-control" placeholder="CVC" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-xs-12">
-                                                                    <div class="form-group">
-                                                                        <label>CARD OWNER</label>
-                                                                        <input type="text" class="form-control" placeholder="Card Owner Names" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="panel-footer">
-                                                                <div class="row">
-                                                                    <div class="col-xs-12">
-                                                                        <button class="btn btn-warning btn-lg btn-block">Process payment</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label" for="CardNotRegUser">Card Number</label>
+        @Html.TextBoxFor(m => m.CardNotRegUser, new { @class = "form-control", id = "CardNotRegUser", placeholder = "Enter Card Number", required = "required", pattern = @"\d{16}" })
+        <div class="invalid-feedback">
+            Please enter a valid 16-digit card number.
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-7 col-md-7">
+            <div class="form-group">
+                <label>EXPIRATION DATE</label>
+                @Html.TextBoxFor(m => m.ExpNotRegUser, new { @class = "form-control", id = "ExpNotRegUser", placeholder = "MM / YY", required = "required", pattern = @"\d{2}\/\d{2}" })
+                <div class="invalid-feedback">
+                    Please enter a valid expiration date (MM/YY).
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-5 col-md-5 pull-right">
+            <div class="form-group">
+                <label>CV CODE</label>
+                @Html.TextBoxFor(m => m.CvvdNotRegUser, new { @class = "form-control", id = "CvvdNotRegUser", placeholder = "CVC", required = "required", pattern = @"\d{3}" })
+                <div class="invalid-feedback">
+                    Please enter a valid 3-digit CVV code.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label>CARD OWNER</label>
+                @Html.TextBoxFor(m => m.NameNotRegUser, new { @class = "form-control", id = "NameNotRegUser", placeholder = "Card Owner Names", required = "required" })
+                <div class="invalid-feedback">
+                    Please enter the card owner's name.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-warning btn-lg btn-block" type="submit">Process payment</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
                                                     </div>
 
                                                 </div>

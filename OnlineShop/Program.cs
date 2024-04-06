@@ -6,6 +6,7 @@ using OnlineShop.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using OnlineShop.Utillity;
+using OnlineShop.Models.BrainTree;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,10 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<DBProjectContext>();
 
 builder.Services.AddRazorPages();
+
+builder.Services.Configure<BraintreeService>(builder.Configuration.GetSection("BraintreeGateway"));
+builder.Services.AddSingleton<IBraintreeService>(sp => sp.GetRequiredService<IOptions<BraintreeService>>().Value);
+
 
 // Bind AES settings from appsettings.json
 builder.Services.Configure<AESSettings>(builder.Configuration.GetSection("AES"));

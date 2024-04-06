@@ -4,15 +4,16 @@ using OnlineShop.Models;
 using OnlineShop.Models.ViewModels;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
 
         private readonly ILogger<HomeController> _logger;
         private readonly DBProjectContext _db;
-        public HomeController(ILogger<HomeController> logger, DBProjectContext db)
+        public HomeController(ILogger<HomeController> logger, DBProjectContext db) : base(db)
         {
             _logger = logger;
             _db=db;
@@ -27,6 +28,12 @@ namespace OnlineShop.Controllers
                 Products = _db.Products.Include(p => p.Category),
                 Categories = _db.Categories
             };
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                ViewBag.UnreadMessages = _db.messages.Count(p => p.UserId == userId && !p.IsRead);
+            }
             return View(homeVM);
         }
 

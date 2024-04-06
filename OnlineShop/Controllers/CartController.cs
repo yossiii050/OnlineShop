@@ -5,23 +5,83 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Models.ViewModels;
 using OnlineShop.Models.BrainTree;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Mailjet.Client.Resources;
+using Braintree;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OnlineShop.Models.Message;
 //using System.Data.Entity;
 
 namespace OnlineShop.Controllers
 {
-    public class CartController : Controller
+    public class CartController : BaseController
     {
         private DBProjectContext _db;
-        //private readonly IBrainTreeGate _brain;
-        public CartController(DBProjectContext db)//, IBrainTreeGate brain)
+        private readonly IAESSettings _aesSettings;
+
+        private readonly IBraintreeService _braintreeService;
+
+        public CartController(DBProjectContext db, IAESSettings aesSettings) : base(db)//, IBrainTreeGate brain)
         {
             //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
-            //_brain=brain;
-            
+            _aesSettings=aesSettings;
+            //_braintreeService = braintreeService;
+
+
 
         }
 
+        public IActionResult Test()
+        {
+            var gateway = new BraintreeGateway
+            {
+                Environment = Braintree.Environment.SANDBOX,
+                MerchantId= "q2h7nz489hsfj9r7",
+                PublicKey= "9p7mxg8yjfg5vfgm",
+                PrivateKey= "83f9cc7b1390a399bcc471aeaebfec5b"
+            };
+
+            TransactionRequest request = new TransactionRequest
+            {
+                Amount = 1000.00M,
+                PaymentMethodNonce = "CreditCard",
+                Options = new TransactionOptionsRequest
+                {
+                    SubmitForSettlement = true
+                }
+            };
+
+            Result<Transaction> result = gateway.Transaction.Sale(request);
+
+            if (result.IsSuccess())
+            {
+                Transaction transaction = result.Target;
+                Console.WriteLine("Success!: " + transaction.Id);
+            }
+            else if (result.Transaction != null)
+            {
+                Transaction transaction = result.Transaction;
+                Console.WriteLine("Error processing transaction:");
+                Console.WriteLine("  Status: " + transaction.Status);
+                Console.WriteLine("  Code: " + transaction.ProcessorResponseCode);
+                Console.WriteLine("  Text: " + transaction.ProcessorResponseText);
+            }
+            else
+            {
+                foreach (ValidationError error in result.Errors.DeepAll())
+                {
+                    Console.WriteLine("Attribute: " + error.Attribute);
+                    Console.WriteLine("  Code: " + error.Code);
+                    Console.WriteLine("  Message: " + error.Message);
+                }
+            }
+            return View();
+        }
+
+        
+
+    
 
         [HttpPost]
         public IActionResult AddToCart(int id, int quantity)
@@ -242,17 +302,20 @@ namespace OnlineShop.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = _db.Users.FirstOrDefault(u => u.Id == userId); 
                 var cartItems = _db.CartItems.Where(c => c.UserId == userId).ToList();
                 var cardinfo = _db.CreditCards
                     .Where(t => (t.Id).ToString() == selectedCardId)                    
                     .ToList();
                 var cartItemsSum=cartItems.Sum(item => item.ProductPrice * item.Quantity);
+                
                 var order = new Order
                 {
                     UserId = userId,
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=cardinfo[0].fourLastNumber,
                     OrderDate = DateTime.UtcNow,
+                    CreditCardUser=cardinfo[0],
                     TotalPrice = cartItemsSum,
                     FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
                     DiscountHas=PracentofDisc*100,
@@ -270,6 +333,23 @@ namespace OnlineShop.Controllers
                     
                 };
 
+                var message = new MessageInbox
+                {
+                    Subject = "Order No."+order.confirmationNumber,
+                    Content = "your order has been successfully placed.",
+                    ReceivedTime = DateTime.Now,
+                    IsRead = false,
+                    UserId=userId
+                };
+                if (user != null)
+                {
+                    user.Address.Street = model.x.ShipStreet;
+                    user.Address.City = model.x.ShipCity;
+                    user.Address.Country = model.x.ShipCountry;
+                    user.Address.ZipCode = model.x.ShipZipCode;
+                    _db.Users.Update(user);
+                }
+                _db.messages.Add(message);
                 _db.Orders.Add(order);
                 _db.CartItems.RemoveRange(cartItems); // Remove the cart items
                 _db.SaveChanges();
@@ -279,16 +359,35 @@ namespace OnlineShop.Controllers
             }
             else
             {
+                byte[] key = Convert.FromBase64String(_aesSettings.Key);
+                byte[] iv = Convert.FromBase64String(_aesSettings.IV);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CardNotRegUser, key, iv);
+                //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
+                byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CvvdNotRegUser, key, iv);
+                var cardinfo = new Models.CreditCard
+                {
+                    EncryptedCardNumber = encryptedCardNumber,
+                    // TODO: Make saved date in format mm/yy
+                    EncryptedExpirationDate=model.ExpNotRegUser,
+                    EncryptedCVV = encryptedCVV,
+                    UserId=userId,
+                    NameCardOwner=model.NameNotRegUser,
+                    fourLastNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4)
+                };
+                _db.CreditCards.Add(cardinfo);
+                _db.SaveChanges();
                 var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
                 var cartItemsSum = cartItems.Sum(item => item.ProductPrice * item.Quantity);
 
                 var order = new Order
                 {
-                    
+                    // TODO: Fix the userID save- not work
                     UserId = null,
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
                     OrderDate = DateTime.UtcNow,
+                    CreditCardUser=cardinfo,
                     TotalPrice = cartItemsSum,
                     FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
                     DiscountHas=PracentofDisc*100,
@@ -337,8 +436,8 @@ namespace OnlineShop.Controllers
         public IActionResult SubmitBillingInfo()
         {
             var viewModel = new CheckoutViewModel();
-            List<string> countries = Address.CountryList;
-            ViewBag.CountryList = Address.CountryList;
+            List<string> countries = Models.Address.CountryList;
+            ViewBag.CountryList = Models.Address.CountryList;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -381,22 +480,49 @@ namespace OnlineShop.Controllers
             TempData["orderConf"] = order.confirmationNumber;
             return View(order);
         }
-        [HttpPost]
-        public ActionResult ApplyPromoCode(string promoCode)
+
+        public bool HasUserUsedPromoCode(string userId, string promoCodeName)
         {
-            var promo = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCode && p.IsActive && p.ExpiryDate > DateTime.Now);
-            if (promo != null)
+
+            var result = Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                 .Include(_db.UserPromoCodes, up => up.PromoCode)
+                 .Any(up => up.UserId == userId && up.PromoCode.Code == promoCodeName);
+
+            return result;
+        }
+
+        [HttpPost]
+        public ActionResult ApplyPromoCode(string promoCodeCode)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (HasUserUsedPromoCode(userId, promoCodeCode))
             {
-                // Apply discount
-                //var discountAmount = (totalPrice * promo.DiscountPercentage) / 100;
-                //totalPrice -= discountAmount;
-                return Json(new { discount = promo.DiscountPercentage/100});
+                // User has already used this promo code
+                return Json(new { error = "You have already used this promo code." });
             }
             else
             {
+                // Apply the promo code and save the record
+
+                var promoCode = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCodeCode && p.IsActive && p.ExpiryDate > DateTime.Now);
+
+                if (promoCode != null)
+                {
+                    _db.UserPromoCodes.Add(new UserPromoCode
+                    {
+                        UserId = userId,
+                        PromoCodeId = promoCode.Id
+                    });
+                    _db.SaveChanges();
+                    return Json(new { discount = promoCode.DiscountPercentage/100 });
+                }
+
                 return Json(new { error = "Invalid promo code" });
             }
         }
+
+
 
     }
 }
