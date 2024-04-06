@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 </head>
 
 <style>
@@ -19,6 +21,7 @@
         --pink: #e84393;
     }
 
+    
     * {
         margin: 0;
         padding: 0;
@@ -128,6 +131,14 @@
         display: none;
     }
 
+    .chatbot-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 3em;
+        cursor: pointer;
+        z-index: 1000;
+    }
     .home {
         display: flex;
         align-items: center;
@@ -174,12 +185,13 @@
             }
 
 </style>
+<i class="fas fa-robot chatbot-icon" style="color: #74C0FC;" id="chatbotIcon"></i>
 
 <body>   
     <header>
 
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineShop</a>
-
+       
         
         <nav class="navbar">
             <a href="/">home</a>
@@ -244,6 +256,8 @@
         </div>
         
     </header>
+
+
     <div class="container">
 
         <!-- Adjust the padding-bottom value to match the height of your footer -->
@@ -269,6 +283,9 @@
             }, function () {
                 $(this).removeClass('show');
                 $(this).find('.dropdown-menu').removeClass('show');
+            });
+            $('#chatbotIcon').click(function () {
+                window.location.href = '/Chatbot/Chat/'; // Redirect to the chat page
             });
         });
     </script>
