@@ -31,7 +31,7 @@ namespace OnlineShop.Controllers
             List<OrderDetailsViewModel> orderDetailsViewModels = orders.Select(order => new OrderDetailsViewModel
             {
                 UserName = order.User?.UserName ?? "Guest",
-                UserNameandLname=order.User.FirstName+order.User.LastName,
+                UserNameandLname = (order.User?.FirstName ?? "Guest") + " " + (order.User?.LastName ?? ""),
                 OrderId = order.Id,
                 ShipStreet = order.ShipStreet,
                 ShipCity = order.ShipCity,
@@ -121,43 +121,46 @@ namespace OnlineShop.Controllers
             }
 
             order.Status = newStatus;
-
-            if(newStatus==OrderStatus.Shipped)
+            if(order.UserId!= null )
             {
-                var message = new MessageInbox
+                if (newStatus==OrderStatus.Shipped)
                 {
-                    Subject = "Order No."+order.confirmationNumber,
-                    Content = "your order has been shipped.",
-                    ReceivedTime = DateTime.Now,
-                    IsRead = false,
-                    UserId=order.UserId
-                };
-                _db.messages.Add(message);
-            }
-            else if(newStatus==OrderStatus.Completed)
-            {
-                var message = new MessageInbox
+                    var message = new MessageInbox
+                    {
+                        Subject = "Order No."+order.confirmationNumber,
+                        Content = "your order has been shipped.",
+                        ReceivedTime = DateTime.Now,
+                        IsRead = false,
+                        UserId=order.UserId
+                    };
+                    _db.messages.Add(message);
+                }
+                else if (newStatus==OrderStatus.Completed)
                 {
-                    Subject = "Order No."+order.confirmationNumber,
-                    Content = "your order has been completed successfully .",
-                    ReceivedTime = DateTime.Now,
-                    IsRead = false,
-                    UserId=order.UserId
-                };
-                _db.messages.Add(message);
-            }
-            else if (newStatus==OrderStatus.Cancelled)
-            {
-                var message = new MessageInbox
+                    var message = new MessageInbox
+                    {
+                        Subject = "Order No."+order.confirmationNumber,
+                        Content = "your order has been completed successfully .",
+                        ReceivedTime = DateTime.Now,
+                        IsRead = false,
+                        UserId=order.UserId
+                    };
+                    _db.messages.Add(message);
+                }
+                else if (newStatus==OrderStatus.Cancelled)
                 {
-                    Subject = "Order No."+order.confirmationNumber,
-                    Content = "your order has been cancelled.",
-                    ReceivedTime = DateTime.Now,
-                    IsRead = false,
-                    UserId=order.UserId
-                };
-                _db.messages.Add(message);
+                    var message = new MessageInbox
+                    {
+                        Subject = "Order No."+order.confirmationNumber,
+                        Content = "your order has been cancelled.",
+                        ReceivedTime = DateTime.Now,
+                        IsRead = false,
+                        UserId=order.UserId
+                    };
+                    _db.messages.Add(message);
+                }
             }
+            
 
 
             _db.SaveChanges();

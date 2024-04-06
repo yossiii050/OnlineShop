@@ -315,6 +315,7 @@ namespace OnlineShop.Controllers
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=cardinfo[0].fourLastNumber,
                     OrderDate = DateTime.UtcNow,
+                    CreditCardUser=cardinfo[0],
                     TotalPrice = cartItemsSum,
                     FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
                     DiscountHas=PracentofDisc*100,
@@ -364,8 +365,7 @@ namespace OnlineShop.Controllers
                 byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CardNotRegUser, key, iv);
                 //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
                 byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CvvdNotRegUser, key, iv);
-
-                _db.CreditCards.Add(new Models.CreditCard
+                var cardinfo = new Models.CreditCard
                 {
                     EncryptedCardNumber = encryptedCardNumber,
                     // TODO: Make saved date in format mm/yy
@@ -374,7 +374,8 @@ namespace OnlineShop.Controllers
                     UserId=userId,
                     NameCardOwner=model.NameNotRegUser,
                     fourLastNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4)
-                });
+                };
+                _db.CreditCards.Add(cardinfo);
                 _db.SaveChanges();
                 var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
                 var cartItemsSum = cartItems.Sum(item => item.ProductPrice * item.Quantity);
@@ -386,6 +387,7 @@ namespace OnlineShop.Controllers
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
                     OrderDate = DateTime.UtcNow,
+                    CreditCardUser=cardinfo,
                     TotalPrice = cartItemsSum,
                     FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
                     DiscountHas=PracentofDisc*100,

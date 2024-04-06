@@ -321,7 +321,6 @@ namespace OnlineShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("fourLastNumber")
@@ -401,6 +400,9 @@ namespace OnlineShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CreditCardUserId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("DiscountHas")
                         .HasColumnType("decimal(18,2)");
 
@@ -444,6 +446,8 @@ namespace OnlineShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreditCardUserId");
 
                     b.HasIndex("UserId");
 
@@ -694,9 +698,7 @@ namespace OnlineShop.Migrations
                 {
                     b.HasOne("OnlineShop.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -725,9 +727,17 @@ namespace OnlineShop.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
                 {
+                    b.HasOne("OnlineShop.Models.CreditCard", "CreditCardUser")
+                        .WithMany()
+                        .HasForeignKey("CreditCardUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OnlineShop.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("CreditCardUser");
 
                     b.Navigation("User");
                 });
