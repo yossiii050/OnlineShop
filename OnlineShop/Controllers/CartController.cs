@@ -338,7 +338,7 @@ namespace OnlineShop.Controllers
                     Content = "your order has been successfully placed.",
                     ReceivedTime = DateTime.Now,
                     IsRead = false,
-                    UserId=""
+                    UserId=userId
                 };
                 if (user != null)
                 {
