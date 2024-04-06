@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240406123633_dsdd44")]
-    partial class dsdd44
+    [Migration("20240406130312_pullInbox")]
+    partial class pullInbox
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
