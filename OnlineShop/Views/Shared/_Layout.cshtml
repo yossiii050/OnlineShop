@@ -186,7 +186,7 @@
 
             <a href="/Home/About">about</a>
 
-            @if (true)//User.IsInRole("Admin") || User.IsInRole("Advanced"))
+            @if (User.IsInRole("Admin") || User.IsInRole("Advanced"))
 
             {
                 <!-- <a href="/Product">products</a> -->
@@ -231,7 +231,14 @@
         
         <partial name="_LoginPartial" />
         <div class="icons">
-            <a href="/CART/DisplayCart" class="fas fa-shopping-cart"></a>
+            <a href="/CART/DisplayCart" class="fas fa-shopping-cart" style="position: relative;">
+            @if (ViewBag.CartProducts  > 0)
+            {
+                <span style="background-color: red; color: white; border-radius: 50%; padding: 1px 3px; font-size: 10px; position: absolute; top: -5px; right: -5px;">
+                    @ViewBag.CartProducts
+                </span>
+            }
+            </a>
             <a href="/Identity/Account/Manage" class="fas fa-user"></a>
             
         </div>

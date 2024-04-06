@@ -17,13 +17,15 @@ namespace OnlineShop.Controllers
     public class CartController : BaseController
     {
         private DBProjectContext _db;
-        
+        private readonly IAESSettings _aesSettings;
+
         private readonly IBraintreeService _braintreeService;
 
-        public CartController(DBProjectContext db) : base(db)//, IBrainTreeGate brain)
+        public CartController(DBProjectContext db, IAESSettings aesSettings) : base(db)//, IBrainTreeGate brain)
         {
             //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
+            _aesSettings=aesSettings;
             //_braintreeService = braintreeService;
 
 
@@ -300,11 +302,13 @@ namespace OnlineShop.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = _db.Users.FirstOrDefault(u => u.Id == userId); 
                 var cartItems = _db.CartItems.Where(c => c.UserId == userId).ToList();
                 var cardinfo = _db.CreditCards
                     .Where(t => (t.Id).ToString() == selectedCardId)                    
                     .ToList();
                 var cartItemsSum=cartItems.Sum(item => item.ProductPrice * item.Quantity);
+                
                 var order = new Order
                 {
                     UserId = userId,
@@ -336,6 +340,14 @@ namespace OnlineShop.Controllers
                     IsRead = false,
                     UserId=userId
                 };
+                if (user != null)
+                {
+                    user.Address.Street = model.x.ShipStreet;
+                    user.Address.City = model.x.ShipCity;
+                    user.Address.Country = model.x.ShipCountry;
+                    user.Address.ZipCode = model.x.ShipZipCode;
+                    _db.Users.Update(user);
+                }
                 _db.messages.Add(message);
                 _db.Orders.Add(order);
                 _db.CartItems.RemoveRange(cartItems); // Remove the cart items
@@ -346,12 +358,30 @@ namespace OnlineShop.Controllers
             }
             else
             {
+                byte[] key = Convert.FromBase64String(_aesSettings.Key);
+                byte[] iv = Convert.FromBase64String(_aesSettings.IV);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CardNotRegUser, key, iv);
+                //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
+                byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CvvdNotRegUser, key, iv);
+
+                _db.CreditCards.Add(new Models.CreditCard
+                {
+                    EncryptedCardNumber = encryptedCardNumber,
+                    // TODO: Make saved date in format mm/yy
+                    EncryptedExpirationDate=model.ExpNotRegUser,
+                    EncryptedCVV = encryptedCVV,
+                    UserId=userId,
+                    NameCardOwner=model.NameNotRegUser,
+                    fourLastNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4)
+                });
+                _db.SaveChanges();
                 var cartItems = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
                 var cartItemsSum = cartItems.Sum(item => item.ProductPrice * item.Quantity);
 
                 var order = new Order
                 {
-                    
+                    // TODO: Fix the userID save- not work
                     UserId = null,
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
@@ -448,22 +478,49 @@ namespace OnlineShop.Controllers
             TempData["orderConf"] = order.confirmationNumber;
             return View(order);
         }
-        [HttpPost]
-        public ActionResult ApplyPromoCode(string promoCode)
+
+        public bool HasUserUsedPromoCode(string userId, string promoCodeName)
         {
-            var promo = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCode && p.IsActive && p.ExpiryDate > DateTime.Now);
-            if (promo != null)
+
+            var result = Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                 .Include(_db.UserPromoCodes, up => up.PromoCode)
+                 .Any(up => up.UserId == userId && up.PromoCode.Code == promoCodeName);
+
+            return result;
+        }
+
+        [HttpPost]
+        public ActionResult ApplyPromoCode(string promoCodeCode)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (HasUserUsedPromoCode(userId, promoCodeCode))
             {
-                // Apply discount
-                //var discountAmount = (totalPrice * promo.DiscountPercentage) / 100;
-                //totalPrice -= discountAmount;
-                return Json(new { discount = promo.DiscountPercentage/100});
+                // User has already used this promo code
+                return Json(new { error = "You have already used this promo code." });
             }
             else
             {
+                // Apply the promo code and save the record
+
+                var promoCode = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCodeCode && p.IsActive && p.ExpiryDate > DateTime.Now);
+
+                if (promoCode != null)
+                {
+                    _db.UserPromoCodes.Add(new UserPromoCode
+                    {
+                        UserId = userId,
+                        PromoCodeId = promoCode.Id
+                    });
+                    _db.SaveChanges();
+                    return Json(new { discount = promoCode.DiscountPercentage/100 });
+                }
+
                 return Json(new { error = "Invalid promo code" });
             }
         }
+
+
 
     }
 }

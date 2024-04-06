@@ -21,6 +21,10 @@ namespace OnlineShop.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 // Count unread messages for the current user
                 ViewBag.UnreadMessages = _context.messages.Count(m => m.UserId == userId && !m.IsRead);
+                ViewBag.CartProducts=_context.CartItems.Where(m => m.UserId == userId)
+                .Sum(m => m.Quantity);
+
+    
             }
                 // Get the current user's ID
                 

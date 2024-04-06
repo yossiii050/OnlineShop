@@ -35,29 +35,51 @@
         {
             <div class="items out-of-stock">
                 <p>Out of Stock</p>
-                <button class="btn btn-notify" onclick="notifyMe(this)">Notify Me</button>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button class="btn btn-notify" onclick="notifyMe(@Model.Id)">Notify Me</button>
+                }
+                else
+                {
+                    <button class="btn btn-notify" onclick="alert('Only registered users can use the Notify Me feature. Please log in or register.');">Notify Me</button>
+                }
             </div>
 
-            <div class="notify-input" style="display: none;">
-                <input type="email" placeholder="Enter your email">
-                <button onclick="sendNotification(this)">Submit</button>
-            </div>
-            <p class="notify-message" style="display: none;">A notification will be sent to your email when the product is available.</p>
+
+            <p class="notify-message-@Model.Id" style="display: none;">You will be notified when the product is available.</p>
+
+
         }
     </div>
 
     <script>
-        function notifyMe(button) {
-            var notifyInput = button.parentNode.nextElementSibling; // Get the next sibling of the parent node
-            notifyInput.style.display = 'block';
-            button.style.display = 'none';
+        function notifyMe(productId) {
+            $.post('@Url.Action("RequestNotification", "Product")', { productId: productId }, function (response) {
+                if (response.success) {
+                    alert('You will be notified when the product is available.');
+                    $('.notify-message').show();
+                } else {
+                    alert(response.message);
+                }
+            });
         }
 
-        function sendNotification(button) {
-            var notifyMessage = button.parentNode.nextElementSibling; // Get the next sibling of the parent node
-            notifyMessage.style.display = 'block';
-            button.parentNode.style.display = 'none';
+
+        function showNotifyInput(button) {
+            var notifyInput = button.closest('.items').nextElementSibling;
+            notifyInput.style.display = 'block';
         }
+
+        function sendNotification(event, form, productId) {
+            event.preventDefault();
+            var email = form.querySelector('input[name="email"]').value;
+
+            $.post('@Url.Action("RequestNotification", "Product")', { productId: productId, email: email }, function () {
+                form.style.display = 'none';
+                form.nextElementSibling.style.display = 'block';
+            });
+        }
+
 
         function handleAction(productId, action) {
             var quantityInput = document.getElementById('quantity-' + productId);
@@ -71,6 +93,7 @@
                     // Add to cart logic here
                     $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
                         alert('Added ' + quantity + ' item(s) to cart.');
+                        location.reload();
                     });
                 } else if (action === 'buy') {
                     // Buy now logic here
