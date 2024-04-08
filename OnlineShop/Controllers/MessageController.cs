@@ -22,7 +22,7 @@ namespace OnlineShop.Controllers
                 var messages = _context.messages.Where(m => m.UserId == userId).ToList(); // Filter messages for the current user
                 return View(messages);
             }
-            return View("Error");
+            return View("AccessDenied");
 
         }
 
