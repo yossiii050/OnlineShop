@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Models.Cart;
+using OnlineShop.Models.ChatBot;
 using OnlineShop.Models.Message;
 
 namespace OnlineShop.Models
@@ -71,11 +72,14 @@ namespace OnlineShop.Models
 
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
+        public DbSet<UserPromoCode> UserPromoCodes { get; set; }
+
 
         //Orders
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<MessageInbox> messages { get; set; }
+        public DbSet<ProductNotification> ProductNotifications { get; set; }
 
 
     }

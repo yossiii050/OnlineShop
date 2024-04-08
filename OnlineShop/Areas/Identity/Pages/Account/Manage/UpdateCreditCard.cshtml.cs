@@ -22,7 +22,9 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
         public List<CreditCard> CreditCards { get; set; }
 
         public string CardNumber { get; set; }
-        public string ExpirationDate { get; set; }
+        public string ExpirationMonth { get; set; }
+        public string ExpirationYear { get; set; }
+
         public string CVV { get; set; }
         public string CardOwner { get; set; }
 
@@ -39,8 +41,11 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             public string CardNumber { get; set; }
 
             [Required]
-            [Display(Name = "ExpirationDate")]
-            public string ExpirationDate { get; set; }
+            [Display(Name = "ExpirationMonth")]
+            public string ExpirationMonth { get; set; }
+            [Required]
+            [Display(Name = "ExpirationYear")]
+            public string ExpirationYear { get; set; }
 
             [Required]
             [Display(Name = "CVV")]
@@ -103,7 +108,9 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
 
 
             CardNumber=InputModel.CardNumber;
-            ExpirationDate=InputModel.ExpirationDate;
+            ExpirationYear=InputModel.ExpirationYear;
+            ExpirationMonth=InputModel.ExpirationMonth;
+
             CVV=InputModel.CVV;
             CardOwner=InputModel.CardOwner;
 
@@ -114,13 +121,14 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
                 TempData["UpdateMessage"] = "Credit Card Number Error.";
                 return Page();
             }
-            if(!IsExpirationDateValid(ExpirationDate))
+            if(!IsExpirationDateValid(ExpirationMonth, ExpirationYear))
             {
                 userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
                 CreditCards=userCardss;
                 TempData["UpdateMessage"] = "Expiration Date Error.";
                 return Page();
             }
+            
             if (!IsCvvValid(CVV))
             {
                 userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
@@ -137,7 +145,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             _db.CreditCards.Add(new CreditCard
             {
                 EncryptedCardNumber = encryptedCardNumber,
-                EncryptedExpirationDate=ExpirationDate,
+                EncryptedExpirationDate=ExpirationMonth+"/"+ExpirationYear,
                 EncryptedCVV = encryptedCVV,
                 UserId=userId,
                 NameCardOwner=CardOwner,
@@ -185,9 +193,11 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             }
             return (sum % 10 == 0);
         }
-        public static bool IsExpirationDateValid(string expirationDate)
+        public static bool IsExpirationDateValid(string ExpirationMonth, string ExpirationYear)
         {
-            if (DateTime.TryParseExact(expirationDate, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expDate))
+            ExpirationMonth = ExpirationMonth.PadLeft(2, '0');
+
+            if (DateTime.TryParseExact(ExpirationMonth+"/"+ExpirationYear, "MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expDate))
             {
                 return expDate > DateTime.Now;
             }

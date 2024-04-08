@@ -1,3 +1,8 @@
 ﻿in Program.cs:
 options => options.SignIn.RequireConfirmedAccount = true/false
 (change option to confirmed account with email)
+
+cmd in developer command prompt
+makecert.exe -n "CN=localhost" -r -sv TempCA.pvk TempCA.cer
+
+windows+R -> mmc

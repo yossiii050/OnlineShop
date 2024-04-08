@@ -6,6 +6,8 @@
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
         public string UserName { get; set; } // Add this property
+        public string UserNameandLname { get; set; } // Add this property
+
         public decimal FinalPrice { get; set; }
         public decimal DiscountHas { get; set; }
         public List<OrderItemViewModel> Items { get; set; }

@@ -1,0 +1,32 @@
+﻿@using OnlineShop.Models.ChatBot
+@model ChatbotResponse
+
+@{
+    ViewBag.Title = "Chat with Our Bot";
+}
+<h2>@ViewBag.Title</h2>
+
+<div id="chatContainer">
+    <input type="text" id="userQuestion" placeholder="Ask me something..." />
+    <button onclick="askBot()">Ask</button>
+    <div id="botResponse"></div>
+</div>
+
+
+
+<script>
+    function askBot() {
+        var question = document.getElementById("userQuestion").value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetResponse", "Chatbot")',
+            data: { userQuestion: question },
+            success: function (response) {
+                document.getElementById("botResponse").innerText = response.botAnswer;
+            },
+            error: function () {
+                alert("Error getting response from chatbot");
+            }
+        });
+    }
+</script>

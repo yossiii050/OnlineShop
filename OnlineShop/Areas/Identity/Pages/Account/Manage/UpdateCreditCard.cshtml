@@ -111,47 +111,67 @@
                 </div>
                 <div class="panel-body">
                     <form method="post">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label>CARD NUMBER</label>
-                                    <div class="input-group">
-                                        <input asp-for="InputModel.CardNumber" type="tel" class="form-control" placeholder="Valid Card Number" />
-                                        <span class="input-group-addon"><span class="fa fa-credit-card"></span></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-7 col-md-7">
-                                <div class="form-group">
-                                    <label><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
-                                    <input asp-for="InputModel.ExpirationDate" type="tel" class="form-control" placeholder="MM / YY" />
-                                </div>
-                            </div>
-                            <div class="col-xs-5 col-md-5 pull-right">
-                                <div class="form-group">
-                                    <label>CV CODE</label>
-                                    <input asp-for="InputModel.CVV" type="tel" class="form-control" placeholder="CVC" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label>CARD OWNER</label>
-                                    <input asp-for="InputModel.CardOwner" type="text" class="form-control" placeholder="Card Owner Names" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-footer">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button class="btn btn-warning btn-lg btn-block">Process payment</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label>CARD NUMBER</label>
+                <div class="input-group">
+                    <input asp-for="InputModel.CardNumber" type="tel" class="form-control" placeholder="Valid Card Number" />
+                    <span class="input-group-addon"><span class="fa fa-credit-card"></span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-7 col-md-7">
+            <div class="form-group">
+                <label><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <select asp-for="InputModel.ExpirationMonth" class="form-control">
+                            <option value="">Month</option>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">@i.ToString("00")</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xs-6">
+                        <select asp-for="InputModel.ExpirationYear" class="form-control">
+                            <option value="">Year</option>
+                            @for (int i = DateTime.Now.Year; i <= DateTime.Now.Year + 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-5 col-md-5 pull-right">
+            <div class="form-group">
+                <label>CV CODE</label>
+                <input asp-for="InputModel.CVV" type="tel" class="form-control" placeholder="CVC" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label>CARD OWNER</label>
+                <input asp-for="InputModel.CardOwner" type="text" class="form-control" placeholder="Card Owner Names" />
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-warning btn-lg btn-block">Add Card</button>
+            </div>
+        </div>
+    </div>
+</form>
+
                 </div>
                 
             </div>

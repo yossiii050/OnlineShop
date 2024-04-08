@@ -35,7 +35,9 @@
                     {
                         <a href="@Url.Action("MarkAsRead", "Message", new { id = message.Id })" class="btn btn-sm btn-success">Mark as Read</a>
                     }
+                    <a href="@Url.Action("DeleteMessage", "Message", new { id = message.Id })" class="btn btn-sm btn-danger">Delete</a>
                 </td>
+
             </tr>
         }
     </tbody>

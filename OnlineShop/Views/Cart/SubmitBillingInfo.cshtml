@@ -519,7 +519,7 @@
             $.ajax({
                 url: '@Url.Action("ApplyPromoCode", "Cart")',
                 type: 'POST',
-                data: { promoCode: promoCode },
+                data: { promoCodeCode: promoCode },
                 success: function (response) {
                     if (response.error) {
                         alert(response.error);

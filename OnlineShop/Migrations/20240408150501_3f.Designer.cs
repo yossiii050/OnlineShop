@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240403182347_drfs3")]
-    partial class drfs3
+    [Migration("20240408150501_3f")]
+    partial class _3f
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

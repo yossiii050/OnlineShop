@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 </head>
 
 <style>
@@ -19,6 +21,7 @@
         --pink: #e84393;
     }
 
+    
     * {
         margin: 0;
         padding: 0;
@@ -128,6 +131,14 @@
         display: none;
     }
 
+    .chatbot-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 3em;
+        cursor: pointer;
+        z-index: 1000;
+    }
     .home {
         display: flex;
         align-items: center;
@@ -174,19 +185,20 @@
             }
 
 </style>
+<i class="fas fa-robot chatbot-icon" style="color: #74C0FC;" id="chatbotIcon"></i>
 
 <body>   
     <header>
 
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineShop</a>
-
+       
         
         <nav class="navbar">
             <a href="/">home</a>
 
             <a href="/Home/About">about</a>
 
-            @if (true)//User.IsInRole("Admin") || User.IsInRole("Advanced"))
+            @if (User.IsInRole("Admin") || User.IsInRole("Advanced"))
 
             {
                 <!-- <a href="/Product">products</a> -->
@@ -231,12 +243,21 @@
         
         <partial name="_LoginPartial" />
         <div class="icons">
-            <a href="/CART/DisplayCart" class="fas fa-shopping-cart"></a>
+            <a href="/CART/DisplayCart" class="fas fa-shopping-cart" style="position: relative;">
+            @if (ViewBag.CartProducts  > 0)
+            {
+                <span style="background-color: red; color: white; border-radius: 50%; padding: 1px 3px; font-size: 10px; position: absolute; top: -5px; right: -5px;">
+                    @ViewBag.CartProducts
+                </span>
+            }
+            </a>
             <a href="/Identity/Account/Manage" class="fas fa-user"></a>
             
         </div>
         
     </header>
+
+
     <div class="container">
 
         <!-- Adjust the padding-bottom value to match the height of your footer -->
@@ -262,6 +283,9 @@
             }, function () {
                 $(this).removeClass('show');
                 $(this).find('.dropdown-menu').removeClass('show');
+            });
+            $('#chatbotIcon').click(function () {
+                window.location.href = '/Chatbot/Chat/'; // Redirect to the chat page
             });
         });
     </script>
