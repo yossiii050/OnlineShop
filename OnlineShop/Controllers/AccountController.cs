@@ -85,8 +85,6 @@ namespace OnlineShop.Controllers
                 return View();
             }
 
-            //var user_update = _users.User.Find(id);
-            //return View(user_update);
         }
         public IActionResult DeleteUser(string id)
         {

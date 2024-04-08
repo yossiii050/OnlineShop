@@ -124,22 +124,18 @@
     right: 15px;
   }
 
-  /* width */
 ::-webkit-scrollbar {
     width: 10px;
   }
   
-  /* Track */
   ::-webkit-scrollbar-track {
     background: #f1f1f1; 
   }
    
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: #888; 
   }
   
-  /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
@@ -174,21 +170,21 @@
     <script>
         $(document).ready(function () {
             $("#input-form").submit(function (event) {
-                event.preventDefault(); // Prevent the form from submitting normally
+                event.preventDefault(); 
 
-                var question = $("#input-field").val(); // Get the value from the input field
-                if (!question.trim()) return; // Prevent sending empty messages
+                var question = $("#input-field").val(); 
+                if (!question.trim()) return; 
 
                 var currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
 
-                // Add user's message to the conversation
+            
                 var userMessage = document.createElement('div');
                 userMessage.classList.add('chatbot-message', 'user-message');
                 userMessage.innerHTML = `<p class="chatbot-text" sentTime="${currentTime}">${question}</p>`;
                 document.getElementById("conversation").appendChild(userMessage);
                 userMessage.scrollIntoView({ behavior: "smooth" });
 
-                // Clear input field
+                
                 $("#input-field").val('');
 
                 $.ajax({
@@ -196,7 +192,6 @@
                     url: '@Url.Action("GetResponse", "Chatbot")',
                     data: { userQuestion: question },
                     success: function (response) {
-                        // Add chatbot's response to the conversation
                         var chatbotMessage = document.createElement('div');
                         chatbotMessage.classList.add('chatbot-message');
                         chatbotMessage.innerHTML = `<p class="chatbot-text" sentTime="${currentTime}">${response.botAnswer}</p>`;

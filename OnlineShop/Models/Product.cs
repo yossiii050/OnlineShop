@@ -26,7 +26,6 @@ namespace OnlineShop.Models
             set { _discountPercentage = value ?? 0; }
         }
 
-        // Calculated property to determine if the product is on sale
         [NotMapped]
         public bool IsOnSale => DiscountPercentage.HasValue && DiscountPercentage > 0;
         [NotMapped]
