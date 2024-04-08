@@ -4,7 +4,7 @@
 
 
 
-<form asp-page="/Admin/Dashboard" method="post">
+<form method="post" asp-page="/Admin/Dashboard">
         <div class="form-group">
         <label asp-for="Name" class="form-label">Name</label>
         <input asp-for="Name" class="form-control" />
@@ -31,14 +31,6 @@
     </div>
 
   
-
-    <!--<div class="form-group">
-        <label asp-for="CategoryId" class="form-label">Category</label>
-        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
-            <option value="">-- Select Category --</option>
-        </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>-->
 
     <div class="form-group">
         <label asp-for="CategoryId" class="form-label">Choose Category</label>

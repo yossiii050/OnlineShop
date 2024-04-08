@@ -120,8 +120,8 @@ namespace OnlineShop.Controllers
                              .Where(o => o.UserId == user.Id)
                              .Include(o => o.OrderItems)
                              .ThenInclude(oi => oi.Product)
-                             .AsNoTracking() // Optional, improves performance for read-only queries
-                             .ToList(); // Execute the query and convert to a list
+                             .AsNoTracking() 
+                             .ToList(); 
 
             return View("OrderHistory", orders);
         }
