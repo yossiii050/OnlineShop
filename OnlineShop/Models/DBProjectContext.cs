@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Models.Cart;
+using OnlineShop.Models.ChatBot;
 using OnlineShop.Models.Message;
 
 namespace OnlineShop.Models
@@ -80,7 +81,7 @@ namespace OnlineShop.Models
         public DbSet<MessageInbox> messages { get; set; }
         public DbSet<ProductNotification> ProductNotifications { get; set; }
 
-        
+
     }
     public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<User>
     {
