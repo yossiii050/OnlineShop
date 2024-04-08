@@ -10,7 +10,6 @@
         public byte[] EncryptedCVV { get; set; }
         public string fourLastNumber { get; set; }
 
-        // Navigation property to the User
         public virtual User User { get; set; }
     }
 

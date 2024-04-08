@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OnlineShop.Migrations
 {
     /// <inheritdoc />
-    public partial class dsdd4444 : Migration
+    public partial class addBot : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -215,7 +215,7 @@ namespace OnlineShop.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     NameCardOwner = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EncryptedCardNumber = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     EncryptedExpirationDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -229,8 +229,7 @@ namespace OnlineShop.Migrations
                         name: "FK_CreditCards_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

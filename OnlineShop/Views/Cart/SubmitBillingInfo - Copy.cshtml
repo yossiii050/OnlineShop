@@ -251,7 +251,6 @@
                     @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "mt-2" }))
                     {
                         <ol class="activity-checkout mb-0 px-4 mt-3">
-                            <!-- Billing Info -->
                             <li class="checkout-item">
                                 <div class="avatar checkout-icon p-1">
                                     <div class="avatar-title rounded-circle bg-primary">
@@ -288,7 +287,6 @@
                                 </div>
                             </li>
 
-                            <!-- Shipping Info -->
                             <li class="checkout-item">
                                 <div class="avatar checkout-icon p-1">
                                     <div class="avatar-title rounded-circle bg-primary">
@@ -321,7 +319,6 @@
                                 </div>
                             </li>
 
-                            <!-- Other sections like Payment Info can be added here -->
                         </ol>
 
                         <div class="row my-4">
@@ -385,7 +382,7 @@
                                         <h5 class="font-size-14 m-0">Discount :</h5>
                                     </td>
                                     <td>
-                                        - ₪@(subTotal * 0.10m) <!-- Assuming a 10% discount -->
+                                        - ₪@(subTotal * 0.10m)
                                     </td>
                                 </tr>
                                 <tr>
@@ -401,7 +398,7 @@
                                         <h5 class="font-size-14 m-0">Estimated Tax :</h5>
                                     </td>
                                     <td>
-                                        ₪@(subTotal * 0.18m) <!-- Assuming 18% tax -->
+                                        ₪@(subTotal * 0.18m) 
                                     </td>
                                 </tr>
                                 <tr class="bg-light">
@@ -419,6 +416,5 @@
             </div>
         </div>
 
-    <!-- end row -->
 
 </div>

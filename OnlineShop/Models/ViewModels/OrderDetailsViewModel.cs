@@ -5,8 +5,8 @@
         public int OrderId { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
-        public string UserName { get; set; } // Add this property
-        public string UserNameandLname { get; set; } // Add this property
+        public string UserName { get; set; } 
+        public string UserNameandLname { get; set; } 
 
         public decimal FinalPrice { get; set; }
         public decimal DiscountHas { get; set; }

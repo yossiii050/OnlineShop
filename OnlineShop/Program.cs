@@ -10,12 +10,10 @@ using OnlineShop.Models.BrainTree;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSession(); // Add this line
+builder.Services.AddSession();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-//here we add all services
 builder.Services.AddDbContext<DBProjectContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
@@ -29,18 +27,16 @@ builder.Services.Configure<BraintreeService>(builder.Configuration.GetSection("B
 builder.Services.AddSingleton<IBraintreeService>(sp => sp.GetRequiredService<IOptions<BraintreeService>>().Value);
 
 
-// Bind AES settings from appsettings.json
 builder.Services.Configure<AESSettings>(builder.Configuration.GetSection("AES"));
 builder.Services.AddSingleton<IAESSettings>(sp => sp.GetRequiredService<IOptions<AESSettings>>().Value);
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 
@@ -70,23 +66,5 @@ using(var scope=app.Services.CreateScope())
     }
 }
 
-/*using (var scope = app.Services.CreateScope())
-{
-    var usersManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-    string email = "admin@admin.com";
-    string password = "Admin123!!!";
-
-    if (await usersManager.FindByEmailAsync(email) == null)
-    {
-        var user = new IdentityUser();
-        user.UserName = email;
-        user.Email = email;
-
-        await usersManager.CreateAsync(user, password);
-
-        await usersManager.AddToRoleAsync(user, "Admin");
-    }
-}*/
 app.Run();
 

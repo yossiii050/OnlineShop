@@ -99,8 +99,8 @@
     body {
         background-image: url(https://images.hdqwalls.com/download/hogwarts-legacy-2021-hf-3840x2160.jpg);
         background-repeat: no-repeat;
-        background-size: cover; /* This will cover the entire element's background */
-        background-position: center; /* This centers the background image */
+        background-size: cover;
+        background-position: center; 
     }
     .btn-outline-dark {
         background-color: lavender;
@@ -109,19 +109,12 @@
     }
 
         .btn-outline-dark:hover {
-            background-color: #e6e6fa; /* Lighter lavender on hover */
-            border-color: #ddd; /* Light grey border on hover */
-            color: #333; /* Dark text on hover */
+            background-color: #e6e6fa; 
+            border-color: #ddd; 
+            color: #333; 
         }
 </style>
  
-<!--  
-<div class="statistics-details d-flex align-items-center justify-content-between">
-    <div>
-        <p class="statistics-title">Total Users</p>
-        <h3 class="rate-percentage">@totalUsers</h3>
-    </div>
-    <!-- other statistics details -->
 
 
 <script>
@@ -130,7 +123,7 @@
         var table = document.getElementById('usersTable');
         var tr = table.getElementsByTagName('tr');
 
-        for (var i = 1; i < tr.length; i++) { // Start from 1 to skip table header
+        for (var i = 1; i < tr.length; i++) { 
             var role = tr[i].getAttribute('data-role');
             if (selectedRole == 'All' || role == selectedRole) {
                 tr[i].style.display = '';
@@ -214,7 +207,7 @@
 
                                                         <div style="text-align: right; margin-bottom: 20px;">
                                                             <select id="roleSelect" onchange="filterByRole()" style="padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; outline: none; cursor: pointer;">
-                                                                <option value="All" style="color: black;">All Users</option> <!-- "All Users" option -->
+                                                                <option value="All" style="color: black;">All Users</option> 
                                                                 <option value="Admin" style="color: #441BD1;">Admin</option>
                                                                 <option value="Advanced" style="color: #D11B84;">Advanced</option>
                                                                 <option value="Regular" style="color: #0C973C;">Regular</option>

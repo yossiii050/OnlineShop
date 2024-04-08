@@ -7,8 +7,6 @@ namespace OnlineShop.Models.BrainTree
     {
         private readonly IConfiguration _config;
 
-        //public BrainTreeSettings _options { get; set; }
-        //private IBraintreeGateway brainTreeGateWay { get; set; }
         public BraintreeService(IConfiguration config)
         {
             _config = config;

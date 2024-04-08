@@ -25,7 +25,6 @@ namespace OnlineShop.Models.ChatBot
                     break;
 
                 case "contact me":
-                    // Assuming you have a method to send a notification or email to the admin
                     if (userId!=null)
                     {
                         NotifyAdminForContactRequest(userId);
@@ -36,7 +35,6 @@ namespace OnlineShop.Models.ChatBot
                     break;
 
                 case "what is my order status?":
-                    // Assuming the user's ID is somehow available, e.g., through user authentication
                     if (userId!=null)
                     {
                         
@@ -94,7 +92,6 @@ namespace OnlineShop.Models.ChatBot
                                          "- Can I return online purchases in-store?\n" +
                                          "- Help";
                     break;
-                // Add more cases for different questions
                 default:
                     response.BotAnswer = "Sorry, I'm not sure how to answer that. Can you try asking something else?\n"+
                         "Type Help for see all questions";
@@ -105,7 +102,6 @@ namespace OnlineShop.Models.ChatBot
         }
         private void NotifyAdminForContactRequest(string userId)
         {
-            //Here need to be 
             var adminroleID=_db.Roles.Where(u=>u.Name=="Admin").ToList();
             var adminUsers = _db.UserRoles.Where(u => u.RoleId==adminroleID[0].Id).ToList();
 
@@ -117,14 +113,12 @@ namespace OnlineShop.Models.ChatBot
                     Content = $"User with ID {userId} has requested to be contacted.",
                     ReceivedTime = DateTime.Now,
                     IsRead = false,
-                    UserId = admin.UserId // Assuming each admin has a UserId property
+                    UserId = admin.UserId 
                 };
 
-                // Add the message to the database
                 _db.messages.Add(message);
             }
 
-            // Save changes to the database
             _db.SaveChanges();
         }
 

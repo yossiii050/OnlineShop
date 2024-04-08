@@ -106,9 +106,7 @@ namespace OnlineShop.Controllers
                     products = products.OrderByDescending(p => (p.Price * (100 - p.DiscountPercentage) / 100));
                     break;
                 case "popular":
-                    // Retrieve the products from the database
                     var productList = products.ToList();
-                    // Perform the sorting in memory
                     productList = productList.OrderByDescending(p => p.Popularity).ToList();
                     products = productList.AsQueryable();
                     break;
@@ -120,7 +118,7 @@ namespace OnlineShop.Controllers
                 Categories = _db.Categories.ToList()
             };
 
-            return View("Index", viewModel); // Render the Index view with the filtered products
+            return View("Index", viewModel); 
         }
 
 

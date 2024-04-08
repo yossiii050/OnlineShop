@@ -23,9 +23,9 @@ namespace OnlineShop.Controllers
         public IActionResult Index()
         {
             List<Order> orders = _db.Orders
-                                    .Include(o => o.User) // Include the User navigation property
-                                    .Include(o => o.OrderItems) // Include OrderItems
-                                    .ThenInclude(oi => oi.Product) // Include Product if needed
+                                    .Include(o => o.User) 
+                                    .Include(o => o.OrderItems) 
+                                    .ThenInclude(oi => oi.Product) 
                                     .ToList();
 
             List<OrderDetailsViewModel> orderDetailsViewModels = orders.Select(order => new OrderDetailsViewModel
@@ -60,19 +60,16 @@ namespace OnlineShop.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                // Retrieve the user's ID.
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                // Retrieve the orders from the database that are associated with the current user.
                 List<Order> userOrders = _db.Orders
-                            .Include(o => o.User) // Include the User navigation property
+                            .Include(o => o.User) 
                             .Where(o => o.UserId == userId)
                             .Include(o => o.OrderItems)
                             .ThenInclude(oi => oi.Product)
                             .ToList();
 
 
-                // Map the orders to OrderDetailsViewModel
                 List<OrderDetailsViewModel> orderDetailsViewModels = userOrders.Select(order => new OrderDetailsViewModel
                 {
                     UserName=order.User.UserName,
@@ -98,13 +95,10 @@ namespace OnlineShop.Controllers
                     }).ToList()
                 }).ToList();
 
-                // Pass the user's orders to the view
                 return View(orderDetailsViewModels);
             }
             else
             {
-                // Handle the scenario for non-authenticated users if needed.
-                // You may want to redirect them to the login page or show a message.
                 return RedirectToAction("Login", "Account");
             }
         }

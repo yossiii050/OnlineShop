@@ -13,7 +13,7 @@ namespace OnlineShop.Controllers
         public ChatbotController(DBProjectContext db) : base(db)
         {
             _db = db;
-            _chatbotService = new ChatbotService(_db); // Pass the context to the ChatbotService
+            _chatbotService = new ChatbotService(_db);
 
         }
         public ActionResult Chat()
