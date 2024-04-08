@@ -37,5 +37,20 @@ namespace OnlineShop.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> DeleteMessage(int id)
+        {
+            var message = await _context.messages.FindAsync(id);
+            if (message == null)
+            {
+                return NotFound();
+            }
+
+            _context.messages.Remove(message);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index"); // Adjust the redirection as needed
+        }
+
     }
 }

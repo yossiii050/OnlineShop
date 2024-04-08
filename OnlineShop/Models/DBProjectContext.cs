@@ -71,13 +71,16 @@ namespace OnlineShop.Models
 
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
+        public DbSet<UserPromoCode> UserPromoCodes { get; set; }
+
 
         //Orders
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<MessageInbox> messages { get; set; }
+        public DbSet<ProductNotification> ProductNotifications { get; set; }
 
-
+        
     }
     public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<User>
     {

@@ -8,7 +8,7 @@
         public DateTime ReceivedTime { get; set; }
         public bool IsRead { get; set; }
         public virtual User User { get; set; }
-        public string UserId { get; set; } // Add this line
+        public string UserId { get; set; } 
 
     }
 }

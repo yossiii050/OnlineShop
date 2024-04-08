@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using OnlineShop.Models;
 using System.Data.SqlClient;
+using OnlineShop.Models.Message;
 
 
 namespace OnlineShop.Areas.Identity.Pages.Account
@@ -33,13 +34,14 @@ namespace OnlineShop.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private DBProjectContext _db;
 
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, DBProjectContext db)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,6 +49,8 @@ namespace OnlineShop.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _db = db; // Initialize the _db context
+
         }
 
         /// <summary>
@@ -243,6 +247,17 @@ namespace OnlineShop.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    var message = new MessageInbox
+                    {
+                        Subject = "Welcome to Our Store! Enjoy 25% Off Your First Purchase",
+                        Content = "Hello and welcome! We're thrilled to have you with us. As a special welcome gift, we're giving you a 25% discount on your first purchase. Use the promo code 'NewUser25' at checkout to enjoy your savings. Thank you for joining us, and happy shopping!",
+                        ReceivedTime = DateTime.Now,
+                        IsRead = false,
+                        UserId = user.Id
+                    };
+                    _db.messages.Add(message);
+                    await _db.SaveChangesAsync();
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

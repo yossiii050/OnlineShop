@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Models;
@@ -22,7 +23,9 @@ public class Startup
     {
         Console.WriteLine($"fdsahf Environment::");
         services.AddTransient<IBraintreeService, BraintreeService>();
-
+        services.AddDbContext<DBProjectContext>(options =>
+                                                options.UseSqlServer(
+                                                Configuration.GetConnectionString("conn")));
 
         services.AddTransient<IEmailSender,IEmailSender>();
         
