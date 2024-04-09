@@ -108,12 +108,33 @@
         color: #333;
     }
 
-        .btn-outline-dark:hover {
+     .btn-outline-dark:hover {
             background-color: #e6e6fa; 
             border-color: #ddd; 
             color: #333; 
-        }
+     }
+
+    .centered-content {
+        text-align: center;
+    }
+
+    .statistics-title {
+        font-size: 24px; /* Adjust font size as needed */
+        /* Add other styling here */
+    }
+
+    .rate-percentage {
+        font-size: 32px; /* Adjust font size as needed */
+        /* Add other styling here */
+    }
+
+
+
+
 </style>
+
+
+
  
 
 
@@ -152,32 +173,35 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="statistics-details d-flex align-items-center justify-content-between">
-                                   
-                                    <div>
+
+                                    <div class="centered-content">
                                         <p class="statistics-title">Clients</p>
                                         <h3 class="rate-percentage">@totalRegular</h3>
                                         <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i></p>
                                     </div>
-                                    <div>
+
+                                    <div class="centered-content">
                                         <p class="statistics-title">Advanced Users</p>
                                         <h3 class="rate-percentage">@totalAdvanced</h3>
                                         <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
                                     </div>
-                                    <div>
+
+                                    <div class="centered-content">
                                         <p class="statistics-title">Admins</p>
                                         <h3 class="rate-percentage">@totalAdmins</h3>
                                         <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
                                     </div>
-                                    <div>
+
+                                    <div class="centered-content">
                                         <p class="statistics-title">Total Users</p>
                                         <h3 class="rate-percentage">@totalUsers</h3>
-                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></p>
-                                    </div>         
-                                    
-                                    <div>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
+                                    </div>
+
+                                    <div class="centered-content">
                                         <p class="statistics-title">New Orders</p>
                                         <h3 class="rate-percentage">@totalOrders</h3>
-                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></p>
+                                        <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i></p>
                                     </div>
 
                                                                     
