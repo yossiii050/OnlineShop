@@ -325,19 +325,19 @@
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="billing-name">Name</label>
-                                                        <input type="text" class="form-control" id="billing-name" placeholder="Enter name">
+                                                        <input type="text" class="form-control" id="billing-name" placeholder="Enter name" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="billing-email-address">Email Address</label>
-                                                        <input type="email" class="form-control" id="billing-email-address" placeholder="Enter email">
+                                                        <input type="email" class="form-control" id="billing-email-address" placeholder="Enter email" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="billing-phone">Phone</label>
-                                                        <input type="text" class="form-control" id="billing-phone" placeholder="Enter Phone no.">
+                                                        <input type="text" class="form-control" id="billing-phone" placeholder="Enter Phone no." required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -360,20 +360,20 @@
                                         <div class="mb-3">
                                             <div class="mb-3">
                                                 <label class="form-label" for="street">Street</label>
-                                                @Html.TextBoxFor(m => m.x.ShipStreet, new { @class = "form-control", id = "street", placeholder = "Enter street" })
+                                                @Html.TextBoxFor(m => m.x.ShipStreet, new { @class = "form-control", id = "street", placeholder = "Enter street", required = "required" })
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label" for="city">City</label>
-                                                @Html.TextBoxFor(m => m.x.ShipCity, new { @class = "form-control", id = "city", placeholder = "Enter city" })
+                                                @Html.TextBoxFor(m => m.x.ShipCity, new { @class = "form-control", id = "city", placeholder = "Enter city", required = "required" })
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label" for="country">Country</label>
-                                                @Html.DropDownListFor(m => m.x.ShipCountry, new SelectList(Address.CountryList), "Select a country", new { @class = "form-control", id = "country" })
+                                                @Html.DropDownListFor(m => m.x.ShipCountry, new SelectList(Address.CountryList), "Select a country", new { @class = "form-control", id = "country", required = "required" })
                                             </div>
 
                                             <div class="mb-3">
                                                 <label class="form-label" for="zipCode">Zip Code</label>
-                                                @Html.TextBoxFor(m => m.x.ShipZipCode, new { @class = "form-control", id = "zipCode", placeholder = "Enter zip code" })
+                                                @Html.TextBoxFor(m => m.x.ShipZipCode, new { @class = "form-control", id = "zipCode", placeholder = "Enter zip code", required = "required" })
                                             </div>
                                         </div>
                                     </div>
@@ -392,7 +392,7 @@
                                         <p class="text-muted text-truncate mb-4">Enter your payment details below.</p>
                                         <div id="dropin-container"></div> <!-- Braintree Drop-in UI -->
                                     </div>
-                                <div class="credit-card-container">
+                                <div class="credit-card-container" required>
                                     @foreach (var card in Model.userCards)
                                     {
                                         <div class="credit-card visa selectable" onclick="selectCard('@card.Id', this)">
