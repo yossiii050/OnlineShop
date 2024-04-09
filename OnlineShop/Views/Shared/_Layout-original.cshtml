@@ -17,16 +17,11 @@
 </head>
 
 <style>
-
-    .gold {
-        color: #FEF5DF;
-    }
-
     :root {
         --pink: #e84393;
     }
 
-
+    
     * {
         margin: 0;
         padding: 0;
@@ -67,7 +62,9 @@
         display: inline-block;
         margin-top: 1rem;
         border-radius: 5rem;
+        
         color: #fff;
+        
         cursor: pointer;
         font-size: 1.7rem;
     }
@@ -80,7 +77,7 @@
         top: 0;
         left: 0;
         right: 0;
-        background: #282c34;
+        background: #fff;
         padding: 1rem 9%; /* Adjust this value */
         display: flex;
         align-items: center;
@@ -90,15 +87,15 @@
     }
 
 
-    header .navbar-brand {
-        font-size: 3rem;
-        color: #333;
-        font-weight: bolder;
-    }
+        header .navbar-brand {
+            font-size: 3rem;
+            color: #333;
+            font-weight: bolder;
+        }
 
-    header .navbar-brand span {
-        color: var(--pink);
-    }
+        header .navbar-brand span {
+            color: var(--pink);
+        }
 
     header .navbar a {
         font-size: 2rem;
@@ -112,7 +109,7 @@
 
     header .icons a {
         font-size: 2.5rem;
-            color: #FEF5DF;
+        color: #333;
         margin-left: 1.5rem;
     }
 
@@ -142,7 +139,6 @@
         cursor: pointer;
         z-index: 1000;
     }
-
     .home {
         display: flex;
         align-items: center;
@@ -178,26 +174,25 @@
 
 
     /* Add new style for form container */
-    .form-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 8rem; /* Adjust margin-top as needed */
+        .form-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 8rem; /* Adjust margin-top as needed */
 
-        .products-grid
-
-    {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-
+            .products-grid {
+                display: flex;
+                flex-wrap: wrap;
+            }
 
 </style>
 <i class="fas fa-robot chatbot-icon" style="color: #74C0FC;" id="chatbotIcon"></i>
 
-<body>
+<body>   
     <header>
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Harry Potter Store</a>
+
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineShop</a>
+       
+        
         <nav class="navbar">
             <a href="/">home</a>
 
@@ -206,23 +201,20 @@
             @if (User.IsInRole("Admin") || User.IsInRole("Advanced"))
 
             {
-                <!-- <a href="/Product">products</a> -->
-
-
                 <div class="dropdown" id="adminDropdown">
                     <a class="dropdown-toggle" role="button" id="adminDropdownToggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Admin Management
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="adminDropdownToggle" style="background: #282c34;">
+                    <div class="dropdown-menu" aria-labelledby="adminDropdownToggle">
                         @if (User.IsInRole("Admin"))
                         {
                             <a class="dropdown-item" href="/Identity/Admin/Dashboard">Dashboard</a>
                         }
-
+                        
                         <a class="dropdown-item" href="/Category">Categories Manage</a>
                         <a class="dropdown-item" href="/Product">Products Manage</a>
                         <a class="dropdown-item" href="/order">Orders</a>
-
+                        
 
                         @if (User.IsInRole("Admin"))
                         {
@@ -234,32 +226,32 @@
 
             @if (User.IsInRole("Regular") || User.IsInRole("Advanced") || User.IsInRole("Admin"))
             {
-                <a href="/order/UserOrders">My Orders</a>
-
+                 <a href="/order/UserOrders">My Orders</a>
             }
-        </nav>
+               
 
+          
+         
+            
+
+
+           
+        </nav>
         
+        <partial name="_LoginPartial" />
         <div class="icons">
-            <a href="/message" class="fas fa-inbox" style="position: relative;">
-                @if (ViewBag.UnreadMessages > 0)
-                {
-                    <span style="background-color: red; color: white; border-radius: 50%; padding: 1px 3px; font-size: 10px; position: absolute; top: -5px; right: -5px;">
-                        @ViewBag.UnreadMessages
-                    </span>
-                }
-            </a>
             <a href="/CART/DisplayCart" class="fas fa-shopping-cart" style="position: relative;">
-                @if (ViewBag.CartProducts > 0)
-                {
-                    <span style="background-color: red; color: white; border-radius: 50%; padding: 1px 3px; font-size: 10px; position: absolute; top: -5px; right: -5px;">
-                        @ViewBag.CartProducts
-                    </span>
-                }
+            @if (ViewBag.CartProducts  > 0)
+            {
+                <span style="background-color: red; color: white; border-radius: 50%; padding: 1px 3px; font-size: 10px; position: absolute; top: -5px; right: -5px;">
+                    @ViewBag.CartProducts
+                </span>
+            }
             </a>
             <a href="/Identity/Account/Manage" class="fas fa-user"></a>
+            
         </div>
-        <partial name="_LoginPartial" />
+        
     </header>
 
 
@@ -270,7 +262,11 @@
 
     </div>
 
-    
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - OnlineShop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -286,15 +282,15 @@
                 $(this).find('.dropdown-menu').removeClass('show');
             });
             $('#chatbotIcon').click(function () {
-                window.location.href = '/Chatbot/Chat/'; 
+                window.location.href = '/Chatbot/Chat/'; // Redirect to the chat page
             });
         });
     </script>
 
-    <footer class="border-top footer">
-        &copy; 2024 - Harry Potter Shop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </footer>
+    
 
 </body>
+
+
 </html>
 

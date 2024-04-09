@@ -103,7 +103,7 @@ namespace OnlineShop.Controllers
                         ProductId = id,
                         ProductName= product.Name,
                         UserId = userId,
-                        ProductPrice = product.Price,
+                        ProductPrice = product.IsOnSale ? product.Price * (100 - product.DiscountPercentage.Value) / 100 : product.Price,
                         Quantity = quantity,
                         Image= product.Image,
                     });
@@ -133,7 +133,7 @@ namespace OnlineShop.Controllers
                     {
                         ProductId = id,
                         ProductName = product.Name,  // Set the product name
-                        ProductPrice = product.Price,       // Set the product price
+                        ProductPrice = product.IsOnSale ? product.Price * (100 - product.DiscountPercentage.Value) / 100 : product.Price,      
                         Quantity = quantity,
                         Image = product.Image,
                     });

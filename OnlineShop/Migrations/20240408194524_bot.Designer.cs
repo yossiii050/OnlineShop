@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240408150501_3f")]
-    partial class _3f
+    [Migration("20240408194524_bot")]
+    partial class bot
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -258,6 +258,30 @@ namespace OnlineShop.Migrations
                     b.ToTable("PromoCodes");
                 });
 
+            modelBuilder.Entity("OnlineShop.Models.Cart.UserPromoCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PromoCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PromoCodeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserPromoCodes");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -300,7 +324,6 @@ namespace OnlineShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("fourLastNumber")
@@ -347,6 +370,31 @@ namespace OnlineShop.Migrations
                     b.ToTable("messages");
                 });
 
+            modelBuilder.Entity("OnlineShop.Models.Message.ProductNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Notified")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProductNotifications");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -354,6 +402,9 @@ namespace OnlineShop.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreditCardUserId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("DiscountHas")
                         .HasColumnType("decimal(18,2)");
@@ -398,6 +449,8 @@ namespace OnlineShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreditCardUserId");
 
                     b.HasIndex("UserId");
 
@@ -625,13 +678,30 @@ namespace OnlineShop.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("OnlineShop.Models.CreditCard", b =>
+            modelBuilder.Entity("OnlineShop.Models.Cart.UserPromoCode", b =>
                 {
+                    b.HasOne("OnlineShop.Models.Cart.PromoCode", "PromoCode")
+                        .WithMany()
+                        .HasForeignKey("PromoCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OnlineShop.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PromoCode");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OnlineShop.Models.CreditCard", b =>
+                {
+                    b.HasOne("OnlineShop.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -647,11 +717,30 @@ namespace OnlineShop.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OnlineShop.Models.Message.ProductNotification", b =>
+                {
+                    b.HasOne("OnlineShop.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Order", b =>
                 {
+                    b.HasOne("OnlineShop.Models.CreditCard", "CreditCardUser")
+                        .WithMany()
+                        .HasForeignKey("CreditCardUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OnlineShop.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("CreditCardUser");
 
                     b.Navigation("User");
                 });

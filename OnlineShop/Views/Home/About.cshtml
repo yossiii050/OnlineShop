@@ -1,9 +1,68 @@
-﻿@{
-    ViewData["Title"] = "About";
-}
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Magical Wonders</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            color: #FEF5DF;
+            background-image: url('https://images3.alphacoders.com/130/1301379.jpg'); 
+            background-size: cover;
+        }
 
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(77, 77, 77, 0.8);
+        }
 
+        h1, h2 {
+            color: var(--pink);
+        }
 
-<h1>@ViewData["Title"]</h1>
-<p>WELCOME TO OUR ONLINE SHOP!!!</p>
-<img src="~/images/giphy.gif" alt="WELCOME TO OUR ONLINE SHOP">
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .gif-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+            .gif-container img {
+                max-width: 100%;
+                height: auto;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>About Us - Magical Wonders: Your Harry Potter Online Shop</h1>
+        <p>Welcome to Magical Wonders, the ultimate destination for all things from the Harry Potter World! Our online shop is a haven for witches, wizards, and Muggles alike, offering an enchanting selection of wands, potions, books, and spells that will transport you straight into the magical world of Harry Potter.</p>
+        <h2>Our Mission</h2>
+        <p>Our mission is to bring the magic of the Wizarding World right to your doorstep. Whether you're a Gryffindor, Slytherin, Hufflepuff, or Ravenclaw, we have something special for every Harry Potter fan. Our carefully curated collection is designed to captivate your imagination and add a touch of magic to your everyday life.</p>
+        <h2>Our Products</h2>
+        <p>- <strong>Wands</strong>: Every wizard needs a wand, and our collection features a variety of beautifully crafted wands, including replicas of those used by your favorite characters.</p>
+        <p>- <strong>Potions</strong>: Brew your own magical concoctions with our selection of potion ingredients and kits.</p>
+        <p>- <strong>Books</strong>: Immerse yourself in the world of Hogwarts with our collection of Harry Potter books.</p>
+        <p>- <strong>Spells</strong>: Master the art of spellcasting with our spell books and guides.</p>
+        <h2>Why Choose Magical Wonders?</h2>
+        <p>At Magical Wonders, we're more than just a shop - we're a community of Harry Potter enthusiasts who share a passion for magic and adventure. Our products are carefully selected to ensure the highest quality and authenticity, so you can experience the magic of the Wizarding World in your own home.</p>
+        <h2>Join Our Magical Community</h2>
+        <p>Follow us on social media and join our mailing list to stay updated on new arrivals, special offers, and magical events. Whether you're shopping for yourself or looking for the perfect gift for a fellow Harry Potter fan, Magical Wonders is your one-stop shop for all things magical.</p>
+        <p>Thank you for visiting Magical Wonders. We hope you find something magical to inspire your next adventure!</p>
+        <div class="gif-container">
+            <img src="https://24.media.tumblr.com/tumblr_ltj15rNbB71r3e10co1_500.gif" alt="Magical Animation"> 
+        </div>
+    </div>
+</body>
+</html>
+
+<audio autoplay>
+    <source src="~/audio/HP.MP3" type="audio/mpeg">
+</audio>
