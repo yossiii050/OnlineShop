@@ -471,7 +471,7 @@
         <div class="col-xs-7 col-md-7">
             <div class="form-group">
                 <label>EXPIRATION DATE</label>
-                @Html.TextBoxFor(m => m.ExpNotRegUser, new { @class = "form-control", id = "ExpNotRegUser", placeholder = "MM / YY", required = "required", pattern = @"\d{2}\/\d{2}" })
+                @Html.TextBoxFor(m => m.ExpNotRegUser, new { @class = "form-control", id = "ExpNotRegUser", placeholder = "MM/YY", required = "required", pattern = @"\d{2}\/\d{2}" })
                 <div class="invalid-feedback">
                     Please enter a valid expiration date (MM/YY).
                 </div>
@@ -576,12 +576,6 @@
                                     <td class="text-end">₪ @subTotal</td>
                                 </tr>
                                 <tr>
-                                    <td>Discount :</td>
-                                    <td class="text-end">- ₪ <span id="discount">0.00</span></td>
-
-
-                                </tr>
-                                <tr>
                                     <td>Shipping Charge :</td>
                                     <td class="text-end">₪ 25(calculate shipping here)</td>
                                 </tr>
@@ -602,12 +596,6 @@
                             </tbody>
 
                         </table>
-                    </div>
-                    <div class="card-body p-4 pt-2">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Promo Code" id="promoCode">
-                            <button class="btn btn-primary" onclick="applyPromoCode()">Apply</button>
-                        </div>
                     </div>
                     
                 </div>

@@ -471,6 +471,17 @@ namespace OnlineShop.Controllers
         public ActionResult ApplyPromoCode(string promoCodeCode)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                var promoCode = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCodeCode && p.IsActive && p.ExpiryDate > DateTime.Now);
+                if( promoCode != null)
+                {
+                    return Json(new { discount = promoCode.DiscountPercentage / 100 });
+
+                }
+                return Json(new { error = "Invalid promo code" });
+
+            }
 
             if (HasUserUsedPromoCode(userId, promoCodeCode))
             {
@@ -491,7 +502,6 @@ namespace OnlineShop.Controllers
                     _db.SaveChanges();
                     return Json(new { discount = promoCode.DiscountPercentage/100 });
                 }
-
                 return Json(new { error = "Invalid promo code" });
             }
         }
