@@ -335,7 +335,7 @@
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="billing-phone">Phone</label>
-                                                        <input type="text" class="form-control" id="billing-phone" placeholder="Enter Phone no." required>
+                                                        @Html.TextBoxFor(m => m.x.phoneNumber, new { @class = "form-control", id = "billing-phone", placeholder = "Enter Phone no.", required = "required" })
                                                     </div>
                                                 </div>
                                             </div>

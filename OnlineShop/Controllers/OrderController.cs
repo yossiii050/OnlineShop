@@ -32,6 +32,7 @@ namespace OnlineShop.Controllers
             {
                 UserName = order.User?.UserName ?? "Guest",
                 UserNameandLname = (order.User?.FirstName ?? "Guest") + " " + (order.User?.LastName ?? ""),
+                phoneNumber = order.phoneNumber,
                 OrderId = order.Id,
                 ShipStreet = order.ShipStreet,
                 ShipCity = order.ShipCity,
@@ -74,6 +75,7 @@ namespace OnlineShop.Controllers
                 {
                     UserName=order.User.UserName,
                     UserNameandLname=order.User.FirstName+order.User.LastName,
+                    phoneNumber = order.phoneNumber,
                     OrderId = order.Id,
                     ShipStreet= order.ShipStreet,
                     ShipCity= order.ShipCity,

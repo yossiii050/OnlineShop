@@ -26,7 +26,7 @@ namespace OnlineShop.Controllers
             _aesSettings=aesSettings;
         }
 
-        public IActionResult Test()
+    /*    public IActionResult Test()
         {
             var gateway = new BraintreeGateway
             {
@@ -71,7 +71,7 @@ namespace OnlineShop.Controllers
                 }
             }
             return View();
-        }
+        }*/
 
         
 
@@ -304,6 +304,7 @@ namespace OnlineShop.Controllers
                     FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
                     DiscountHas=PracentofDisc*100,
                     ShipStreet = model.x.ShipStreet,
+                    phoneNumber = model.x.phoneNumber,
                     ShipCity = model.x.ShipCity,
                     ShipCountry = model.x.ShipCountry,
                     ShipZipCode = model.x.ShipZipCode,
@@ -331,6 +332,8 @@ namespace OnlineShop.Controllers
                     user.Address.City = model.x.ShipCity;
                     user.Address.Country = model.x.ShipCountry;
                     user.Address.ZipCode = model.x.ShipZipCode;
+                    user.PhoneNumber = model.x.phoneNumber;
+                    
                     _db.Users.Update(user);
                 }
                 _db.messages.Add(message);
@@ -371,6 +374,7 @@ namespace OnlineShop.Controllers
                     FinalPrice=cartItemsSum-cartItemsSum*PracentofDisc+25+cartItemsSum*18/100,
                     DiscountHas=PracentofDisc*100,
                     ShipStreet = model.x.ShipStreet,
+                    phoneNumber = model.x.phoneNumber,
                     ShipCity = model.x.ShipCity,
                     ShipCountry = model.x.ShipCountry,
                     ShipZipCode = model.x.ShipZipCode,

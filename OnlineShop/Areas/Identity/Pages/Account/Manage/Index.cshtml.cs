@@ -48,7 +48,7 @@ public class IndexModel : PageModel
 
         Input = new InputModel
         {
-            PhoneNumber = phoneNumber,
+            PhoneNumber = user.PhoneNumber,
             Street = user.Address.Street,
             City = user.Address.City,
             Country = user.Address.Country,

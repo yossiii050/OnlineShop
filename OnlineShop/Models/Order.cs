@@ -34,6 +34,7 @@ namespace OnlineShop.Models
         public string fourCardNumber { get; set; }
         public string confirmationNumber { get; set; }
 
+        public string phoneNumber { get; set; }
 
     }
 

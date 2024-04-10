@@ -18,6 +18,8 @@
         public OrderStatus Status { get; set; }
         public string fourCardNumber { get; set; }
         public string confirmationNumber { get; set; }
+
+        public string phoneNumber { get; set; }
     }
 
     public class OrderItemViewModel
