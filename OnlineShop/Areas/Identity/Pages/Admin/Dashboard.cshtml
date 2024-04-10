@@ -9,10 +9,6 @@
 
 @{
     ViewData["Title"] = "Dashboard";
-    //Layout = "~/Identity/Admin/Layout.cshtml";
-
-    // Layout = "~/Areas/Identity/Admin/Dashb
-    // oard.cshtml";
 }
 
 @{
@@ -37,7 +33,6 @@
         var command3 = new SqlCommand("SELECT COUNT(*) FROM AspNetUsers AS u INNER JOIN AspNetUserRoles AS ur ON u.Id = ur.UserId INNER JOIN AspNetRoles AS r ON ur.RoleId = r.Id WHERE r.Name = 'Advanced'", connection1);
         totalAdvanced = (int)command3.ExecuteScalar();
         
-       // var command4 = new SqlCommand("SELECT * FROM AspNetUserRoles WHERE (SELECT id FROM AspNetRoles WHERE Name = "Admin")", connection);
         var command4 = new System.Data.SqlClient.SqlCommand(@"
             SELECT u.FirstName, u.LastName, u.Email
             FROM AspNetUsers AS u
@@ -76,8 +71,8 @@
                     FirstName = reader["FirstName"].ToString(),
                     LastName = reader["LastName"].ToString(),
                     Email = reader["Email"].ToString(),
-                    City = reader["City"].ToString(), // Added
-                    ZipCode = reader["ZipCode"].ToString(), // Added
+                    City = reader["City"].ToString(), 
+                    ZipCode = reader["ZipCode"].ToString(), 
                     RoleName = reader["RoleName"].ToString(),
                     Id = reader["Id"].ToString()
 
@@ -99,8 +94,8 @@
     body {
         background-image: url(https://images.hdqwalls.com/download/hogwarts-legacy-2021-hf-3840x2160.jpg);
         background-repeat: no-repeat;
-        background-size: cover; /* This will cover the entire element's background */
-        background-position: center; /* This centers the background image */
+        background-size: cover; 
+        background-position: center; 
     }
     .btn-outline-dark {
         background-color: lavender;
@@ -109,20 +104,12 @@
     }
 
         .btn-outline-dark:hover {
-            background-color: #e6e6fa; /* Lighter lavender on hover */
-            border-color: #ddd; /* Light grey border on hover */
-            color: #333; /* Dark text on hover */
+            background-color: #e6e6fa;
+            border-color: #ddd;
+            color: #333;
         }
 </style>
  
-<!--  
-<div class="statistics-details d-flex align-items-center justify-content-between">
-    <div>
-        <p class="statistics-title">Total Users</p>
-        <h3 class="rate-percentage">@totalUsers</h3>
-    </div>
-    <!-- other statistics details -->
-
 
 <script>
     function filterByRole() {
@@ -130,7 +117,7 @@
         var table = document.getElementById('usersTable');
         var tr = table.getElementsByTagName('tr');
 
-        for (var i = 1; i < tr.length; i++) { // Start from 1 to skip table header
+        for (var i = 1; i < tr.length; i++) { 
             var role = tr[i].getAttribute('data-role');
             if (selectedRole == 'All' || role == selectedRole) {
                 tr[i].style.display = '';

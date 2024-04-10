@@ -80,7 +80,6 @@
                                     <div>
                                         <h5 class="text-truncate font-size-18"><a href="#" class="text-dark">@item.ProductName</a></h5>
                                         <p class="text-muted mb-0">
-                                            <!-- You can add dynamic rating stars here -->
                                         </p>
                                         <p class="mb-0 mt-1">Color : <span class="fw-medium">Dynamic Color</span></p>
                                     </div>
@@ -133,7 +132,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- end card -->
                     totalPrice += item.ProductPrice * item.Quantity;
                 }
 
@@ -141,7 +139,7 @@
                     <div class="col-sm-6">
                         <a href="/" class="btn btn-link text-muted">
                             <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
-                    </div> <!-- end col -->
+                    </div> 
                     <div class="col-sm-6">
                         <div class="text-sm-end mt-2 mt-sm-0">
                             <a href="@Url.Action("SubmitBillingInfo", "Cart")" class="btn btn-success">
@@ -149,8 +147,7 @@
                             </a>
                         </div>
                     </div>
-                    <!-- end col -->
-                </div> <!-- end row-->
+                </div> 
             }
             else
             {
@@ -198,13 +195,13 @@
                             </table>
                         </div>
                         
-                        <!-- end table-responsive -->
+                       
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- end row -->
+   
     
 </div>
 
@@ -216,15 +213,15 @@
 
         $.ajax({
             url: '@Url.Action("CheckAvailability", "Cart")',
-            type: 'POST', // Change this to POST
+            type: 'POST', 
             data: { productId: productId, quantity: selectedQuantity },
             success: function (response) {
                 if (response.error) {
                     alert(response.error);
-                    $(selectElement).val(product.Amount); // Reset to the available amount
+                    $(selectElement).val(product.Amount); 
                 }
                 else {
-                    // Reload the page to reflect the updated cart
+                    
                     location.reload();
                 }
             },

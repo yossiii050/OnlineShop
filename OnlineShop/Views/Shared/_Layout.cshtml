@@ -81,7 +81,7 @@
         left: 0;
         right: 0;
         background: #282c34;
-        padding: 1rem 9%; /* Adjust this value */
+        padding: 1rem 9%;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -177,11 +177,10 @@
 
 
 
-    /* Add new style for form container */
     .form-container {
         display: flex;
         justify-content: center;
-        margin-top: 8rem; /* Adjust margin-top as needed */
+        margin-top: 8rem;
 
         .products-grid
 
@@ -206,7 +205,6 @@
             @if (User.IsInRole("Admin") || User.IsInRole("Advanced"))
 
             {
-                <!-- <a href="/Product">products</a> -->
 
 
                 <div class="dropdown" id="adminDropdown">
@@ -265,7 +263,6 @@
 
     <div class="container">
 
-        <!-- Adjust the padding-bottom value to match the height of your footer -->
         @RenderBody()
 
     </div>

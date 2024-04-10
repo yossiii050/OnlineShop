@@ -93,7 +93,6 @@ public class IndexModel : PageModel
             }
         }
 
-        // Update the user's address here
         user.Address = new Address
         {
             Street = Input.Street,

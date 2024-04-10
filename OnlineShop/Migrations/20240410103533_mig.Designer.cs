@@ -12,8 +12,8 @@ using OnlineShop.Models;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(DBProjectContext))]
-    [Migration("20240408194524_bot")]
-    partial class bot
+    [Migration("20240410103533_mig")]
+    partial class mig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

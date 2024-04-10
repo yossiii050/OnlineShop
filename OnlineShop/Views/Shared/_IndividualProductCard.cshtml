@@ -90,17 +90,14 @@
                 alert('Not enough in stock.');
             } else {
                 if (action === 'add') {
-                    // Add to cart logic here
                     $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
                         alert('Added ' + quantity + ' item(s) to cart.');
                         location.reload();
                     });
                 } else if (action === 'buy') {
-                    // Buy now logic here
 
                     $.post('@Url.Action("AddToCart", "Cart")', { id: productId, quantity: quantity }, function () {
-                        // Redirect to the cart or checkout page after adding the item to the cart
-                        window.location.href = '@Url.Action("DisplayCart", "Cart")'; // Change this to your cart or checkout URL
+                        window.location.href = '@Url.Action("DisplayCart", "Cart")'; 
                     });
                 }
             }

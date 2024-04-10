@@ -54,7 +54,6 @@ namespace OnlineShop.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var notification = new ProductNotification { ProductId = productId, UserId = userId };
-            // Add notification to the database
             _context.ProductNotifications.Add(notification);
             _context.SaveChanges();
 
@@ -62,19 +61,17 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        [Authorize] // Make sure the user is logged in
+        [Authorize] 
         public ActionResult RequestNotification(int productId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
     
-            // Check if a notification request already exists for this user and product
             var existingNotification = _context.ProductNotifications.FirstOrDefault(n => n.ProductId == productId && n.UserId == userId);
             if (existingNotification != null)
             {
                 return Json(new { success = false, message = "You have already requested a notification for this product." });
             }
 
-            // Save the new notification request to the database
             var notification = new ProductNotification { ProductId = productId, UserId = userId };
             _context.ProductNotifications.Add(notification);
             _context.SaveChanges();
@@ -119,7 +116,7 @@ namespace OnlineShop.Controllers
                 _context.Update(product);
                 await _context.SaveChangesAsync();
 
-                if (product.Amount > 0) // Check if the product has been restocked
+                if (product.Amount > 0) 
                 {
                     var notifications = _context.ProductNotifications.Where(n => n.ProductId == product.Id).ToList();
                     foreach (var notification in notifications)

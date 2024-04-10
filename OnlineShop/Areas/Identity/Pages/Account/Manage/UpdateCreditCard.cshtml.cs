@@ -70,17 +70,10 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             List<CreditCard> userCards = _db.CreditCards.Where(c => c.UserId == userId).ToList();
 
-            // Decrypt the credit card information and assign it to the model properties
             foreach (var card in userCards)
             {
-                // Decrypt the card information and assign it to the properties
-                // Example:
-                // card.DecryptedCardNumber = Decrypt(card.EncryptedCardNumber);
-                // Add other decryption as needed
             }
 
-            // Assign the decrypted cards to a model property to display them in the view
-            // Example:
             CreditCards = userCards;
 
             return Page();
@@ -137,9 +130,7 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            // Encrypt the credit card information
             byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(CardNumber, key, iv);
-            //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
             byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(CVV, key, iv);
 
             _db.CreditCards.Add(new CreditCard
@@ -156,8 +147,6 @@ namespace OnlineShop.Areas.Identity.Pages.Account.Manage
             TempData["SuccesMessage"] = "Credit Card Added.";
             userCardss = _db.CreditCards.Where(c => c.UserId == userId).ToList();
             CreditCards=userCardss;
-            //return RedirectToAction("Index","Home");
-            //return View();
             return Page();
         }
         [HttpPost]

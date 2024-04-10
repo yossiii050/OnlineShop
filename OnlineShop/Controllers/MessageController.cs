@@ -19,7 +19,7 @@ namespace OnlineShop.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var messages = _context.messages.Where(m => m.UserId == userId).ToList(); // Filter messages for the current user
+                var messages = _context.messages.Where(m => m.UserId == userId).ToList(); 
                 return View(messages);
             }
             return View("AccessDenied");
@@ -49,7 +49,7 @@ namespace OnlineShop.Controllers
             _context.messages.Remove(message);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index"); // Adjust the redirection as needed
+            return RedirectToAction("Index"); 
         }
 
     }

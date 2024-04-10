@@ -21,7 +21,7 @@
     }
 
         .credit-card.selected {
-            border: 2px solid #4CAF50; /* Change the color as needed */
+            border: 2px solid #4CAF50; 
         }
         .credit-card.selectable:hover {
             cursor: pointer;
@@ -33,7 +33,6 @@
         flex-wrap: wrap;
         justify-content: space-around;
     }
-    /*  NUMBER FORMATTING */
 
     .credit-card-last4 {
         font-family: "PT Mono", Helvetica, sans-serif;
@@ -309,7 +308,6 @@
                         <input type="hidden" id="selectedCardId" name="selectedCardId" value="" />
                         <input type="hidden" id="PracentofDisc" name="PracentofDisc" value="" />
                         <ol class="activity-checkout mb-0 px-4 mt-3">
-                            <!-- Billing Info -->
                             <li class="checkout-item">
                                 <div class="avatar checkout-icon p-1">
                                     <div class="avatar-title rounded-circle bg-primary">
@@ -346,7 +344,6 @@
                                 </div>
                             </li>
 
-                            <!-- Shipping Info -->
                             <li class="checkout-item">
                                 <div class="avatar checkout-icon p-1">
                                     <div class="avatar-title rounded-circle bg-primary">
@@ -390,7 +387,7 @@
                                     <div>
                                         <h5 class="font-size-16 mb-1">Payment Info</h5>
                                         <p class="text-muted text-truncate mb-4">Enter your payment details below.</p>
-                                        <div id="dropin-container"></div> <!-- Braintree Drop-in UI -->
+                                        <div id="dropin-container"></div> 
                                     </div>
                                 <div class="credit-card-container" required>
                                     @foreach (var card in Model.userCards)
@@ -415,7 +412,6 @@
                                 
                             </div>
 
-                            <!-- Other sections like Payment Info can be added here -->
                         </ol>
 
                         <div class="row my-4">
@@ -508,7 +504,6 @@
             </div>
         </div>
 
-    <!-- end row -->
 
 </div>
     <script src="https://js.braintreegateway.com/web/dropin/1.33.0/js/dropin.min.js"></script>
@@ -537,12 +532,19 @@
         }
         function selectCard(cardId, element) {
             document.getElementById('selectedCardId').value = cardId;
-            // Remove 'selected' class from all cards
             var cards = document.getElementsByClassName('credit-card');
             for (var i = 0; i < cards.length; i++) {
                 cards[i].classList.remove('selected');
             }
-            // Add 'selected' class to the clicked card
             element.classList.add('selected');
         }
+
+        document.querySelector('.mt-2').addEventListener('submit', function (event) {
+            var selectedCardId = document.getElementById('selectedCardId').value;
+            if (!selectedCardId) {
+                event.preventDefault(); 
+                alert('Please select a credit card before proceeding.');
+            }
+        });
+
     </script>

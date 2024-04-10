@@ -29,14 +29,11 @@ public class Startup
 
         services.AddTransient<IEmailSender,IEmailSender>();
         
-        //aes
         var aesSettings = Configuration.GetSection("AES").Get<AESSettings>();
         services.AddSingleton(aesSettings);
 
-        // Add framework services.
         services.AddRazorPages();
 
-        // Add other services
         services.AddMvc();
         services.AddControllersWithViews();
         services.AddSession();
@@ -45,7 +42,6 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseSession();
-        // Configure the app
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {

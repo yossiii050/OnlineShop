@@ -10,7 +10,6 @@ using Mailjet.Client.Resources;
 using Braintree;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OnlineShop.Models.Message;
-//using System.Data.Entity;
 
 namespace OnlineShop.Controllers
 {
@@ -21,15 +20,10 @@ namespace OnlineShop.Controllers
 
         private readonly IBraintreeService _braintreeService;
 
-        public CartController(DBProjectContext db, IAESSettings aesSettings) : base(db)//, IBrainTreeGate brain)
+        public CartController(DBProjectContext db, IAESSettings aesSettings) : base(db)
         {
-            //Console.WriteLine($"BrainTreeGate injected: {_brain != null}");
             _db = db;
             _aesSettings=aesSettings;
-            //_braintreeService = braintreeService;
-
-
-
         }
 
         public IActionResult Test()
@@ -121,7 +115,6 @@ namespace OnlineShop.Controllers
                     return NotFound();
                 }
 
-                // Add the product to the cart
                 var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
                 if (cartItem != null)
                 {
@@ -132,7 +125,7 @@ namespace OnlineShop.Controllers
                     cart.Add(new CartItem
                     {
                         ProductId = id,
-                        ProductName = product.Name,  // Set the product name
+                        ProductName = product.Name, 
                         ProductPrice = product.IsOnSale ? product.Price * (100 - product.DiscountPercentage.Value) / 100 : product.Price,      
                         Quantity = quantity,
                         Image = product.Image,
@@ -140,7 +133,6 @@ namespace OnlineShop.Controllers
                 }
                 product.Amount-=quantity;
                 _db.SaveChanges();
-                // Save the cart back to the session
                 HttpContext.Session.SetObject("cart", cart);
             }
 
@@ -158,12 +150,9 @@ namespace OnlineShop.Controllers
 
             if (quantity > product.Amount)
             {
-                // Inform the user that the requested quantity is not available
                 return Json(new { error = "Requested quantity is not available. Only " + product.Amount + " available." });
             }
 
-            // Update the cart with the new quantity
-            // (You will need to implement the logic to update the cart)
             UpdateQuantity(productId, quantity);
             return Json(new { success = true });
         }
@@ -200,7 +189,6 @@ namespace OnlineShop.Controllers
                 var product = _db.Products.Find(id);
 
 
-                // Add the product to the cart
                 var cartItem = cart.FirstOrDefault(c => c.ProductId == id);
                 if (quantity>cartItem.Quantity)
                 {
@@ -217,7 +205,6 @@ namespace OnlineShop.Controllers
                 }
                
                 _db.SaveChanges();
-                // Save the cart back to the session
                 HttpContext.Session.SetObject("cart", cart);
             }
 
@@ -231,21 +218,18 @@ namespace OnlineShop.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                // For authenticated users, retrieve the cart from the database
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 cart = _db.CartItems
                           .Where(c => c.UserId == userId)
-                          .Include(c => c.Product) // Include related Product data
+                          .Include(c => c.Product) 
                           .ToList();
             }
             else
             {
-                // For non-authenticated users, retrieve the cart from the session
                 
                 cart = HttpContext.Session.GetObject<List<CartItem>>("cart") ?? new List<CartItem>();
             }
 
-            // Pass the cart to the view
             return View(cart);
         }
 
@@ -267,7 +251,7 @@ namespace OnlineShop.Controllers
                 var product = _db.Products.Find(productId);
                 if (product != null)
                 {
-                    product.Amount += quantity; // Restock the product
+                    product.Amount += quantity; 
                 }
 
                 _db.SaveChanges();
@@ -281,13 +265,13 @@ namespace OnlineShop.Controllers
                 if (cartItem != null)
                 {
                     cart.Remove(cartItem);
-                    HttpContext.Session.SetObject("cart", cart); // Save the updated cart back to the session
+                    HttpContext.Session.SetObject("cart", cart); 
                 }
 
                 var product = _db.Products.Find(productId);
                 if (product != null)
                 {
-                    product.Amount += quantity; // Restock the product
+                    product.Amount += quantity; 
                 }
 
                 _db.SaveChanges();
@@ -351,10 +335,8 @@ namespace OnlineShop.Controllers
                 }
                 _db.messages.Add(message);
                 _db.Orders.Add(order);
-                _db.CartItems.RemoveRange(cartItems); // Remove the cart items
+                _db.CartItems.RemoveRange(cartItems);
                 _db.SaveChanges();
-
-                // Redirect to a confirmation page or order details page
                 return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
             }
             else
@@ -363,12 +345,10 @@ namespace OnlineShop.Controllers
                 byte[] iv = Convert.FromBase64String(_aesSettings.IV);
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 byte[] encryptedCardNumber = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CardNotRegUser, key, iv);
-                //byte[] encryptedExpirationDate = OnlineShop.Util.EncryptionHelper.EncryptStringToBytes_Aes(ExpirationDate, key, iv);
                 byte[] encryptedCVV = OnlineShop.Utillity.EncryptionHelper.EncryptStringToBytes_Aes(model.CvvdNotRegUser, key, iv);
                 var cardinfo = new Models.CreditCard
                 {
                     EncryptedCardNumber = encryptedCardNumber,
-                    // TODO: Make saved date in format mm/yy
                     EncryptedExpirationDate=model.ExpNotRegUser,
                     EncryptedCVV = encryptedCVV,
                     UserId=userId,
@@ -382,7 +362,6 @@ namespace OnlineShop.Controllers
 
                 var order = new Order
                 {
-                    // TODO: Fix the userID save- not work
                     UserId = null,
                     confirmationNumber=GenerateConfirmationNumber(),
                     fourCardNumber=model.CardNotRegUser.Substring(model.CardNotRegUser.Length - 4),
@@ -405,22 +384,19 @@ namespace OnlineShop.Controllers
                 };
 
                 _db.Orders.Add(order);
-                //_db.CartItems.RemoveRange(cartItems); // Remove the cart items
                 _db.SaveChanges();
 
-                // Redirect to a confirmation page or order details page
                 return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
 
             }
 
-            // Handle the case for non-authenticated users or add an error message
             return RedirectToAction("Index", "Home");
         }
 
         private string GenerateConfirmationNumber()
         {
             var random = new Random();
-            var length = 10; // You can adjust the length as needed
+            var length = 10;
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var confirmationNumber = new char[length];
 
@@ -450,9 +426,6 @@ namespace OnlineShop.Controllers
 
                 return View(viewModel);
 
-                //var gateway=_brain.GetGateway();
-                // var clientToken = gateway.ClientToken.Generate();
-                // ViewBag.ClientToken = clientToken;
             }
             else
             {
@@ -474,7 +447,6 @@ namespace OnlineShop.Controllers
 
             if (order == null || (User.Identity.IsAuthenticated && order.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
-                // Handle the case where the order is not found or does not belong to the current user
                 return RedirectToAction("Index", "Home");
             }
             TempData["orderConf"] = order.confirmationNumber;
@@ -498,12 +470,10 @@ namespace OnlineShop.Controllers
 
             if (HasUserUsedPromoCode(userId, promoCodeCode))
             {
-                // User has already used this promo code
                 return Json(new { error = "You have already used this promo code." });
             }
             else
             {
-                // Apply the promo code and save the record
 
                 var promoCode = _db.PromoCodes.FirstOrDefault(p => p.Code == promoCodeCode && p.IsActive && p.ExpiryDate > DateTime.Now);
 

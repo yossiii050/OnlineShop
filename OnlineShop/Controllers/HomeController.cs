@@ -74,13 +74,11 @@ namespace OnlineShop.Controllers
         {
             var products = _db.Products.Include(p => p.Category).AsQueryable();
 
-            // Filter by category
             if (category.HasValue)
             {
                 products = products.Where(p => p.CategoryId == category);
             }
 
-            // Filter by price range
             if (!string.IsNullOrEmpty(priceRange))
             {
                 var priceParts = priceRange.Split('-');
@@ -90,13 +88,11 @@ namespace OnlineShop.Controllers
                 }
             }
 
-            // Filter by on sale
             if (onSale)
             {
                 products = products.Where(p => p.DiscountPercentage > 0);
             }
 
-            // Sort the products
             switch (sort)
             {
                 case "price_asc":
@@ -106,9 +102,7 @@ namespace OnlineShop.Controllers
                     products = products.OrderByDescending(p => (p.Price * (100 - p.DiscountPercentage) / 100));
                     break;
                 case "popular":
-                    // Retrieve the products from the database
                     var productList = products.ToList();
-                    // Perform the sorting in memory
                     productList = productList.OrderByDescending(p => p.Popularity).ToList();
                     products = productList.AsQueryable();
                     break;
@@ -120,7 +114,7 @@ namespace OnlineShop.Controllers
                 Categories = _db.Categories.ToList()
             };
 
-            return View("Index", viewModel); // Render the Index view with the filtered products
+            return View("Index", viewModel);
         }
 
 

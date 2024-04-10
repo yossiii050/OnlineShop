@@ -12,15 +12,10 @@ namespace OnlineShop.Models
     public class User : IdentityUser
     {
         
-        //public string Id { get; set; }
         
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-
-        //public string Email { get; set; }
-
-        //public string Password { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
         public string CreditCardNumber { get; set; }
@@ -28,7 +23,6 @@ namespace OnlineShop.Models
         [NotMapped]
         public Address Address { get; set; }
 
-        //public string StripeCustomerId { get; set; }
 
 
         public ICollection<CartItem> CartItems { get; set; }

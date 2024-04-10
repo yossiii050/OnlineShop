@@ -12,20 +12,17 @@ namespace OnlineShop.Controllers
         {
             _context = context;
         }
-        // GET: PromoCode
         public ActionResult Index()
         {
             var promoCodes = _context.PromoCodes.ToList();
             return View(promoCodes);
         }
 
-        // GET: PromoCode/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: PromoCode/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(PromoCode promoCode)
@@ -60,7 +57,6 @@ namespace OnlineShop.Controllers
             return RedirectToAction("Index");
         }
 
-        // Add other actions like Delete here if needed
 
         protected override void Dispose(bool disposing)
         {
@@ -79,7 +75,7 @@ namespace OnlineShop.Controllers
                 return View();
             }
 
-            promoCode.IsActive = !promoCode.IsActive; // Toggle the active status
+            promoCode.IsActive = !promoCode.IsActive; 
             _context.SaveChanges();
 
             return RedirectToAction("Index");

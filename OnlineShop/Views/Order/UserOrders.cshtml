@@ -54,7 +54,6 @@
 <div class="container">
     <h2>My Orders</h2>
     <div class="search-bar">
-        <!-- Search bar implementation -->
     </div>
 
     @if (Model != null)
@@ -65,7 +64,6 @@
                 <div class="order-header">
                     <div class="order-info">
                         <p><strong>Order Id:</strong> @order.OrderId</p>
-                        <!-- Assuming these properties exist in your OrderDetailsViewModel -->
                         <p><strong>User Name:</strong> @order.UserName</p>
                         <p><strong>Confirmation Number:</strong> @order.confirmationNumber</p>
                         <p><strong>Credit Card:</strong>**** **** **** @order.fourCardNumber</p>
@@ -73,14 +71,12 @@
                         <p><strong>Order Status:</strong> @order.Status.ToString()</p>
                     </div>
                     <div class="shipping-address">
-                        <!-- Assuming you have a ShippingAddress property -->
                         <p><strong>Shipping Address</strong></p>
                         <p>@order.UserNameandLname</p>
                         <p>@order.ShipStreet</p>
                         <p>@order.ShipCity @order.ShipCountry @order.ShipZipCode</p>
                     </div>
                     <div class="cancel-order">
-                        <!-- Cancel order button implementation -->
                         <button class="btn-cancel" onclick="cancelOrder(@order.OrderId)" @(order.Status != OrderStatus.Accepted ? "disabled" : "")>Cancel Order</button>
                     </div>
                 </div>
@@ -138,7 +134,7 @@
                     success: function (response) {
                         if (response.success) {
                             alert('Order cancelled successfully!');
-                            location.reload(); // Reload the page to update the order status
+                            location.reload(); 
                         } else {
                             alert('Failed to cancel order.');
                         }
